@@ -1,35 +1,47 @@
-dnl  NA_DEFINE_SUBSTRINGS_AS(string, regexp, macro0[, macro1[, ... macroN ]])
 dnl  ***************************************************************************
+dnl         _   _       _      ___        _        _              _     
+dnl        | \ | |     | |    / _ \      | |      | |            | |    
+dnl        |  \| | ___ | |_  / /_\ \_   _| |_ ___ | |_ ___   ___ | |___ 
+dnl        | . ` |/ _ \| __| |  _  | | | | __/ _ \| __/ _ \ / _ \| / __|
+dnl        | |\  | (_) | |_  | | | | |_| | || (_) | || (_) | (_) | \__ \
+dnl        \_| \_/\___/ \__| \_| |_/\__,_|\__\___/ \__\___/ \___/|_|___/
 dnl
-dnl  Searches for the first match of `regexp` in `string`. For both the entire
-dnl  regular expression `regexp` (`\0`) and each sub-expression within capturing
-dnl  parentheses (`\1`, `\2`, `\3`, ... , `\N`) a macro expanding to the
-dnl  corresponding matching text will be created, named according to the
-dnl  argument `macroN` passed. If a `macroN` argument is omitted or empty, the
-dnl  corresponding parentheses in the regular expression will be considered as
-dnl  non-capturing. If `regexp` or some of its capturing parentheses cannot be
-dnl  found in `string` the corresponding macro(s) will not be defined.
+dnl            A collection of useful m4ish macros for GNU Autotools
+dnl
+dnl                                               -- Released under GNU LGPL3 --
 dnl
 dnl  ***************************************************************************
-AC_DEFUN([NA_DEFINE_SUBSTRINGS_AS], [
-	m4_if(m4_eval([$# > 2]), [1], [
-		m4_if(m4_normalize(m4_argn([$#], $*)), [], [],
-			[m4_bregexp([$1], [$2], [m4_define(m4_normalize(m4_argn([$#], $*)), \]m4_if([$#], [3], [&], m4_eval([$# - 3]))[)])])
-		m4_if(m4_eval([$# > 3]), [1], [NA_DEFINE_SUBSTRINGS_AS(m4_reverse(m4_shift(m4_reverse($@))))])
-	])
-])
 
 
-dnl  NA_GET_VERSION_ENVIRONMENT(libname, majver, minver, revver)
+
+dnl  ***************************************************************************
+dnl  G E N E R A L   P U R P O S E   M A C R O S
+dnl  ***************************************************************************
+
+
+
+dnl  NA_UP_WORDS_ONLY(string)
 dnl  ***************************************************************************
 dnl
-dnl  Gets the version environment for this package and sets the versioning
+dnl  Replaces `/[a-z]/g` with `/[A-Z]/g` and `/\W/g,` with `'_'`,
+dnl
+dnl  ***************************************************************************
+m4_define([NA_UP_WORDS_ONLY],
+	[m4_translit([$1],
+		[ !"#$%&\'()*+,./0123456789:;<=>?@[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~],
+		[________________________________________ABCDEFGHIJKLMNOPQRSTUVWXYZ____])])
+
+
+dnl  NA_GET_LIB_VERSION_ENV(libname, majver, minver, revver)
+dnl  ***************************************************************************
+dnl
+dnl  Gets the version environment for a library project and sets the versioning
 dnl  macros accordingly. This macro can be invoked only once. After being
 dnl  invoked the following argumentless macros will be created:
 dnl
-dnl  - `NA_MULTIVERSION_LIB`: expands to `[yes]` if the `$MULTIVERSION_LIB`
-dnl    environment variable was set to any value other than `no` during the
-dnl    the automake process, it expands to `[no]` otherwise
+dnl  - `NA_MULTIVERSION_LIB`: expands to `1` if the `$MULTIVERSION_LIB`
+dnl    environment variable was set to any non-empty value other than `no`
+dnl    during the the automake process, expands to `0` otherwise
 dnl  - `NA_LIBRARY_NAME`: expands to the argument `libname` passed to this macro
 dnl  - `NA_LIBRARY_MAJVER`: expands to the argument `majver` passed to this
 dnl    macro
@@ -39,8 +51,9 @@ dnl  - `NA_LIBRARY_REVVER`: expands to the argument `revver` passed to this
 dnl    macro
 dnl  - `NA_LIBRARY_LOCALNAME` expands to `libname[]majver` when
 dnl    `NA_MULTIVERSION_LIB` expands to [yes], it expands to `libname` otherwise
+dnl
 dnl  ***************************************************************************
-AC_DEFUN_ONCE([NA_GET_VERSION_ENVIRONMENT], [
+AC_DEFUN_ONCE([NA_GET_LIB_VERSION_ENV], [
 	m4_define([NA_LIBRARY_NAME], [$1])
 	m4_define([NA_LIBRARY_MAJVER], [$2])
 	m4_define([NA_LIBRARY_MINVER], [$3])
@@ -50,12 +63,14 @@ AC_DEFUN_ONCE([NA_GET_VERSION_ENVIRONMENT], [
 ])
 
 
-dnl  ***************************************************************************
 dnl  NA_SET_GLOBALLY(name, value)
+dnl
+dnl  ***************************************************************************
 dnl
 dnl  Creates a new argumentless macro named `[NA_]name` and a new output
 dnl  substitution named `name`, both expanding to `value` when invoked. This
 dnl  macro can be invoked only after having invoked `AC_INIT()`
+dnl
 dnl  ***************************************************************************
 AC_DEFUN([NA_SET_GLOBALLY], [
 	m4_define([NA_$1], [$2])
@@ -63,27 +78,60 @@ AC_DEFUN([NA_SET_GLOBALLY], [
 ])
 
 
+dnl  NA_GET_PROGS(prog1, [, prog2, [prog3[, ... progN ]]])
 dnl  ***************************************************************************
-dnl  NA_REQ_PROGS(prog1, [descr1][, prog2, [descr2][, etc., [...]]])
+dnl
+dnl  Checks whether one or more programs can be retrieved automatically. For
+dnl  each program `progx` an uppercase bash variable named `PROGX` containing
+dnl  the path where `progx` is located will be created. If a program is not
+dnl  reachable an error will be generated.
+dnl
+dnl  Requires: `NA_UP_WORDS_ONLY()`
+dnl
+dnl  ***************************************************************************
+AC_DEFUN([NA_GET_PROGS], [
+	m4_if([$#], [0], [], [
+		AC_PATH_PROG(NA_UP_WORDS_ONLY([$1]), [$1])
+		AS_IF([test "x@S|@{]NA_UP_WORDS_ONLY([$1])[}" = x], [AC_MSG_ERROR([$1 utility not found])])
+		m4_if(m4_eval([$# > 1]), [1], [NA_GET_PROGS(m4_shift($*))])
+	])
+])
+
+
+dnl  NA_REQ_PROGS(prog1, descr1[, prog2, descr2[, ... progN, ... descrN]]])
+dnl  ***************************************************************************
 dnl
 dnl  Checks whether one or more programs have been provided by the user or can
-dnl  be retrieved automatically. For each program `progx` an uppercase variable
-dnl  named `PROGX` containing the path where `progx` is located will be created.
-dnl  If a program is not reachable and the user has not provided any path for it
-dnl  an error will be generated. The program names given to this function will
-dnl  be advertised among the `influential environment variables` visible when
-dnl  launching `./configure --help`.
+dnl  be retrieved automatically. For each program `progx` an uppercase bash
+dnl  variable named `PROGX` containing the path where `progx` is located will be
+dnl  created. If a program is not reachable and the user has not provided any
+dnl  path for it an error will be generated. The program names given to this
+dnl  function will be advertised among the `influential environment variables`
+dnl  visible when launching `./configure --help`.
+dnl
+dnl  Requires: `NA_UP_WORDS_ONLY()`
+dnl
 dnl  ***************************************************************************
 AC_DEFUN([NA_REQ_PROGS], [
 	m4_if([$#], [0], [], [
-		AC_ARG_VAR(m4_translit([$1], [a-z], [A-Z]), [$2])
-		AS_IF([test "x@S|@{]m4_translit([$1], [a-z], [A-Z])[}" = x], [
-			AC_PATH_PROG(m4_translit([$1], [a-z], [A-Z]), [$1])
-			AS_IF([test "x@S|@{]m4_translit([$1], [a-z], [A-Z])[}" = x], [
-				AC_MSG_ERROR([$1 utility not found])
-			])
+		AC_ARG_VAR(NA_UP_WORDS_ONLY([$1]), [$2])
+		AS_IF([test "x@S|@{]NA_UP_WORDS_ONLY([$1])[}" = x], [
+			AC_PATH_PROG(NA_UP_WORDS_ONLY([$1]), [$1])
+			AS_IF([test "x@S|@{]NA_UP_WORDS_ONLY([$1])[}" = x], [AC_MSG_ERROR([$1 utility not found])])
 		])
 		m4_if(m4_eval([$# + 1 >> 1]), [1], [], [NA_REQ_PROGS(m4_shift2($*))])
 	])
 ])
+
+
+
+dnl  ***************************************************************************
+dnl  Note:  The `NA_` prefix (which stands for "Not Autotools") is used
+dnl         with the purpose of avoiding collisions with the default Autotools
+dnl `       prefixes `AC_`, AM_`, `AS_`, `AX_`, `LT_`.
+dnl  ***************************************************************************
+
+
+dnl  EOF
+
 
