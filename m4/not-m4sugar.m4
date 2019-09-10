@@ -21,205 +21,188 @@ dnl  ***************************************************************************
 
 
 
-dnl  nm4_switch(text0[, text1, if-matched1[, textN, if-matchedN[, default]]])
+dnl  n4_case_in(text, list1, if-found1[, ... listN, if-foundN], [if-not-found])
 dnl  ***************************************************************************
 dnl
-dnl  Switches among literals
-dnl
-dnl  Same syntax of `AS_CASE()`, but it operates on M4 macros rather than shell
-dnl  variables. Furthermore, differently than in `AS_CASE()`, the string
-dnl  comparisons here are performed literally (patterns are not followed). For
-dnl  using patterns in string comparisons, see `nm4_case()`.
-dnl
-dnl  Example:
-dnl
-dnl      AC_DEFUN([DIST_STATUS],
-dnl          [nm4_switch(NM_GET_AM_VAR([USER]),
-dnl              [madmurphy],
-dnl                  [official release],
-dnl              [rose],
-dnl                  [semi-official release],
-dnl              [charlie],
-dnl                  [abusive release],
-dnl                  [unofficial release])])
-dnl      AC_MSG_NOTICE([Distribution status: DIST_STATUS])
-dnl
-dnl  For the `NM_GET_AM_VAR()` macro, see `not-automake.m4`.
-dnl
-dnl  This macro can be invoked before `AC_INIT()`.
-dnl
-dnl  Expansion type: literal
-dnl  Requires: nothing
-dnl
-dnl  ***************************************************************************
-m4_define([nm4_switch], [m4_if(m4_eval([$# < 2]), [0], [m4_if([$2], [$1], [m4_normalize([$3])], [m4_if(m4_eval([$# > 4]), [1], [nm4_switch([$1], m4_shift3($@))], [m4_if(m4_eval([$# & 1]), [0], [m4_normalize(m4_argn([$#], $@))])])])])])
-
-
-dnl  nm4_case(text[, pattern1, if-matched1[, patternN, if-matchedN[, default]]])
-dnl  ***************************************************************************
-dnl
-dnl  Switches among patterns
-dnl
-dnl  Same syntax of `AS_CASE()`, but it operates on M4 macros rather than shell
-dnl  variables. Patterns are supported and must follow the same syntax used in
-dnl  the GNU M4 `regexp()` macro (see:
-dnl  https://www.gnu.org/software/m4/manual/m4-1.4.14/html_node/Regexp.html).
-dnl  For literal string comparisons without pattern support, see `nm4_switch()`.
-dnl
-dnl  Example:
-dnl
-dnl      AC_DEFUN([SHELL_TYPE],
-dnl          [nm4_case(NM_GET_AM_VAR([SHELL]),
-dnl              [/\w*csh$],
-dnl                  [C shell],
-dnl              [/\w*sh$],
-dnl                  [Other POSIX non-C shell],
-dnl                  [Unknown shell])])
-dnl      AC_MSG_NOTICE([Maintainer's shell type: SHELL_TYPE])
-dnl
-dnl  For the `NM_GET_AM_VAR()` macro, see `not-automake.m4`.
-dnl
-dnl  This macro can be invoked before `AC_INIT()`.
-dnl
-dnl  Expansion type: literal
-dnl  Requires: nothing
-dnl
-dnl  ***************************************************************************
-m4_define([nm4_case], [m4_if(m4_eval([$# < 2]), [0], [m4_if(m4_eval(m4_bregexp([$1], [$2]) > -1), [1], [m4_normalize([$3])], [m4_if(m4_eval([$# > 4]), [1], [nm4_case([$1], m4_shift3($@))], [m4_if(m4_eval([$# & 1]), [0], [m4_normalize(m4_argn([$#], $@))])])])])])
-
-
-dnl  nm4_in_args(target, string1[, string2[, ... stringN ]])
-dnl  ***************************************************************************
-dnl
-dnl  Searches for the first duplicate of the argument `target` among all the
-dnl  other arguments
-dnl
-dnl  This macro expands to `1` if a duplicate is found, to `0` otherwise.
+dnl  Searches for the first occurence of `text` in each comma-separated list
+dnl  `listN`
 dnl
 dnl  For example,
 dnl
-dnl      nm4_in_args([bar], [foo], [bar], [hello])
+dnl      n4_case_in(NM_GET_AM_VAR([USER]),
+dnl          [[rose], [madmurphy], [charlie]],
+dnl              [Official release],
+dnl              [Unofficial release])
 dnl
-dnl  will expand to `1`.
+dnl  will print "Official release" if the user who generated the `configure`
+dnl  script was in the list above, ot it will print "Unofficial release"
+dnl  otherwise (for the `NM_GET_AM_VAR()` macro, see `not-automake.m4`).
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro works exactly like `m4_case()`, but instead of looking for the
+dnl  equality of a target string with one or more other strings, it checks
+dnl  whether a target string is present in one or more given lists.
 dnl
-dnl  Expansion type: literal
-dnl  Requires: nothing
+dnl  Here is a more articulated example:
 dnl
-dnl  ***************************************************************************
-m4_define([nm4_in_args], [m4_if(m4_eval([$# < 2]), [1], [0], [m4_if([$1], [$2], [1], [m4_if(m4_eval([$# > 2]), [1], [nm4_in_args([$1], m4_shift2($*))], [0])])])])
-
-
-dnl  nm4_in(target, list)
-dnl  ***************************************************************************
-dnl
-dnl  Searches for the first occurence of `target` in the comma-separated list
-dnl  `list`
-dnl
-dnl  This macro expands to `1` if `target` is found, to `0` otherwise.
-dnl
-dnl  For example,
-dnl
-dnl      nm4_in([PATH], [NM_ENVIRONMENT_KEYS])
-dnl
-dnl  will most likely expand to `1` (for the `NM_ENVIRONMENT_KEYS` macro, see
-dnl  `not-automake.m4`).
+dnl      n4_case_in(NM_GET_AM_VAR([USER]),
+dnl          [[rose], [madmurphy], [lili], [frank]],
+dnl              [Official release],
+dnl          [[rick], [karl], [matilde]],
+dnl              [Semi-official release],
+dnl          [[jack], [charlie]],
+dnl              [Offensive release],
+dnl              [Unofficial release])
 dnl
 dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
-dnl  Requires: nothing
-dnl
-dnl  Note: If you have already included `nm4_in_args()` in your scipts you can
-dnl        use the following shorter definition of `nm4_in()`:
-dnl
-dnl            m4_define([nm4_in], [nm4_in_args([$1], $2)])
+dnl  Requires: Autoconf >= 2.62: for the `m4_cond()` macro -- see:
+dnl  https://www.gnu.org/software/autoconf/manual/autoconf-2.62/html_node/Conditional-constructs.html
+dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
-m4_define([nm4_in], [m4_if(m4_eval(m4_count($2) < 1), [1], [0], [m4_if(m4_argn(1, $2), [$1], [1], [m4_if(m4_eval(m4_count($2) > 1), [1], [nm4_in([$1], [m4_shift($2)])], [0])])])])
+m4_define([n4_case_in],
+	[m4_cond([m4_eval($# < 2)], [1],
+			[],
+		[m4_argn(1, $2)], [$1],
+			[$3],
+		[m4_eval(m4_count($2) > 1)], [1],
+			[n4_case_in([$1], m4_dquote(m4_shift($2)), m4_shift2($@))],
+		[m4_eval($# > 4)], [1],
+			[n4_case_in([$1], m4_shift3($@))],
+			[$4])])
 
 
-dnl  nm4_lambda(macro_body)
+dnl  n4_lambda(macro_body)
 dnl  ***************************************************************************
 dnl
 dnl  Creates an anonymous macro on the fly, able to be passed as a callback
 dnl  argument
 dnl
-dnl  Example:
+dnl  For example, in the following code a lambda macro instead of a named one is
+dnl  passed to `m4_map()`:
 dnl
 dnl      AC_DEFUN([MISSING_PROGRAMS], [[find], [xargs], [sed]])
-dnl      AC_MSG_ERROR([Install first m4_map([nm4_lambda(["$1", ])], [MISSING_PROGRAMS])then proceed.])
+dnl      AC_MSG_ERROR([Install first m4_map([n4_lambda(["$1", ])], [MISSING_PROGRAMS])then proceed.])
 dnl
-dnl  By using the `nm4_anon()` keyword, the macro body can invoke itself
-dnl  repeatedly (recursion). For example,
+dnl  The code above will print:
 dnl
-dnl      AC_MSG_NOTICE([nm4_lambda([[{$1}]m4_if(m4_eval($# > 1), [1], [nm4_anon(m4_shift($*))])])([one], [two], [three], [four])])
+dnl      Install first "find", "xargs", "sed", then proceed.
 dnl
-dnl  will print
+dnl  By using the `n4_anon` keyword, a lambda macro can invoke itself repeatedly
+dnl  (recursion). For example,
 dnl
-dnl      {one}{two}{three}{four}
-dnl
-dnl  The `nm4_anon` keyword is available both within and outside the macro body
-dnl  (in this last case it will point to the last lambda macro called). For
-dnl  example,
-dnl
-dnl      nm4_lambda([[{$1}]m4_if(m4_eval($# > 1), [1], [nm4_anon(m4_shift($*))])])([one], [two], [three], [four])
-dnl      nm4_anon([five], [six], [seven], [eight])
+dnl      AC_MSG_NOTICE([n4_lambda([{$1}m4_if(m4_eval($# > 1), [1], [n4_anon(m4_shift($*))])])([one], [two], [three], [four])])
 dnl
 dnl  will print
 dnl
 dnl      {one}{two}{three}{four}
-dnl      {five}{six}{seven}{eight}
 dnl
-dnl  It is suggested, although not strictly needed, to call `nm4_unlambda` as
-dnl  soon as the lambda macro terminates its function, in order to delete the
-dnl  `nm4_anon` keyword from the global scope. So, for example:
-dnl  
-dnl      nm4_lambda([[{$1}]m4_if(m4_eval($# > 1), [1], [nm4_anon(m4_shift($*))])])([one], [two], [three], [four])
-dnl      nm4_anon([five], [six], [seven], [eight])
-dnl      nm4_unlambda
-dnl      nm4_anon([nine], [ten], [eleven], [twelve])
-dnl  
-dnl  will print:
-dnl  
-dnl      {one}{two}{three}{four}  
-dnl      {five}{six}{seven}{eight} 
-dnl      nm4_anon(nine, ten, eleven, twelve) 
+dnl  The `n4_anon` keyword is available only from within the lambda macro body
+dnl  and works in a stack-like fashion. Do not attempt to redefine it yourself.
 dnl
-dnl  If the anonymous macro needs to be invoked only once, the `nm4_unlambda`
-dnl  macro can be invoked directly from the macro body itself:
+dnl  Lambda macros can be nested within each other:
 dnl
-dnl      AC_MSG_NOTICE([Some quoted text: nm4_lambda(["$1"][nm4_unlambda])([Hello world!]).])
+dnl      n4_lambda([Hi there! n4_lambda([This is a nested lambda macro!])])
+dnl
+dnl  However, as with any other type of macro, reading the arguments of a
+dnl  nested macro might be difficult. Consider for example the following
+dnl  code snippet:
+dnl
+dnl      n4_lambda([Hi there! Here it's $1! n4_lambda([And here it's $1!])([Charlie])])([Rose])
+dnl
+dnl  It will print:
+dnl
+dnl      Hi there! Here it's Rose! And here it's Rose!
+dnl
+dnl  This is because `$1` gets replaced with `Rose` before the nested macro's
+dnl  arguments can expand. The only way to prevent this is to declare the nested
+dnl  macro out of quotes, so that the expansion of its arguments precedes that
+dnl  of its parent's. Hence,
+dnl
+dnl      n4_lambda([Hi there! Here it's $1! ]n4_lambda([And here it's $1!])([Charlie]))([Rose])
+dnl
+dnl  will finally print:
+dnl
+dnl      Hi there! Here it's Rose! And here it's Charlie!
+dnl
+dnl  There is no particular limit in the level of nesting reachable, except good
+dnl  coding practices. As an extreme example, consider the following snippet
+dnl  (the atypical M4 indentation is only for didactic purpose):
+dnl
+dnl      # Let's use `L()` as a shortcut for `n4_lambda()`...
+dnl      m4_define([L], m4_defn([n4_lambda]))
+dnl
+dnl      L(
+dnl          [This is $1]
+dnl          L(
+dnl              [This is $1]
+dnl              L(
+dnl                  [{$1}m4_ifelse(m4_eval($# > 1), [1], [n4_anon(m4_shift($*))])]
+dnl              )([internal one], [internal two], [internal three], [internal four])
+dnl          )([central])
+dnl      )([external])
+dnl
+dnl  The example above will print something like this (plus some trailing spaces
+dnl  due to the bad indentation):
+dnl
+dnl      This is external
+dnl          This is central
+dnl              {internal one}{internal two}{internal three}{internal four}
 dnl
 dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
-dnl  Optionally requires: `nm4_unlambda` (for unregistering the lamba macro)
+dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
-m4_define([nm4_lambda], [m4_define([nm4_anon], [$1])][nm4_anon])
+m4_define([n4_lambda],
+	[m4_define([_n4_anon_orig], [$1])[]m4_define([_n4_anon_init], [m4_pushdef([n4_anon], m4_defn([_n4_anon_orig]))[]m4_undefine([_n4_anon_orig])[]m4_undefine([_n4_anon_init])[]$1[]m4_popdef([n4_anon])])[]_n4_anon_init])
 
 
-dnl  nm4_unlambda
+dnl  n4_list_index(list, target, [add-to-return-value], [if-not-found])
 dnl  ***************************************************************************
 dnl
-dnl  Forgets the last lambda macro created
+dnl  Searches for the first occurence of `target` in the comma-separated list
+dnl  `list` and returns its position, or `-1` if `target` has not been found
 dnl
-dnl  See `nm4_lambda()` for details.
+dnl  For example,
+dnl
+dnl      n4_list_index([[foo], [bar], [hello]], [bar])
+dnl
+dnl  expands to `2`.
+dnl
+dnl  If the `add-to-return-value` argument is expressed (this accepts only
+dnl  numbers, both positive and negative), it will be added to the returned
+dnl  index -- if `target` has not been found and the `if-not-found` argument is
+dnl  omitted, it will be added to `-1`.
+dnl
+dnl  If the `if-not-found` argument is expressed, it will be returned every time
+dnl  `target` is not found. This argument accepts both numerical and
+dnl  non-numerical values.
 dnl
 dnl  This macro can be invoked before `AC_INIT()`.
 dnl
-dnl  Expansion type: literal (void)
-dnl  Requires: nothing
-dnl  Optionally requires: `nm4_lambda()` (for registering lamba macros)
+dnl  Expansion type: literal
+dnl  Requires: Autoconf >= 2.62: for the `m4_cond()` macro -- see:
+dnl  https://www.gnu.org/software/autoconf/manual/autoconf-2.62/html_node/Conditional-constructs.html
+dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
-m4_define([nm4_unlambda], [m4_ifdef([nm4_anon], [m4_undefine([nm4_anon])])])
+m4_define([n4_list_index],
+	[m4_cond([m4_eval($# < 2)], [1],
+			[-1],
+		[m4_argn(1, $1)], [$2],
+			[m4_eval([$3] + 0)],
+		[m4_eval(m4_count($1) > 1)], [1],
+			[n4_list_index(m4_dquote(m4_shift($1)), [$2], m4_eval([$3] + 1), m4_if(m4_eval($# > 3), [1], [$4], [m4_eval([$3] - 1)]))],
+		[m4_eval($# > 3)], [1],
+			[$4],
+			[m4_eval([$3] - 1)])])
 
 
-dnl  nm4_define_substrings_as(string, regexp, macro0[, macro1[, ... macroN ]])
+dnl  n4_define_substrings_as(string, regexp, macro0[, macro1[, ... macroN ]])
 dnl  ***************************************************************************
 dnl
 dnl  Searches for the first match of `regexp` in `string` and defines custom
@@ -237,27 +220,30 @@ dnl  be defined as empty strings.
 dnl
 dnl  Example -- Get the current version string from a file named `VERSION`:
 dnl
-dnl      nm4_define_substrings_as(
-dnl          m4_include([VERSION]),
-dnl          [\([0-9]+\)\s*\.\s*\([0-9]+\)\s*\.\s*\([0-9]+\)],
+dnl      n4_define_substrings_as(
+dnl          m4_quote(m4_include([VERSION])),
+dnl          [\([0-9]+\)\.\([0-9]+\)\.\([0-9]+\)],
 dnl          [VERSION_STR], [VERSION_MAJ], [VERSION_MIN], [VERSION_REV]      
 dnl      )
-dnl      
 dnl      AC_INIT([foo], VERSION_MAJ[.]VERSION_MIN[.]VERSION_REV)
 dnl
 dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal (void)
 dnl  Requires: nothing
+dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
-m4_define([nm4_define_substrings_as],
-	[m4_if(m4_eval([$# > 2]), [1],
-		[m4_if(m4_normalize(m4_argn([$#], $*)), [], [],
-			[m4_bregexp([$1], [$2], [m4_define(m4_normalize(m4_argn([$#], $*)), \]m4_if([$#], [3], [&], m4_eval([$# - 3]))[)])])[]m4_if(m4_eval([$# > 3]), [1], [nm4_define_substrings_as(m4_reverse(m4_shift(m4_reverse($@))))])])])
+m4_define([n4_define_substrings_as],
+	[m4_bregexp([$1], [$2],
+		m4_if([$3], [], [],
+			[[m4_define([$3], [m4_quote(\&)])]])m4_if(m4_eval($# > 3), [1],
+			[m4_for([_idx_], [1], [$# - 3], [1],
+				[m4_if(m4_normalize(m4_argn(_idx_, m4_shift3($@))), [], [],
+					[[m4_define(m4_quote(m4_normalize(m4_argn(]_idx_[, m4_shift3($@)))), m4_quote(\]_idx_[))]])])]))])
 
 
-dnl  nm4_repeat(text, n_times)
+dnl  n4_repeat(n_times, text)
 dnl  ***************************************************************************
 dnl
 dnl  Repeats `text` `n_times`
@@ -265,22 +251,59 @@ dnl
 dnl  Every occurrence of `$#` within `text` will be replaced with the current
 dnl  index. For example,
 dnl
-dnl      nm4_repeat([foo $#...], [4])
+dnl      n4_repeat([4], [foo $#...])
 dnl
-dnl  will expand to:
+dnl  will expand to
 dnl
 dnl      foo 1...foo 2...foo 3...foo 4...
+dnl
+dnl  If `n4_repeat()` is invoked from within a macro body, `$#` will be replaced
+dnl  with higher priority with the current macro's number of arguments. For
+dnl  instance,
+dnl
+dnl      m4_define([print_foo], [n4_repeat([4], [foo $#...])])
+dnl      print_foo
+dnl
+dnl  will expand to
+dnl
+dnl      foo 0...foo 0...foo 0...foo 0...
+dnl
+dnl  Therefore, in order to inhibit the immediate expansion of `$#` it is
+dnl  necessary temporarily to break its components, as in the following example,
+dnl
+dnl      m4_define([print_foo], [n4_repeat([4], [foo ][$][#][...])])
+dnl      print_foo
+dnl
+dnl  which will finally expand to
+dnl
+dnl      foo 1...foo 2...foo 3...foo 4...
+dnl
+dnl  This applies also to macro calls. For example,
+dnl
+dnl      m4_define([even_numbers],
+dnl          [(0)n4_repeat([$1], [, m4_eval(][$][#][ * 2)])])
+dnl
+dnl      Even numbers: even_numbers([10]) ...
+dnl
+dnl  will expand to
+dnl
+dnl      Even numbers: (0), 2, 4, 6, 8, 10, 12, 14, 16, 18, 20 ...
+dnl
+dnl  However, for complex cases it is suggested to use `m4_for()`.
 dnl
 dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
-m4_define([nm4_repeat], [m4_if(m4_eval([$2] > 0), [1], [nm4_repeat([$1], m4_decr([$2]))]m4_bpatsubst([$1], [\$][#], [$2]))])
+m4_define([n4_repeat],
+	[m4_if(m4_eval([$1] > 0), [1],
+		[n4_repeat(m4_decr([$1]), [$2])[]m4_bpatsubst([$2], [\$][#], [$1])])])
 
 
-dnl  nm4_redepth(regexp)
+dnl  n4_redepth(regexp)
 dnl  ***************************************************************************
 dnl
 dnl  Examines a regular expression and returns the number of capturing
@@ -291,7 +314,7 @@ dnl  as `\[number]` during a replacement
 dnl
 dnl  For example,
 dnl
-dnl      nm4_redepth([\([0-9]+\)\.\([0-9]+\)\.\([0-9]+\)])
+dnl      n4_redepth([\([0-9]+\)\.\([0-9]+\)\.\([0-9]+\)])
 dnl
 dnl  expands to `3`.
 dnl
@@ -299,12 +322,14 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
-m4_define([nm4_redepth], [m4_len(m4_bpatsubst(m4_bpatsubst([$1], [\(\\\|)\|\([^\\]\|^\)\(\\\\\)*(\)\|\(\\\)(\|,], [\4]), [[^\\]], []))])
+m4_define([n4_redepth],
+	[m4_len(m4_bpatsubst(m4_bpatsubst([$1], [\(\\\|)\|\([^\\]\|^\)\(\\\\\)*(\)\|\(\\\)(\|,], [\4]), [[^\\]], []))])
 
 
-dnl  nm4_for_each_match(string, regexp, macro)
+dnl  n4_for_each_match(string, regexp, macro)
 dnl  ***************************************************************************
 dnl
 dnl  Calls the custom macro `macro` for every occurrence of `regexp` in `string`
@@ -315,8 +340,7 @@ dnl
 dnl  For example,
 dnl
 dnl      AC_DEFUN([custom_macro], [...foo $1|$2|$3|$4 bar])
-dnl      AC_MSG_NOTICE([nm4_for_each_match([blaablabblac],
-dnl          [\(b\(l\)\)\(a\)], [custom_macro])])
+dnl      AC_MSG_NOTICE([n4_for_each_match([blaablabblac], [\(b\(l\)\)\(a\)], [custom_macro])])
 dnl
 dnl  will print:
 dnl
@@ -325,15 +349,16 @@ dnl
 dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
-dnl  Requires: `nm4_redepth()` and `nm4_repeat()`
+dnl  Requires: `n4_redepth()`
+dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
-m4_define([nm4_for_each_match],
+m4_define([n4_for_each_match],
 	[m4_if(m4_bregexp([$1], [$2]), [-1], [],
-		[m4_bregexp([$1], [$2], [[]$3([\&]]nm4_repeat([[[,]] \]$[#], nm4_redepth([$2]))[)])[]nm4_for_each_match(m4_substr([$1], m4_eval(m4_bregexp([$1], [$2]) + m4_len(m4_bregexp([$1], [$2], [\&])))), [$2], [$3])])])
+		[m4_bregexp([$1], [$2], [[]$3([\&]]m4_quote(m4_for([_idx_], [1], m4_quote(n4_redepth([$2])), [1], [, \_idx_]))[)])[]n4_for_each_match(m4_substr([$1], m4_eval(m4_bregexp([$1], [$2]) + m4_len(m4_bregexp([$1], [$2], [\&])))), [$2], [$3])])])
 
 
-dnl  nm4_get_replacements(string, regexp, macro)
+dnl  n4_get_replacements(string, regexp, macro)
 dnl  ***************************************************************************
 dnl
 dnl  Replaces every occurrence of `regexp` in `string` with the text returned by
@@ -345,8 +370,7 @@ dnl
 dnl  For example,
 dnl
 dnl      AC_DEFUN([custom_macro], [XX$3])
-dnl      AC_MSG_NOTICE([nm4_get_replacements([hello you world!!],
-dnl          [\(l\|w\)+\(o\)], [custom_macro])])
+dnl      AC_MSG_NOTICE([n4_get_replacements([hello you world!!], [\(l\|w\)+\(o\)], [custom_macro])])
 dnl
 dnl  will print:
 dnl
@@ -355,17 +379,18 @@ dnl
 dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
-dnl  Requires: `nm4_redepth()` and `nm4_repeat()`
+dnl  Requires: `n4_redepth()`
+dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
-m4_define([nm4_get_replacements],
+m4_define([n4_get_replacements],
 	[m4_if(m4_bregexp([$1], [$2]), [-1], [$1],
-		[m4_bpatsubst([$1], [$2], [[]$3([\&]]nm4_repeat([[[,]] \]$[#], nm4_redepth([$2]))[)])])])
+		[m4_bpatsubst([$1], [$2], [[]$3([\&]]m4_quote(m4_for([_idx_], [1], m4_quote(n4_redepth([$2])), [1], [, \_idx_]))[)])])])
 
 
 
 dnl  ***************************************************************************
-dnl  Note:  The `nm4_` prefix (which stands for "Not M4") is used with the
+dnl  Note:  The `n4_` prefix (which stands for "Not m4") is used with the
 dnl         purpose of avoiding collisions with the default GNU M4sugar
 dnl         prefix `m4_`.
 dnl  ***************************************************************************

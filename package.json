@@ -1,0 +1,38 @@
+{
+	"name": "Not Autotools",
+	"version": "0.3.0",
+	"description": "A collection of awesome and self-documented M4-ish macros for GNU Autotools",
+	"homepage": "https://github.com/madmurphy/not-autotools",
+	"author": "madmurphy333@gmail.com",
+	"license": "LGPL-3.0",
+	"main": "not-autotools",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/madmurphy/not-autotools.git"
+	},
+	"dependencies": {
+		"m4": "*",
+		"autoconf": "*",
+	},
+	"src": [
+		"m4/not-automake.m4",
+		"m4/not-autoshell.m4",
+		"m4/not-autotools.m4",
+		"m4/not-m4sugar.m4",
+		"m4/not-misc.m4"
+	],
+	"bugs": {
+		"url": "https://github.com/madmurphy/not-autotools/issues",
+		"email" : "madmurphy333@gmail.com"
+	},
+	"keywords": [
+		"autotools",
+		"autoconf",
+		"automake",
+		"configure",
+		"m4",
+		"m4-library",
+		"m4-macros"
+	]
+}
+

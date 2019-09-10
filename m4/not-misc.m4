@@ -8,7 +8,7 @@ dnl        \_| \_/\___/ \__| \_| |_/\__,_|\__\___/ \__\___/ \___/|_|___/
 dnl
 dnl            A collection of useful m4-ish macros for GNU Autotools
 dnl
-dnl                                               -- Released under GNU LGPL3 --
+dnl                                                -- Released under GNU GPL3 --
 dnl
 dnl                                   https://github.com/madmurphy/not-autotools
 dnl  ***************************************************************************

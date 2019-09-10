@@ -8,7 +8,7 @@ dnl        \_| \_/\___/ \__| \_| |_/\__,_|\__\___/ \__\___/ \___/|_|___/
 dnl
 dnl            A collection of useful m4-ish macros for GNU Autotools
 dnl
-dnl                                               -- Released under GNU LGPL3 --
+dnl                                                -- Released under GNU GPL3 --
 dnl
 dnl                                   https://github.com/madmurphy/not-autotools
 dnl  ***************************************************************************
@@ -37,6 +37,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
 AC_DEFUN([NM_GET_AM_VAR], [m4_esyscmd_s([echo ${$1}])])
@@ -50,11 +51,12 @@ dnl  and returns a comma-separated list of their names
 dnl
 dnl  Example:
 dnl
-dnl      AC_MSG_NOTICE([This package has been distributed by ]m4_if(nm4_in([USER], [NM_ENVIRONMENT_KEYS]), [1],
-dnl          [NM_GET_AM_VAR([USER])],
-dnl          [unknown]))
+dnl      AC_MSG_NOTICE([This package has been distributed by n4_case_in([USER],
+dnl      	[NM_ENVIRONMENT_KEYS],
+dnl      		[NM_GET_AM_VAR([USER])],
+dnl      		[unknown])])
 dnl
-dnl  For the `nm4_in()` macro, see `not-m4sugar.m4`.
+dnl  For the `n4_case_in()` macro, see `not-m4sugar.m4`.
 dnl
 dnl  Note that `automake` runs at a different time (and often even on a
 dnl  different computer) than the `configure` script.
@@ -69,14 +71,25 @@ dnl
 dnl  See:
 dnl  https://www.gnu.org/software/autoconf/manual/autoconf-2.69/html_node/Looping-constructs.html
 dnl
+dnl  This macro makes a system call the first time it is invoked, then
+dnl  overwrites itself with the literal list of the environment keys received,
+dnl  so that any further access to the list will rely on a cache and not anymore
+dnl  on system calls. If you want to force further system calls after the first
+dnl  access you can use:
+dnl
+dnl      m4_popdef([NM_ENVIRONMENT_KEYS])
+dnl      NM_ENVIRONMENT_KEYS
+dnl
 dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
 AC_DEFUN([NM_ENVIRONMENT_KEYS],
-	[m4_esyscmd([printenv | sed 's/^\([^=]\+\)=.*$/[\1],/g' | tr '\n' ' ' | sed 's/,\s$//'])])
+	[m4_pushdef([NM_ENVIRONMENT_KEYS],
+		m4_quote(m4_esyscmd([printenv | sed 's/^\([^=]\+\)=.*$/[\1],/g' | tr '\n' ' ' | sed 's/,\s*$//'])))[]NM_ENVIRONMENT_KEYS])
 
 
 dnl  NM_LOAD_ENVIRONMENT
@@ -103,13 +116,11 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal (void)
 dnl  Requires: nothing
+dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
-AC_DEFUN_ONCE([NM_LOAD_ENVIRONMENT], [
-	m4_changequote([{{<<], [>>}}])
-	m4_esyscmd(printenv | sed 's/^\([^=]\+\)=\(.*\)$/{{<<m4_define({{<<AME_\1>>}}, {{<<\2>>}})d][n][l>>}}/g')
-	m4_changequote({{<<[>>}}, {{<<]>>}})
-])
+AC_DEFUN_ONCE([NA_LOAD_AM_ENVIRONMENT], 
+	[m4_esyscmd_s([echo "m4_changequote([{{<<], [>>}}]){{<<>>}}$(printenv | sed 's/^\([^=]\+\)=\(.*\)$/m4_define({{<<AME_\1>>}}, {{<<\2>>}})/g'){{<<>>}}m4_changequote({{<<[>>}}, {{<<]>>}})"])])
 
 
 dnl  ***************************************************************************

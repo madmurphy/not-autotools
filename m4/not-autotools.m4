@@ -8,7 +8,7 @@ dnl        \_| \_/\___/ \__| \_| |_/\__,_|\__\___/ \__\___/ \___/|_|___/
 dnl
 dnl            A collection of useful m4-ish macros for GNU Autotools
 dnl
-dnl                                               -- Released under GNU LGPL3 --
+dnl                                                -- Released under GNU GPL3 --
 dnl
 dnl                                   https://github.com/madmurphy/not-autotools
 dnl  ***************************************************************************
@@ -38,6 +38,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
 m4_define([NA_UP_WORDS_ONLY],
@@ -63,6 +64,7 @@ dnl  This macro can be invoked only after having invoked `AC_INIT()`
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
 AC_DEFUN([NA_SET_GLOBALLY], [
@@ -88,6 +90,7 @@ dnl  This macro can be invoked only after having invoked `AC_INIT()`
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_UP_WORDS_ONLY()`
+dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
 AC_DEFUN([NA_GET_PROGS], [
@@ -125,6 +128,7 @@ dnl  This macro can be invoked only after having invoked `AC_INIT()`
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_UP_WORDS_ONLY()`
+dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
 AC_DEFUN([NA_REQ_PROGS], [

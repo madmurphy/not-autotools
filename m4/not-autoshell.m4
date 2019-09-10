@@ -8,7 +8,7 @@ dnl        \_| \_/\___/ \__| \_| |_/\__,_|\__\___/ \__\___/ \___/|_|___/
 dnl
 dnl            A collection of useful m4-ish macros for GNU Autotools
 dnl
-dnl                                               -- Released under GNU LGPL3 --
+dnl                                                -- Released under GNU GPL3 --
 dnl
 dnl                                   https://github.com/madmurphy/not-autotools
 dnl  ***************************************************************************
@@ -37,6 +37,7 @@ dnl  This macro can be invoked only after having invoked `AC_INIT()`
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
 AC_DEFUN([NS_SETVAR], [$1=$2])
@@ -58,6 +59,7 @@ dnl  This macro can be invoked only after having invoked `AC_INIT()`
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
 AC_DEFUN([NS_GETVAR], [@S|@{$1}])
@@ -83,6 +85,7 @@ dnl  This macro can be invoked only after having invoked `AC_INIT()`
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
 AC_DEFUN([NS_GETOUT], [@S|@@{:@$1@:}@])
