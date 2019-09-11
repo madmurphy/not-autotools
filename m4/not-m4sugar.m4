@@ -8,7 +8,7 @@ dnl        \_| \_/\___/ \__| \_| |_/\__,_|\__\___/ \__\___/ \___/|_|___/
 dnl
 dnl            A collection of useful m4-ish macros for GNU Autotools
 dnl
-dnl                                               -- Released under GNU LGPL3 --
+dnl                                                -- Released under GNU GPL3 --
 dnl
 dnl                                   https://github.com/madmurphy/not-autotools
 dnl  ***************************************************************************
@@ -53,12 +53,16 @@ dnl          [[jack], [charlie]],
 dnl              [Offensive release],
 dnl              [Unofficial release])
 dnl
+dnl  `n4_case_in()` has been designed to behave like `m4_case()` when a simple
+dnl  string is passed instead of a list.
+dnl
 dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: Autoconf >= 2.62: for the `m4_cond()` macro -- see:
 dnl  https://www.gnu.org/software/autoconf/manual/autoconf-2.62/html_node/Conditional-constructs.html
 dnl  Author: madmurphy
+dnl  Further reading: https://www.gnu.org/software/autoconf/manual/autoconf-2.69/html_node/Conditional-constructs.html#index-m4_005fcase-1363
 dnl
 dnl  ***************************************************************************
 m4_define([n4_case_in],
@@ -98,6 +102,10 @@ dnl  will print
 dnl
 dnl      {one}{two}{three}{four}
 dnl
+dnl  Alternatively you can use the `$0` shortcut, which expands to `n4_anon`:
+dnl
+dnl      AC_MSG_NOTICE([n4_lambda([{$1}m4_if(m4_eval($# > 1), [1], [$0(m4_shift($*))])])([one], [two], [three], [four])])
+dnl
 dnl  The `n4_anon` keyword is available only from within the lambda macro body
 dnl  and works in a stack-like fashion. Do not attempt to redefine it yourself.
 dnl
@@ -105,9 +113,9 @@ dnl  Lambda macros can be nested within each other:
 dnl
 dnl      n4_lambda([Hi there! n4_lambda([This is a nested lambda macro!])])
 dnl
-dnl  However, as with any other type of macro, reading the arguments of a
-dnl  nested macro might be difficult. Consider for example the following
-dnl  code snippet:
+dnl  However, as with any other type of macro, reading the arguments of a nested
+dnl  lambda macro might be difficult. Consider for example the following code
+dnl  snippet:
 dnl
 dnl      n4_lambda([Hi there! Here it's $1! n4_lambda([And here it's $1!])([Charlie])])([Rose])
 dnl
@@ -116,49 +124,55 @@ dnl
 dnl      Hi there! Here it's Rose! And here it's Rose!
 dnl
 dnl  This is because `$1` gets replaced with `Rose` before the nested macro's
-dnl  arguments can expand. The only way to prevent this is to declare the nested
-dnl  macro out of quotes, so that the expansion of its arguments precedes that
-dnl  of its parent's. Hence,
+dnl  arguments can expand. The only way to prevent this is to delay the
+dnl  composition of `$` and `1`, so that the expansion of the argument happens
+dnl  at a later time. Hence,
 dnl
-dnl      n4_lambda([Hi there! Here it's $1! ]n4_lambda([And here it's $1!])([Charlie]))([Rose])
+dnl      n4_lambda([Hi there! Here it's $1! n4_lambda([And here it's ][$][1][!])([Charlie])])([Rose])
 dnl
 dnl  will finally print:
 dnl
 dnl      Hi there! Here it's Rose! And here it's Charlie!
 dnl
+dnl  This applies also to other argument notations, such as `$#`, `$*` and `#@`.
+dnl
 dnl  There is no particular limit in the level of nesting reachable, except good
-dnl  coding practices. As an extreme example, consider the following snippet
-dnl  (the atypical M4 indentation is only for didactic purpose):
+dnl  coding practices. As an extreme example, consider the following snippet,
+dnl  consisting in three lambda macros nested within each other, whose innermost
+dnl  one is also recursive (the atypical M4 indentation is only for clarity):
 dnl
 dnl      # Let's use `L()` as a shortcut for `n4_lambda()`...
 dnl      m4_define([L], m4_defn([n4_lambda]))
 dnl
-dnl      L(
-dnl          [This is $1]
-dnl          L(
-dnl              [This is $1]
-dnl              L(
-dnl                  [{$1}m4_ifelse(m4_eval($# > 1), [1], [n4_anon(m4_shift($*))])]
-dnl              )([internal one], [internal two], [internal three], [internal four])
-dnl          )([central])
-dnl      )([external])
+dnl      L([
+dnl          This is $1 L([
+dnl              This is ][$][1][ L([
+dnl                  {][$][1][}m4_if(m4_eval(][$][#][ > 1), [1],
+dnl                      [n4_anon(m4_shift(]m4_quote(][$][*][)[))])
+dnl                  ])([internal-1], [internal-2], [internal-3], [internal-4])
+dnl              ])([central])
+dnl      ])([external])
 dnl
 dnl  The example above will print something like this (plus some trailing spaces
 dnl  due to the bad indentation):
 dnl
-dnl      This is external
-dnl          This is central
-dnl              {internal one}{internal two}{internal three}{internal four}
+dnl      This is external 
+dnl          This is central 
+dnl              {internal-1}
+dnl              {internal-2}
+dnl              {internal-3}
+dnl              {internal-4}
 dnl
 dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
 dnl  Author: madmurphy
+dnl  Further reading: https://www.gnu.org/software/m4/manual/m4-1.4.18/html_node/Composition.html
 dnl
 dnl  ***************************************************************************
 m4_define([n4_lambda],
-	[m4_define([_n4_anon_orig], [$1])[]m4_define([_n4_anon_init], [m4_pushdef([n4_anon], m4_defn([_n4_anon_orig]))[]m4_undefine([_n4_anon_orig])[]m4_undefine([_n4_anon_init])[]$1[]m4_popdef([n4_anon])])[]_n4_anon_init])
+	[m4_pushdef([n4_anon], [$1])[]m4_pushdef([n4_anon], [m4_popdef([n4_anon])[]$1[]m4_popdef([n4_anon])])[]n4_anon])
 
 
 dnl  n4_list_index(list, target, [add-to-return-value], [if-not-found])

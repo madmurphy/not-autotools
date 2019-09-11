@@ -2,6 +2,15 @@ Change Log
 ==========
 
 
+0.3.1
+-----
+
+Changes:
+
+* Implementation of macro `n4_lambda()` has been simplified
+* Documentation
+
+
 0.3.0
 -----
 
