@@ -2,6 +2,18 @@ Change Log
 ==========
 
 
+0.3.2
+-----
+
+Changes:
+
+* Macro † `NA_UP_WORDS_ONLY()` in `not-autotools.m4` has been renamed to
+  `NA_SANITIZE_VARNAME()` and prevented from doing case transformations
+* Code review (macros `NA_GET_PROGS()` and `NA_REQ_PROGS()` in
+  `not-autotools.m4`)
+* Documentation
+
+
 0.3.1
 -----
 

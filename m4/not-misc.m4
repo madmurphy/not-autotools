@@ -79,6 +79,7 @@ AC_DEFUN_ONCE([NM_SET_VERSION_ENVIRONMENT], [
 ])
 
 
+
 dnl  ***************************************************************************
 dnl  Note:  The `NM_` prefix (which stands for "Not autoMake") is used with the
 dnl         purpose of avoiding collisions with the default Autotools prefixes

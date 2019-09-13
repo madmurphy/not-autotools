@@ -119,8 +119,9 @@ dnl  Requires: nothing
 dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
-AC_DEFUN_ONCE([NA_LOAD_AM_ENVIRONMENT], 
+AC_DEFUN_ONCE([NM_LOAD_ENVIRONMENT], 
 	[m4_esyscmd_s([echo "m4_changequote([{{<<], [>>}}]){{<<>>}}$(printenv | sed 's/^\([^=]\+\)=\(.*\)$/m4_define({{<<AME_\1>>}}, {{<<\2>>}})/g'){{<<>>}}m4_changequote({{<<[>>}}, {{<<]>>}})"])])
+
 
 
 dnl  ***************************************************************************

@@ -21,18 +21,19 @@ dnl  ***************************************************************************
 
 
 
-dnl  NA_UP_WORDS_ONLY(string)
+dnl  NA_SANITIZE_VARNAME(string)
 dnl  ***************************************************************************
 dnl
-dnl  Replaces `/[a-z]/g` with `/[A-Z]/g` and `/\W/g,` with `'_'`
+dnl  Replaces `/\W/g,` with `'_'` and `/^\d/` with `_\0`
 dnl
-dnl  Useful for sanitizing strings that need to be used as shell variable names.
+dnl  Useful for sanitizing strings that need to be used as variable names in
+dnl  several programming languages (Bash, C, JavaScript, etc.).
 dnl
 dnl  For example,
 dnl
-dnl      AC_MSG_NOTICE([NA_UP_WORDS_ONLY([an.invalid-variable_name])])
+dnl      AC_MSG_NOTICE([NA_SANITIZE_VARNAME([an.invalid-variable_name])])
 dnl
-dnl  will print `AN_INVALID_VARIABLE_NAME`.
+dnl  will print `an_invalid_variable_name`.
 dnl
 dnl  This macro can be invoked before `AC_INIT()`.
 dnl
@@ -41,23 +42,23 @@ dnl  Requires: nothing
 dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
-m4_define([NA_UP_WORDS_ONLY],
-	[m4_translit([$1],
-		[ !"#$%&\'()*+,-./0123456789:;<=>?@[\\]^`abcdefghijklmnopqrstuvwxyz{|}~],
-		[________________________________________ABCDEFGHIJKLMNOPQRSTUVWXYZ____])])
+m4_define([NA_SANITIZE_VARNAME],
+	[m4_if(m4_bregexp([$1], [[0-9]]), [0], [_])[]m4_translit([$1],
+		[ !"#$%&\'()*+,-./:;<=>?@[\\]^`{|}~],
+		[__________________________________])])([$1])])
 
 
 dnl  NA_SET_GLOBALLY(name, value)
 dnl  ***************************************************************************
 dnl
-dnl  Creates a new argumentless macro named `[CM_]name` (where the `CM_` prefix
-dnl  stands for "Custom Macro") and a new output substitution named `name`, both
-dnl  expanding to `value` when invoked
+dnl  Creates a new argumentless macro named `[GL_]name` (where the `GL_` prefix
+dnl  stands for "Global Literal") and a new output substitution named `name`,
+dnl  both expanding to `value` when invoked
 dnl
 dnl  For example:
 dnl
 dnl      NA_SET_GLOBALLY([PACKAGE_DESCRIPTION], [Some description])
-dnl      AC_MSG_NOTICE([Package description: ]CM_PACKAGE_DESCRIPTION)
+dnl      AC_MSG_NOTICE([Package description: ]GL_PACKAGE_DESCRIPTION)
 dnl      AC_MSG_NOTICE([Package description: ${PACKAGE_DESCRIPTION}])
 dnl
 dnl  This macro can be invoked only after having invoked `AC_INIT()`
@@ -68,7 +69,7 @@ dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
 AC_DEFUN([NA_SET_GLOBALLY], [
-	m4_define([CM_$1], [$2])
+	m4_define([GL_$1], [$2])
 	AC_SUBST([$1], ['$2'])
 ])
 
@@ -89,15 +90,15 @@ dnl
 dnl  This macro can be invoked only after having invoked `AC_INIT()`
 dnl
 dnl  Expansion type: shell code
-dnl  Requires: `NA_UP_WORDS_ONLY()`
+dnl  Requires: `NA_SANITIZE_VARNAME()`
 dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
 AC_DEFUN([NA_GET_PROGS], [
 	m4_if([$#], [0], [], [
-		AC_PATH_PROG(NA_UP_WORDS_ONLY([$1]), [$1])
-		AS_IF([test "x@S|@{]NA_UP_WORDS_ONLY([$1])[}" = x], [AC_MSG_ERROR([$1 utility not found])])
-		m4_if(m4_eval([$# > 1]), [1], [NA_GET_PROGS(m4_shift($*))])
+		AC_PATH_PROG(m4_toupper(NA_SANITIZE_VARNAME([$1])), [$1])
+		AS_IF([test "x@S|@{]m4_toupper(NA_SANITIZE_VARNAME([$1]))[}" = x], [AC_MSG_ERROR([$1 utility not found])])
+		m4_if(m4_eval([$# > 1]), [1], [NA_GET_PROGS(m4_shift($@))])
 	])
 ])
 
@@ -127,18 +128,18 @@ dnl
 dnl  This macro can be invoked only after having invoked `AC_INIT()`
 dnl
 dnl  Expansion type: shell code
-dnl  Requires: `NA_UP_WORDS_ONLY()`
+dnl  Requires: `NA_SANITIZE_VARNAME()`
 dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
 AC_DEFUN([NA_REQ_PROGS], [
 	m4_if([$#], [0], [], [
-		AC_ARG_VAR(NA_UP_WORDS_ONLY([$1]), [$2])
-		AS_IF([test "x@S|@{]NA_UP_WORDS_ONLY([$1])[}" = x], [
-			AC_PATH_PROG(NA_UP_WORDS_ONLY([$1]), [$1])
-			AS_IF([test "x@S|@{]NA_UP_WORDS_ONLY([$1])[}" = x], [AC_MSG_ERROR([$1 utility not found])])
+		AC_ARG_VAR(m4_toupper(NA_SANITIZE_VARNAME([$1])), [$2])
+		AS_IF([test "x@S|@{]m4_toupper(NA_SANITIZE_VARNAME([$1]))[}" = x], [
+			AC_PATH_PROG(m4_toupper(NA_SANITIZE_VARNAME([$1])), [$1])
+			AS_IF([test "x@S|@{]m4_toupper(NA_SANITIZE_VARNAME([$1]))[}" = x], [AC_MSG_ERROR([$1 utility not found])])
 		])
-		m4_if(m4_eval([$# + 1 >> 1]), [1], [], [NA_REQ_PROGS(m4_shift2($*))])
+		m4_if(m4_eval([$# + 1 >> 1]), [1], [], [NA_REQ_PROGS(m4_shift2($@))])
 	])
 ])
 

@@ -185,7 +185,7 @@ dnl  For example,
 dnl
 dnl      n4_list_index([[foo], [bar], [hello]], [bar])
 dnl
-dnl  expands to `2`.
+dnl  expands to `1`.
 dnl
 dnl  If the `add-to-return-value` argument is expressed (this accepts only
 dnl  numbers, both positive and negative), it will be added to the returned
@@ -251,7 +251,7 @@ dnl  ***************************************************************************
 m4_define([n4_define_substrings_as],
 	[m4_bregexp([$1], [$2],
 		m4_if([$3], [], [],
-			[[m4_define([$3], [m4_quote(\&)])]])m4_if(m4_eval($# > 3), [1],
+			[[m4_define([$3], [m4_quote(\&)])]])[]m4_if(m4_eval($# > 3), [1],
 			[m4_for([_idx_], [1], [$# - 3], [1],
 				[m4_if(m4_normalize(m4_argn(_idx_, m4_shift3($@))), [], [],
 					[[m4_define(m4_quote(m4_normalize(m4_argn(]_idx_[, m4_shift3($@)))), m4_quote(\]_idx_[))]])])]))])
