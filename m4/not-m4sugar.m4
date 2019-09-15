@@ -66,13 +66,13 @@ dnl  Further reading: https://www.gnu.org/software/autoconf/manual/autoconf-2.69
 dnl
 dnl  ***************************************************************************
 m4_define([n4_case_in],
-	[m4_cond([m4_eval($# < 2)], [1],
+	[m4_cond([m4_eval([$# < 2])], [1],
 			[],
-		[m4_argn(1, $2)], [$1],
+		[m4_argn([1], $2)], [$1],
 			[$3],
-		[m4_eval(m4_count($2) > 1)], [1],
+		[m4_eval(m4_count($2)[ > 1])], [1],
 			[n4_case_in([$1], m4_dquote(m4_shift($2)), m4_shift2($@))],
-		[m4_eval($# > 4)], [1],
+		[m4_eval([$# > 4])], [1],
 			[n4_case_in([$1], m4_shift3($@))],
 			[$4])])
 
@@ -205,15 +205,15 @@ dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
 m4_define([n4_list_index],
-	[m4_cond([m4_eval($# < 2)], [1],
+	[m4_cond([m4_eval([$# < 2])], [1],
 			[-1],
 		[m4_argn(1, $1)], [$2],
-			[m4_eval([$3] + 0)],
-		[m4_eval(m4_count($1) > 1)], [1],
-			[n4_list_index(m4_dquote(m4_shift($1)), [$2], m4_eval([$3] + 1), m4_if(m4_eval($# > 3), [1], [$4], [m4_eval([$3] - 1)]))],
-		[m4_eval($# > 3)], [1],
+			[m4_eval([$3 + 0])],
+		[m4_eval(m4_count($1)[ > 1])], [1],
+			[n4_list_index(m4_dquote(m4_shift($1)), [$2], m4_eval([$3 + 1]), m4_if(m4_eval([$# > 3]), [1], [$4], [m4_eval([$3 - 1])]))],
+		[m4_eval([$# > 3])], [1],
 			[$4],
-			[m4_eval([$3] - 1)])])
+			[m4_eval([$3 - 1])])])
 
 
 dnl  n4_define_substrings_as(string, regexp, macro0[, macro1[, ... macroN ]])
@@ -251,10 +251,10 @@ dnl  ***************************************************************************
 m4_define([n4_define_substrings_as],
 	[m4_bregexp([$1], [$2],
 		m4_if([$3], [], [],
-			[[m4_define([$3], [m4_quote(\&)])]])[]m4_if(m4_eval($# > 3), [1],
+			[[m4_define(m4_normalize([$3]), [m4_quote(\&)])]])[]m4_if(m4_eval([$# > 3]), [1],
 			[m4_for([_idx_], [1], [$# - 3], [1],
 				[m4_if(m4_normalize(m4_argn(_idx_, m4_shift3($@))), [], [],
-					[[m4_define(m4_quote(m4_normalize(m4_argn(]_idx_[, m4_shift3($@)))), m4_quote(\]_idx_[))]])])]))])
+					[[m4_define(m4_normalize(m4_argn(]_idx_[, m4_shift3($@))), m4_quote(\]_idx_[))]])])]))])
 
 
 dnl  n4_repeat(n_times, text)
@@ -313,7 +313,7 @@ dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
 m4_define([n4_repeat],
-	[m4_if(m4_eval([$1] > 0), [1],
+	[m4_if(m4_eval([$1 > 0]), [1],
 		[n4_repeat(m4_decr([$1]), [$2])[]m4_bpatsubst([$2], [\$][#], [$1])])])
 
 
@@ -369,7 +369,7 @@ dnl
 dnl  ***************************************************************************
 m4_define([n4_for_each_match],
 	[m4_if(m4_bregexp([$1], [$2]), [-1], [],
-		[m4_bregexp([$1], [$2], [[]$3([\&]]m4_quote(m4_for([_idx_], [1], m4_quote(n4_redepth([$2])), [1], [, \_idx_]))[)])[]n4_for_each_match(m4_substr([$1], m4_eval(m4_bregexp([$1], [$2]) + m4_len(m4_bregexp([$1], [$2], [\&])))), [$2], [$3])])])
+		[m4_bregexp([$1], [$2], [[]$3([\&]]m4_quote(m4_for([_idx_], [1], n4_redepth([$2]), [1], [, \_idx_]))[)])[]n4_for_each_match(m4_substr([$1], m4_eval(m4_bregexp([$1], [$2]) + m4_len(m4_bregexp([$1], [$2], [\&])))), [$2], [$3])])])
 
 
 dnl  n4_get_replacements(string, regexp, macro)
@@ -399,7 +399,7 @@ dnl
 dnl  ***************************************************************************
 m4_define([n4_get_replacements],
 	[m4_if(m4_bregexp([$1], [$2]), [-1], [$1],
-		[m4_bpatsubst([$1], [$2], [[]$3([\&]]m4_quote(m4_for([_idx_], [1], m4_quote(n4_redepth([$2])), [1], [, \_idx_]))[)])])])
+		[m4_bpatsubst([$1], [$2], [[]$3([\&]]m4_quote(m4_for([_idx_], [1], n4_redepth([$2]), [1], [, \_idx_]))[)])])])
 
 
 

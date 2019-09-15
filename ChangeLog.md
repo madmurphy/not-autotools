@@ -2,6 +2,19 @@ Change Log
 ==========
 
 
+0.4.0
+-----
+
+Changes:
+
+* Macro `NA_SET_GLOBALLY()` in `not-autotools.m4` has been made variadic
+* Code review (macros `NA_GET_PROGS()`, `NA_REQ_PROGS()` and
+  `NA_SANITIZE_VARNAME()` in `not-autotools.m4`; macros `n4_case_in()`,
+  `n4_define_substrings_as()`, `n4_for_each_match()`, `n4_get_replacements()`,
+  `n4_list_index()` and `n4_repeat()` in `not-m4sugar.m4`)
+* Documentation
+
+
 0.3.2
 -----
 
