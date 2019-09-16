@@ -24,7 +24,7 @@ dnl  ***************************************************************************
 dnl  NA_SANITIZE_VARNAME(string)
 dnl  ***************************************************************************
 dnl
-dnl  Replaces `/\W/g,` with `'_'` and `/^\d/` with `_\0`
+dnl  Replaces `/\W/g,` with `'_'` and `/^\d/` with `V$0`
 dnl
 dnl  Useful for sanitizing strings that need to be used as variable names in
 dnl  several programming languages (Bash, C, JavaScript, etc.).
@@ -35,6 +35,9 @@ dnl      AC_MSG_NOTICE([NA_SANITIZE_VARNAME([an.invalid-variable_name])])
 dnl
 dnl  will print `an_invalid_variable_name`.
 dnl
+dnl  If `string` begins with a number, an upper case letter `V` will be appended
+dnl  before the latter (e.g.: `NA_SANITIZE_VARNAME([0123FOO])` => `V0123FOO`).
+dnl
 dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
@@ -43,36 +46,9 @@ dnl  Author: madmurphy
 dnl
 dnl  ***************************************************************************
 AC_DEFUN([NA_SANITIZE_VARNAME],
-	[m4_if(m4_bregexp(m4_normalize([$1]), [[0-9]]), [0], [_])[]m4_translit(m4_normalize([$1]),
+	[m4_if(m4_bregexp(m4_normalize([$1]), [[0-9]]), [0], [V])[]m4_translit(m4_normalize([$1]),
 		[ !"#$%&\'()*+,-./:;<=>?@[\\]^`{|}~],
 		[__________________________________])])
-
-
-dnl  NA_SET_GLOBALLY(name1, [value1][, name2, [value2][, ... nameN, [valueN]]])
-dnl  ***************************************************************************
-dnl
-dnl  For each `nameN`-`valueN` pair, creates a new argumentless macro named
-dnl  `[GL_]nameN` (where the `GL_` prefix stands for "Global Literal") and a new
-dnl  output substitution named `nameN`, both expanding to `valueN` when invoked
-dnl
-dnl  For example:
-dnl
-dnl      NA_SET_GLOBALLY([PROJECT_DESCRIPTION], [Some description], [COPYLEFT], [GNU])
-dnl      AC_MSG_NOTICE([Package copyleft: ]GL_COPYLEFT)
-dnl      AC_MSG_NOTICE([Package copyleft: ${COPYLEFT}])
-dnl
-dnl  This macro can be invoked only after having invoked `AC_INIT()`
-dnl
-dnl  Expansion type: shell code
-dnl  Requires: `NA_SANITIZE_VARNAME()`
-dnl  Author: madmurphy
-dnl
-dnl  ***************************************************************************
-AC_DEFUN([NA_SET_GLOBALLY], [
-	m4_define([GL_]NA_SANITIZE_VARNAME([$1]), m4_normalize([$2]))
-	AC_SUBST(NA_SANITIZE_VARNAME([$1]), ['GL_]NA_SANITIZE_VARNAME([$1])['])
-	m4_if(m4_eval([$# > 2]), [1], [NA_SET_GLOBALLY(m4_shift2($@))])
-])
 
 
 dnl  NA_GET_PROGS(prog1[, prog2, [prog3[, ... progN ]]])
@@ -142,6 +118,39 @@ AC_DEFUN([NA_REQ_PROGS], [
 		AS_IF([test "x@S|@{]m4_toupper(NA_SANITIZE_VARNAME([$1]))[}" = x], [AC_MSG_ERROR([$1 utility not found])])
 	])
 	m4_if(m4_eval([$# > 2]), [1], [NA_REQ_PROGS(m4_shift2($@))])
+])
+
+
+dnl  NA_SET_GLOBALLY(name1, [value1][, name2, [value2][, ... nameN, [valueN]]])
+dnl  ***************************************************************************
+dnl
+dnl  For each `nameN`-`valueN` pair, creates a new argumentless macro named
+dnl  `[GL_]nameN` (where the `GL_` prefix stands for "Global Literal") and a new
+dnl  output substitution named `nameN`, both expanding to `valueN` when invoked
+dnl
+dnl  For example:
+dnl
+dnl      NA_SET_GLOBALLY(
+dnl          [PROJECT_DESCRIPTION],  [Some description],
+dnl          [COPYLEFT],             [GNU]
+dnl      )
+dnl      AC_MSG_NOTICE([Package copyleft: ]GL_COPYLEFT)
+dnl      AC_MSG_NOTICE([Package copyleft: ${COPYLEFT}])
+dnl
+dnl  Each argument can safely contain any arbitrary character, however all the
+dnl  `nameN` arguments will be processed by `NA_SANITIZE_VARNAME()`.
+dnl
+dnl  This macro can be invoked only after having invoked `AC_INIT()`
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: `NA_SANITIZE_VARNAME()`
+dnl  Author: madmurphy
+dnl
+dnl  ***************************************************************************
+AC_DEFUN([NA_SET_GLOBALLY], [
+	m4_define([GL_]NA_SANITIZE_VARNAME([$1]), m4_normalize([$2]))
+	AC_SUBST(NA_SANITIZE_VARNAME([$1]), ['m4_bpatsubst(m4_normalize([$2]), ['], ['\\''])'])
+	m4_if(m4_eval([$# > 2]), [1], [NA_SET_GLOBALLY(m4_shift2($@))])
 ])
 
 

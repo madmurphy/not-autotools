@@ -1,11 +1,10 @@
 {
 	"name": "Not Autotools",
-	"version": "0.4.0",
+	"version": "0.5.0",
 	"description": "A collection of awesome and self-documented M4-ish macros for GNU Autotools",
 	"homepage": "https://github.com/madmurphy/not-autotools",
 	"author": "madmurphy333@gmail.com",
 	"license": "GPL-3.0",
-	"main": "m4/*.m4",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/madmurphy/not-autotools.git"

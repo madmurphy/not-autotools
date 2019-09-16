@@ -106,8 +106,9 @@ dnl  Alternatively you can use the `$0` shortcut, which expands to `n4_anon`:
 dnl
 dnl      AC_MSG_NOTICE([n4_lambda([{$1}m4_if(m4_eval($# > 1), [1], [$0(m4_shift($*))])])([one], [two], [three], [four])])
 dnl
-dnl  The `n4_anon` keyword is available only from within the lambda macro body
-dnl  and works in a stack-like fashion. Do not attempt to redefine it yourself.
+dnl  The `n4_anon` keyword is available only from within the lambda macro body,
+dnl  works in a stack-like fashion and is fully reentrant. Do not attempt to
+dnl  redefine it yourself.
 dnl
 dnl  Lambda macros can be nested within each other:
 dnl
@@ -400,6 +401,48 @@ dnl  ***************************************************************************
 m4_define([n4_get_replacements],
 	[m4_if(m4_bregexp([$1], [$2]), [-1], [$1],
 		[m4_bpatsubst([$1], [$2], [[]$3([\&]]m4_quote(m4_for([_idx_], [1], n4_redepth([$2]), [1], [, \_idx_]))[)])])])
+
+
+dnl  n4_burn_out(string1[, string2[, ... stringN]])
+dnl  ***************************************************************************
+dnl
+dnl  Recursive and variadic version of `m4_expand()`
+dnl
+dnl  The strings passed as arguments will be expanded and stripped of all their
+dnl  quotes until there will be no more expansions left.
+dnl
+dnl  For example,
+dnl
+dnl      m4_define([WTF], [a test])
+dnl      n4_burn_out([[[[[This is [[[WTF]]]. Bye!]]]]])
+dnl
+dnl  expands to:
+dnl
+dnl      This is a test. Bye!
+dnl
+dnl  As with `m4_expand()`, in order to preserve the spaces that follow a comma,
+dnl  after all possible expansions have been burned out a layer of quotes is
+dnl  added to the final string returned. If you want to remove it, please use
+dnl  `m4_unquote()`. The following examples illustrate it:
+dnl
+dnl      n4_burn_out([Hi, how [[[[are]]]] [[you]]?])
+dnl          => Hi, how are you?
+dnl
+dnl      m4_count(n4_burn_out([Hi, how [[[[are]]]] [[you]]?]))
+dnl          => 1
+dnl
+dnl      m4_count(m4_unquote(n4_burn_out([Hi, how [[[[are]]]] [[you]]?])))
+dnl          => 2
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  ***************************************************************************
+m4_define([n4_burn_out],
+	[m4_pushdef([_tmp_], m4_dquote(m4_expand(m4_expand([$*]))))[]m4_if(($*), (_tmp_), [_tmp_[]m4_popdef([_tmp_])], [n4_burn_out(_tmp_[]m4_popdef([_tmp_]))])])
 
 
 

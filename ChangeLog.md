@@ -2,6 +2,17 @@ Change Log
 ==========
 
 
+0.5.0
+-----
+
+Changes:
+
+* New macro `n4_burn_out()`  has been created in `not-m4sugar.m4`
+* Code review (macro `NM_LOAD_ENVIRONMENT()` in `not-automake.m4`, macro
+  `NA_SET_GLOBALLY()` in `not-autotools.m4`)
+* Documentation
+
+
 0.4.0
 -----
 
@@ -71,7 +82,7 @@ Changes:
 * Library file `not-m4.m4` has been renamed to `not-m4sugar.m4`
 * New macros `nm4_case()`, `nm4_in()`, `nm4_in_args()`, `nm4_lambda()`,
   `nm4_switch()` and `nm4_unlambda` have been created in `not-m4sugar.m4`
-* New macros `NM_ENVIRONMENT_KEYS` , `NM_GET_AM_VAR()` and `NM_LOAD_ENVIRONMENT`
+* New macros `NM_ENVIRONMENT_KEYS`, `NM_GET_AM_VAR()` and `NM_LOAD_ENVIRONMENT`
   have been created in `not-automake.m4`
 * New macros `NS_GETOUT()`, `NS_GETVAR()` and `NS_SETVAR()` have been created in
   `not-autoshell.m4`
