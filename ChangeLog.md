@@ -2,6 +2,31 @@ Change Log
 ==========
 
 
+0.6.0
+-----
+
+Changes:
+
+* New library files `not-ac-messages.m4`, `not-extended-config.m4` and
+  `not-utf8.m4` have been created, containing the following new macros:
+  `NC_MSG_ERRORBOX()`, `NC_MSG_FAILUREBOX()`, `NC_MSG_NOTICEBOX()` and
+  `NC_MSG_WARNBOX()` (`not-ac-messages.m4`); `NC_CONFIG_SHADOW_DIR()`,
+  `NC_SHADOW_MAYBE_OUT`, `NC_THREATEN_BLINDLY` and `NC_THREATEN_FILES()`
+  (`not-extended-config.m4`); `n4_charcode()`, `n4_codeunit_at()`,
+  `n4_codepoint_to_ascii()`, `n4_escape_non_ascii()` and
+  `n4_escape_everything()` (`not-utf8.m4`);
+* New macros `n4_let()`, `n4_qlet()` and `n4_with()` have been created in
+  `not-m4sugar.m4`
+* New macros `NS_SETVARS()` and `NS_UNSET()` have been created in
+  `not-autoshell.m4`
+* Macros † `NA_REQ_PROGS()` and † `NA_GET_PROGS()` in `not-autotools.m4` have
+  been renamed to `NC_REQ_PROGS()` and `NC_GET_PROGS()`
+* Code review (macros `NM_ENVIRONMENT_KEYS` and `NM_LOAD_ENVIRONMENT` in
+  `not-automake.m4`; macro `NM_SET_VERSION_ENVIRONMENT()` in `not-misc.m4` --
+  the new version of the latter is incompatible with previous versions)
+* Documentation
+
+
 0.5.0
 -----
 
@@ -52,8 +77,8 @@ Changes:
 
 Changes:
 
-* Macro † `nm4_unlambda` has been removed from `not-m4sugar.m4` -- lambda macros
-  are now safely created without polluting the global scope
+* Macro † `nm4_unlambda` has been removed from `not-m4sugar.m4` -- lambda
+  macros are now safely created without polluting the global scope
 * M4sugar clones † `nm4_switch()` and † `nm4_case()` have been removed from
   `not-m4sugar.m4` (they were clones of `m4_case()` and `m4_bmatch()`
   respectively)
@@ -66,8 +91,9 @@ Changes:
   (formerly † `n4_get_replacements()` and † `n4_for_each_match()`) no longer
   depend on `n4_repeat()`, but on GNU `m4_for()` instead
 * Macro `n4_define_substrings_as()` in `not-m4sugar.m4` (formerly
-  † `nm4_define_substrings_as()`) has been re-implemented using a more efficient
-  algorithm (removed recursion, removed multiple calls to `m4_bregexp()`)
+  † `nm4_define_substrings_as()`) has been re-implemented using a more
+  efficient algorithm (removed recursion, removed multiple calls to
+  `m4_bregexp()`)
 * Code review
 * Examples
 
@@ -84,8 +110,8 @@ Changes:
   `nm4_switch()` and `nm4_unlambda` have been created in `not-m4sugar.m4`
 * New macros `NM_ENVIRONMENT_KEYS`, `NM_GET_AM_VAR()` and `NM_LOAD_ENVIRONMENT`
   have been created in `not-automake.m4`
-* New macros `NS_GETOUT()`, `NS_GETVAR()` and `NS_SETVAR()` have been created in
-  `not-autoshell.m4`
+* New macros `NS_GETOUT()`, `NS_GETVAR()` and `NS_SETVAR()` have been created
+  in `not-autoshell.m4`
 * Macro † `NA_GET_LIB_VERSION_ENV()` has been renamed to
   `NM_SET_VERSION_ENVIRONMENT()` and has been moved to `not-misc.m4`
 * Macros † `NA_ASK_REPLACEMENTS()`, † `NA_DEFINE_SUBSTRINGS_AS()`,
