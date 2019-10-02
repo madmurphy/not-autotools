@@ -31,7 +31,7 @@ dnl  For example,
 dnl
 dnl      n4_lambda([Hi there! Here it's $1!])([Rose])
 dnl
-dnl  will print
+dnl  will expand to
 dnl
 dnl      Hi there! Here it's Rose!
 dnl
@@ -39,11 +39,11 @@ dnl  Or, for instance, in the following code a lambda macro instead of a named
 dnl  one is passed to `m4_map()`:
 dnl
 dnl      AC_DEFUN([MISSING_PROGRAMS], [[find], [xargs], [sed]])
-dnl      AC_MSG_ERROR([Install first m4_map([n4_lambda(["$1", ])], [MISSING_PROGRAMS])then proceed.])
+dnl      AC_MSG_ERROR([install first m4_map([n4_lambda(["$1", ])], [MISSING_PROGRAMS])then proceed.])
 dnl
 dnl  The code above will print:
 dnl
-dnl      Install first "find", "xargs", "sed", then proceed.
+dnl      install first "find", "xargs", "sed", then proceed.
 dnl
 dnl  By using the `n4_anon` keyword, a lambda macro can invoke itself
 dnl  repeatedly (recursion). For example,

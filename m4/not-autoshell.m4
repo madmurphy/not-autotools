@@ -128,7 +128,7 @@ dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NS_UNSET],
-	[m4_ifblank([$1], [], [AS_UNSET([$1]);])m4_if([$#], [1], [], [NS_UNSET(m4_shift($@))])])
+	[m4_ifnblank([$1], [AS_UNSET([$1]);])m4_if([$#], [1], [], [NS_UNSET(m4_shift($@))])])
 
 
 

@@ -81,7 +81,7 @@ dnl  latter is launched with an `--enable-extended-config` parameter.
 dnl
 dnl  A good point of your `configure.ac` where to place `NC_THREATEN_FILES()`
 dnl  file is immediately after `AC_CONFIG_FILES()`. But you are free to place
-dnl  it anywere between `NC_CONFIG_SHADOW_DIR()` and `NC_SHADOW_MAYBE_OUT()`.
+dnl  it anywere between `NC_CONFIG_SHADOW_DIR()` and `NC_SHADOW_MAYBE_OUTPUT`.
 dnl
 dnl      AC_CONFIG_FILES([
 dnl          Makefile
@@ -171,7 +171,7 @@ dnl  - `NC_CONFNEW_DIR`: expands to the path of the sandbox directory
 dnl    (currently `confnew`)
 dnl  - `NC_SHADOW_DIR`: expands exactly to the argument passed to
 dnl    `NC_CONFIG_SHADOW_DIR()`
-dnl  - `NC_SHADOW_MAYBE_OUT`: finalizes the extended configuration mode
+dnl  - `NC_SHADOW_MAYBE_OUTPUT`: finalizes the extended configuration mode
 dnl  - `NC_THREATENED_LIST`: expands to the comma-separated list of the
 dnl    threatened files
 dnl  - `NC_THREATEN_BLINDLY`: recursively registers all the templates in
@@ -222,6 +222,7 @@ AC_DEFUN_ONCE([NC_CONFIG_SHADOW_DIR], [
 
 	AM_CONDITIONAL([HAVE_EXTENDED_CONFIG], [test "x${enable_extended_config}" != xno])
 	AM_CONDITIONAL([HAVE_UPDATES], [test "x${enable_extended_config}" = xsandbox])
+	AM_COND_IF([HAVE_EXTENDED_CONFIG], [AS_MKDIR_P(NC_CONFNEW_DIR)])
 
 	AC_DEFUN([NC_THREATEN_FILES], [
 		AM_COND_IF([HAVE_EXTENDED_CONFIG],
@@ -237,16 +238,23 @@ AC_DEFUN_ONCE([NC_CONFIG_SHADOW_DIR], [
 				]]])m4_if(m4_eval(][$][#][ > 1), [1],
 					[n4_anon(m4_shift(]m4_dquote(][$][@][)[))])])(][$][@][)[)
 		])
-		m4_ifdef([NC_SHADOW_REDEF], [m4_warn([syntax], [Redefined configure files ]m4_quote(NC_SHADOW_REDEF)[ - skip])])
+		m4_ifdef([NC_SHADOW_REDEF], [m4_warn([syntax], [redefined configure files ]m4_quote(NC_SHADOW_REDEF)[ - skip])])
 	])
 
 	AC_DEFUN_ONCE([NC_THREATEN_BLINDLY],
 		[NC_THREATEN_FILES(m4_shift(m4_bpatsubst(m4_quote(m4_esyscmd([find ']NC_SHADOW_DIR[' -type f -name '*.in' -printf ", [[%P{/@/}]]"])), [\.in{/@/}], [])))])
 
 	AC_DEFUN_ONCE([NC_SHADOW_MAYBE_OUTPUT], [
-		AM_COND_IF([HAVE_UPDATES],
-			[AC_MSG_NOTICE([Extended configuration has been saved in ./]NC_CONFNEW_DIR[.])],
-			[AM_COND_IF([HAVE_EXTENDED_CONFIG], [cp -rf ']NC_CONFNEW_DIR['/* ./ && rm -rf ']NC_CONFNEW_DIR['])])
+		m4_ifset([NC_THREATENED_LIST], [
+			AM_COND_IF([HAVE_UPDATES],
+				[AC_MSG_NOTICE([extended configuration has been saved in ./]NC_CONFNEW_DIR[.])],
+				[AM_COND_IF([HAVE_EXTENDED_CONFIG], [
+					cp -rf NC_CONFNEW_DIR/* ./ && rm -rf NC_CONFNEW_DIR
+					AC_MSG_NOTICE([extended configuration has been merged with the package tree.])
+				])])
+		], [
+			m4_warn([syntax], [NC_SHADOW_MAYBE_OUTPUT has been invoked but no files have been threatened.])
+		])
 	])
 
 ])

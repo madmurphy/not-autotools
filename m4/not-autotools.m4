@@ -122,7 +122,60 @@ AC_DEFUN([NC_REQ_PROGS], [
 ])
 
 
-dnl  NA_SET_GLOBALLY(name1, [value1][, name2, [value2][, ... nameN, [valueN]]])
+dnl  NA_HELP_STRINGS(list1, help1[, list2, help2[, ... listN, helpN]])
+dnl  **************************************************************************
+dnl
+dnl  Similar to `AS_HELP_STRING()`, but with support for multiple strings, each
+dnl  one associated with one or more options
+dnl
+dnl  For example,
+dnl
+dnl      AC_ARG_ENABLE([foo],
+dnl          [NA_HELP_STRINGS(
+dnl              [--disable-foo],
+dnl                  [disable the `foo` feature; on some machines the package might not
+dnl                  work properly without the `foo` feature enabled],
+dnl              [[--enable-foo], [--enable-foo=yes], [--enable-foo=enhanced]],
+dnl                  [install this package with the `foo` feature enabled; if `foo` is
+dnl                  enabled in `enhanced` mode Autoconf might get sentimental],
+dnl              [[--enable-foo=auto], [--enable-foo=check], [@<:@omitted@:>@]],
+dnl                  [decide automatically whether it is opportune to enable the `foo`
+dnl                  feature on this machine or not]
+dnl          )],
+dnl          [:],
+dnl          [AS_VAR_SET([enable_foo], ['check'])])
+dnl
+dnl  will print, when the user launches `./configure --help`:
+dnl
+dnl        --disable-foo           disable the `foo` feature; on some machines the
+dnl                                package might not work properly without the `foo`
+dnl                                feature enabled
+dnl        --enable-foo,
+dnl        --enable-foo=yes,
+dnl        --enable-foo=enhanced   install this package with the `foo` feature enabled;
+dnl                                if `foo` is enabled in `enhanced` mode Autoconf
+dnl                                might get sentimental
+dnl        --enable-foo=auto,
+dnl        --enable-foo=check,
+dnl        [omitted]               decide automatically whether it is opportune to
+dnl                                enable the `foo` feature on this machine or not
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([NA_HELP_STRINGS],
+	[m4_if(m4_count($1), [1],
+		[m4_if([$#], [0], [], [$#], [1],
+			[m4_text_wrap($1, [  ])],
+			[AS_HELP_STRING($1, [$2])m4_if([$#], [2], [], [m4_newline()NA_HELP_STRINGS(m4_shift2($@))])])],
+		[m4_text_wrap(m4_argn(1, $1)[,], [  ])m4_newline()NA_HELP_STRINGS(m4_dquote(m4_shift($1))m4_if([$#], [1], [], [, m4_shift($@)]))])])
+
+
+dnl  NC_SET_GLOBALLY(name1, [value1][, name2, [value2][, ... nameN, [valueN]]])
 dnl  **************************************************************************
 dnl
 dnl  For each `nameN`-`valueN` pair, creates a new argumentless macro named
@@ -132,12 +185,12 @@ dnl  invoked
 dnl
 dnl  For example:
 dnl
-dnl      NA_SET_GLOBALLY(
+dnl      NC_SET_GLOBALLY(
 dnl          [PROJECT_DESCRIPTION],  [Some description],
-dnl          [COPYLEFT],             [GNU]
+dnl          [COPYLEFT],             [madmurphy]
 dnl      )
-dnl      AC_MSG_NOTICE([Package copyleft: ]GL_COPYLEFT)
-dnl      AC_MSG_NOTICE([Package copyleft: ${COPYLEFT}])
+dnl      AC_MSG_NOTICE([package copyleft: ]GL_COPYLEFT)
+dnl      AC_MSG_NOTICE([package copyleft: ${COPYLEFT}])
 dnl
 dnl  Each argument can safely contain any arbitrary character, however all the
 dnl  `nameN` arguments will be processed by `NA_SANITIZE_VARNAME()`, and all
@@ -150,10 +203,10 @@ dnl  Requires: `NA_SANITIZE_VARNAME()`
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
-AC_DEFUN([NA_SET_GLOBALLY], [
+AC_DEFUN([NC_SET_GLOBALLY], [
 	m4_define([GL_]NA_SANITIZE_VARNAME([$1]), m4_normalize([$2]))
 	AC_SUBST(NA_SANITIZE_VARNAME([$1]), ['m4_bpatsubst(m4_normalize([$2]), ['], ['\\''])'])
-	m4_if(m4_eval([$# > 2]), [1], [NA_SET_GLOBALLY(m4_shift2($@))])
+	m4_if(m4_eval([$# > 2]), [1], [NC_SET_GLOBALLY(m4_shift2($@))])
 ])
 
 

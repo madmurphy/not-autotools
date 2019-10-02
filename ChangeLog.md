@@ -2,6 +2,18 @@ Change Log
 ==========
 
 
+0.7.0
+-----
+
+Changes:
+
+* New macro `NA_HELP_STRINGS()` has been created in `not-autotools.m4`
+* Code review (`NC_CONFIG_SHADOW_DIR()` in `not-extended-config.m4`)
+* Macro † `NA_SET_GLOBALLY()` in `not-autotools.m4` has been renamed to
+  `NC_SET_GLOBALLY()`
+* Documentation
+
+
 0.6.0
 -----
 
@@ -11,7 +23,7 @@ Changes:
   `not-utf8.m4` have been created, containing the following new macros:
   `NC_MSG_ERRORBOX()`, `NC_MSG_FAILUREBOX()`, `NC_MSG_NOTICEBOX()` and
   `NC_MSG_WARNBOX()` (`not-ac-messages.m4`); `NC_CONFIG_SHADOW_DIR()`,
-  `NC_SHADOW_MAYBE_OUT`, `NC_THREATEN_BLINDLY` and `NC_THREATEN_FILES()`
+  `NC_SHADOW_MAYBE_OUTPUT`, `NC_THREATEN_BLINDLY` and `NC_THREATEN_FILES()`
   (`not-extended-config.m4`); `n4_charcode()`, `n4_codeunit_at()`,
   `n4_codepoint_to_ascii()`, `n4_escape_non_ascii()` and
   `n4_escape_everything()` (`not-utf8.m4`);
@@ -34,7 +46,7 @@ Changes:
 
 * New macro `n4_burn_out()`  has been created in `not-m4sugar.m4`
 * Code review (macro `NM_LOAD_ENVIRONMENT()` in `not-automake.m4`, macro
-  `NA_SET_GLOBALLY()` in `not-autotools.m4`)
+  † `NA_SET_GLOBALLY()` in `not-autotools.m4`)
 * Documentation
 
 
@@ -43,7 +55,7 @@ Changes:
 
 Changes:
 
-* Macro `NA_SET_GLOBALLY()` in `not-autotools.m4` has been made variadic
+* Macro † `NA_SET_GLOBALLY()` in `not-autotools.m4` has been made variadic
 * Code review (macros `NA_GET_PROGS()`, `NA_REQ_PROGS()` and
   `NA_SANITIZE_VARNAME()` in `not-autotools.m4`; macros `n4_case_in()`,
   `n4_define_substrings_as()`, `n4_for_each_match()`, `n4_get_replacements()`,
@@ -82,7 +94,7 @@ Changes:
 * M4sugar clones † `nm4_switch()` and † `nm4_case()` have been removed from
   `not-m4sugar.m4` (they were clones of `m4_case()` and `m4_bmatch()`
   respectively)
-* Reduntant macros `nm4_in()` and `nm4_in_args()` have been removed from
+* Reduntant macros † `nm4_in()` and † `nm4_in_args()` have been removed from
   `not-m4sugar.m4`
 * The _Not M4sugar_ prefix `nm4_` has been changed to `n4_`
 * Macros `n4_case_in()` and `n4_list_index()` have been created in
