@@ -27,7 +27,7 @@ dnl
 dnl  Creates an extended configuration mode for files that rarely need to be
 dnl  re-configured
 dnl
-dnl  A package often contains files that is convenient to build via
+dnl  A package often contains files that it is convenient to build via
 dnl  `configure`, but that need to be preserved after launching `make
 dnl  distclean` or `make maintainer-clean`, and be re-distributed in their
 dnl  configured version (think of a `package.json` file, for example). As these
@@ -91,7 +91,7 @@ dnl      ])
 dnl
 dnl      NC_THREATEN_FILES([package.json], [src/winres.rc], [...])
 dnl
-dnl  The files so registered are now expected to have their template inside the
+dnl  The files so indicized are now expected to have their template inside the
 dnl  directory previously passed to `NC_CONFIG_SHADOW_DIR()` exactly in the
 dnl  same relative path, and with a `.in` file extension. So, for instance, the
 dnl  template of `src/winres.rc` in the example above is expected to be
@@ -100,7 +100,9 @@ dnl
 dnl  `NC_THREATEN_FILES()` can also be split into different steps:
 dnl
 dnl      NC_THREATEN_FILES([src/winres.rc])
-dnl      [DO SOMETHING ELSE]
+dnl
+dnl      [... DO SOMETHING ELSE ...]
+dnl
 dnl      NC_THREATEN_FILES([package.json])
 dnl      NC_THREATEN_FILES([...])
 dnl
@@ -109,6 +111,22 @@ dnl  all the files present in the templates subdirectory. `NC_THREATEN_BLINDLY`
 dnl  can be invoked only once and calls `find` during the Automake process (via
 dnl  `m4_esyscmd()`), therefore it is less efficient and probably less portable
 dnl  than listing each file by hand.
+dnl
+dnl  It is not currently supported by design to nest `NC_THREATEN_FILES()`
+dnl  or `NC_THREATEN_BLINDLY` within conditionals evaluated at `configure` time
+dnl  (such as `AS_IF()` and `AM_COND_IF()`). It is possible, however, to nest
+dnl  both macros within M4sugar conditionals (such as `m4_if()`, `m4_ifdef()`,
+dnl  `m4_ifset()`, `m4_ifval()`, etc.):
+dnl
+dnl      m4_define([OFFICIAL_PACKAGE])
+dnl
+dnl      ...
+dnl
+dnl      NC_THREATEN_FILES([src/winres.rc])
+dnl
+dnl      # Perfectly valid example
+dnl      m4_ifdef([OFFICIAL_PACKAGE],
+dnl          [NC_THREATEN_FILES([package.json])])
 dnl
 dnl  No matter whether you use `NC_THREATEN_FILES()` or `NC_THREATEN_BLINDLY`,
 dnl  this framework only looks for `.in` files, so theoretically you can use
@@ -158,14 +176,14 @@ dnl
 dnl      if HAVE_UPDATES
 dnl      
 dnl      synch:
-dnl          cp -rf $(CONFNEW_DIR)/* ./
+dnl          -cp -rf $(CONFNEW_DIR)/* ./
 dnl      
 dnl      endif
 dnl
 dnl  Here follows the list of all macros, conditionals and `make` variables
 dnl  exported after `NC_CONFIG_SHADOW_DIR()` is invoked.
 dnl
-dnl  Macros exported:
+dnl  Macros:
 dnl
 dnl  - `NC_CONFNEW_DIR`: expands to the path of the sandbox directory
 dnl    (currently `confnew`)
@@ -179,17 +197,17 @@ dnl    `NC_CONFNEW_DIR` as sources for the extended configuration mode
 dnl  - `NC_THREATEN_FILES()`: marks the files passed as arguments as
 dnl    "threatened", and expects their template to be in `NC_SHADOW_DIR`
 dnl
-dnl  Conditionals exported:
+dnl  Conditionals:
 dnl
 dnl  - `HAVE_EXTENDED_CONFIG`: always `true` when the user invokes `configure`
 dnl    with the `--enable-extended-config` option
 dnl  - `HAVE_UPDATES`: `true` only in sandbox mode, i.e., when the user invokes
 dnl    `configure` with the `--enable-extended-config=sandbox` option
 dnl
-dnl  `make` variables exported:
+dnl  `make` variables:
 dnl
 dnl  - `$(CONFNEW_DIR)`: points to the sandbox folder (currently
-dnl    `$(srcdir)/confnew`).
+dnl    `confnew`).
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `n4_lambda()` and `n4_case_in()` from `not-m4sugar.m4`
@@ -222,7 +240,7 @@ AC_DEFUN_ONCE([NC_CONFIG_SHADOW_DIR], [
 
 	AM_CONDITIONAL([HAVE_EXTENDED_CONFIG], [test "x${enable_extended_config}" != xno])
 	AM_CONDITIONAL([HAVE_UPDATES], [test "x${enable_extended_config}" = xsandbox])
-	AM_COND_IF([HAVE_EXTENDED_CONFIG], [AS_MKDIR_P(NC_CONFNEW_DIR)])
+	AM_COND_IF([HAVE_EXTENDED_CONFIG], [AS_MKDIR_P(["${srcdir}/]NC_CONFNEW_DIR["])])
 
 	AC_DEFUN([NC_THREATEN_FILES], [
 		AM_COND_IF([HAVE_EXTENDED_CONFIG],
@@ -234,11 +252,13 @@ AC_DEFUN_ONCE([NC_CONFIG_SHADOW_DIR], [
 							m4_dquote(m4_dquote(]]m4_dquote(m4_dquote([$][1]))[[))))],
 					[m4_define([NC_THREATENED_LIST],
 						m4_ifset([NC_THREATENED_LIST],
-							m4_dquote(m4_dquote(NC_THREATENED_LIST, ]]m4_dquote(m4_dquote([$][1]))[[)), m4_dquote(m4_dquote(]]m4_dquote(m4_dquote([$][1]))[[))))NC_CONFNEW_DIR[[/]]]m4_dquote(m4_dquote(][$][1][))[[[:]]NC_SHADOW_DIR[[/]]]m4_dquote(m4_dquote(][$][1][))[[[.in
-				]]])m4_if(m4_eval(][$][#][ > 1), [1],
-					[n4_anon(m4_shift(]m4_dquote(][$][@][)[))])])(][$][@][)[)
+							m4_dquote(m4_dquote(NC_THREATENED_LIST, ]]m4_dquote(m4_dquote([$][1]))[[)), m4_dquote(m4_dquote(]]m4_dquote(m4_dquote([$][1]))[[))))[[${srcdir}/]]NC_CONFNEW_DIR[[/]]]m4_dquote(m4_dquote(][$][1][))[[[:]]NC_SHADOW_DIR[[/]]]m4_dquote(m4_dquote(][$][1][))[[[.in]]])m4_if(m4_eval(][$][#][ > 1), [1],
+					[[[
+				]]n4_anon(m4_shift(]m4_dquote(][$][@][)[))])])(][$][@][)[[
+			])
 		])
-		m4_ifdef([NC_SHADOW_REDEF], [m4_warn([syntax], [redefined configure files ]m4_quote(NC_SHADOW_REDEF)[ - skip])])
+		m4_ifdef([NC_SHADOW_REDEF],
+			[m4_warn([syntax], [redefined configure files ]m4_quote(NC_SHADOW_REDEF)[ - skip])])
 	])
 
 	AC_DEFUN_ONCE([NC_THREATEN_BLINDLY],
@@ -247,9 +267,9 @@ AC_DEFUN_ONCE([NC_CONFIG_SHADOW_DIR], [
 	AC_DEFUN_ONCE([NC_SHADOW_MAYBE_OUTPUT], [
 		m4_ifset([NC_THREATENED_LIST], [
 			AM_COND_IF([HAVE_UPDATES],
-				[AC_MSG_NOTICE([extended configuration has been saved in ./]NC_CONFNEW_DIR[.])],
+				[AC_MSG_NOTICE([extended configuration has been saved in ${srcdir}/]NC_CONFNEW_DIR[.])],
 				[AM_COND_IF([HAVE_EXTENDED_CONFIG], [
-					cp -rf NC_CONFNEW_DIR/* ./ && rm -rf NC_CONFNEW_DIR
+					cp -rf "${srcdir}/NC_CONFNEW_DIR"/* "${srcdir}"/ && rm -rf "${srcdir}/NC_CONFNEW_DIR"
 					AC_MSG_NOTICE([extended configuration has been merged with the package tree.])
 				])])
 		], [

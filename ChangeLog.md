@@ -2,6 +2,14 @@ Change Log
 ==========
 
 
+0.7.1
+-----
+
+Changes:
+
+* Code review (`NC_CONFIG_SHADOW_DIR()` in `not-extended-config.m4`)
+
+
 0.7.0
 -----
 
