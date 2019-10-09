@@ -38,9 +38,8 @@ dnl  example); and as their templates are rarely used, it might be a good idea
 dnl  to place these in a separate folder.
 dnl
 dnl  This macro helps creating the right environment for this purpose. It
-dnl  requires `n4_lambda()` and `n4_case_in()` from `not-m4sugar.m4`, so you
-dnl  will need to copy and paste them both in your `configure.ac` before
-dnl  getting started.
+dnl  requires `n4_case_in()` from `not-m4sugar.m4`, so you will need to copy
+dnl  and paste it in your `configure.ac` before getting started.
 dnl
 dnl  When everything is set up, you need to create a subdirectory containing
 dnl  the templates of the files that will be rarely re-configured (the `.in`,
@@ -210,7 +209,7 @@ dnl  - `$(CONFNEW_DIR)`: points to the sandbox folder (currently
 dnl    `confnew`).
 dnl
 dnl  Expansion type: shell code
-dnl  Requires: `n4_lambda()` and `n4_case_in()` from `not-m4sugar.m4`
+dnl  Requires: `n4_case_in()` from `not-m4sugar.m4`
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -228,8 +227,9 @@ AC_DEFUN_ONCE([NC_CONFIG_SHADOW_DIR], [
 			changes only and not on the state of this machine; possible values
 			for MODE are: omitted or "merge" for updating these files
 			immediately, "sandbox" for safely putting their updated version
-			into the "]NC_CONFNEW_DIR[" subdirectory without modifying the
-			package tree, or "no" for doing nothing @<:@default=no@:>@])],
+			into the "]m4_quote(NC_CONFNEW_DIR)[" subdirectory without
+			modifying the package tree, or "no" for doing nothing
+			@<:@default=no@:>@])],
 			[AS_IF([test "x${enableval}" = x -o "x${enableval}" = xyes],
 					[AS_VAR_SET([enable_extended_config], ['merge'])],
 				[test "x${enableval}" != xsandbox -a "x${enableval}" != xmerge], [
@@ -240,36 +240,38 @@ AC_DEFUN_ONCE([NC_CONFIG_SHADOW_DIR], [
 
 	AM_CONDITIONAL([HAVE_EXTENDED_CONFIG], [test "x${enable_extended_config}" != xno])
 	AM_CONDITIONAL([HAVE_UPDATES], [test "x${enable_extended_config}" = xsandbox])
-	AM_COND_IF([HAVE_EXTENDED_CONFIG], [AS_MKDIR_P(["${srcdir}/]NC_CONFNEW_DIR["])])
+	AM_COND_IF([HAVE_EXTENDED_CONFIG], [AS_MKDIR_P(["${srcdir}/]m4_quote(NC_CONFNEW_DIR)["])])
 
 	AC_DEFUN([NC_THREATEN_FILES], [
-		AM_COND_IF([HAVE_EXTENDED_CONFIG],
-			[AC_CONFIG_FILES([
-				]]n4_lambda([n4_case_in(m4_quote(][$][1][), m4_quote(NC_THREATENED_LIST),
-					[m4_define([NC_SHADOW_REDEF],
-						m4_ifset([NC_SHADOW_REDEF],
-							m4_dquote(m4_dquote(NC_SHADOW_REDEF,[ ]]]m4_dquote(m4_dquote([$][1]))[[)),
-							m4_dquote(m4_dquote(]]m4_dquote(m4_dquote([$][1]))[[))))],
+		AM_COND_IF([HAVE_EXTENDED_CONFIG], [
+			AC_CONFIG_FILES(m4_foreach([_F_ITER_], m4_dquote(]m4_dquote(][$][@][)[),
+				[n4_case_in(m4_quote(_F_ITER_), m4_quote(NC_THREATENED_LIST),
+					[n4_case_in(m4_quote(_F_ITER_), m4_quote(NC_SHADOW_REDEF), [],
+						[m4_define([NC_SHADOW_REDEF],
+							m4_ifset([NC_SHADOW_REDEF],
+								[m4_dquote(NC_SHADOW_REDEF,[ ]_F_ITER_)],
+								[m4_dquote(_F_ITER_)]))])],
 					[m4_define([NC_THREATENED_LIST],
 						m4_ifset([NC_THREATENED_LIST],
-							m4_dquote(m4_dquote(NC_THREATENED_LIST, ]]m4_dquote(m4_dquote([$][1]))[[)), m4_dquote(m4_dquote(]]m4_dquote(m4_dquote([$][1]))[[))))[[${srcdir}/]]NC_CONFNEW_DIR[[/]]]m4_dquote(m4_dquote(][$][1][))[[[:]]NC_SHADOW_DIR[[/]]]m4_dquote(m4_dquote(][$][1][))[[[.in]]])m4_if(m4_eval(][$][#][ > 1), [1],
-					[[[
-				]]n4_anon(m4_shift(]m4_dquote(][$][@][)[))])])(][$][@][)[[
-			])
+								[m4_dquote(NC_THREATENED_LIST, _F_ITER_)],
+								[m4_dquote(_F_ITER_)]))
+					m4_quote([${srcdir}/]NC_CONFNEW_DIR[/]_F_ITER_[:]NC_SHADOW_DIR[/]_F_ITER_[.in])])]))
 		])
+
 		m4_ifdef([NC_SHADOW_REDEF],
-			[m4_warn([syntax], [redefined configure files ]m4_quote(NC_SHADOW_REDEF)[ - skip])])
+			[m4_warn([syntax], [redefined threatened files ]m4_quote(NC_SHADOW_REDEF)[ - skip])])
 	])
 
 	AC_DEFUN_ONCE([NC_THREATEN_BLINDLY],
-		[NC_THREATEN_FILES(m4_shift(m4_bpatsubst(m4_quote(m4_esyscmd([find ']NC_SHADOW_DIR[' -type f -name '*.in' -printf ", [[%P{/@/}]]"])), [\.in{/@/}], [])))])
+		[NC_THREATEN_FILES(m4_shift(m4_bpatsubst(m4_quote(m4_esyscmd([find ']m4_quote(NC_SHADOW_DIR)[' -type f -name '*.in' -printf ", [[%P{/@/}]]"])), [\.in{/@/}], [])))])
 
 	AC_DEFUN_ONCE([NC_SHADOW_MAYBE_OUTPUT], [
 		m4_ifset([NC_THREATENED_LIST], [
 			AM_COND_IF([HAVE_UPDATES],
-				[AC_MSG_NOTICE([extended configuration has been saved in ${srcdir}/]NC_CONFNEW_DIR[.])],
+				[AC_MSG_NOTICE([extended configuration has been saved in ${srcdir}/]m4_quote(NC_CONFNEW_DIR)[.])],
 				[AM_COND_IF([HAVE_EXTENDED_CONFIG], [
-					cp -rf "${srcdir}/NC_CONFNEW_DIR"/* "${srcdir}"/ && rm -rf "${srcdir}/NC_CONFNEW_DIR"
+					cp -rf "${srcdir}/]m4_quote(NC_CONFNEW_DIR)["/* "${srcdir}"/ && \
+						rm -rf "${srcdir}/]m4_quote(NC_CONFNEW_DIR)["
 					AC_MSG_NOTICE([extended configuration has been merged with the package tree.])
 				])])
 		], [

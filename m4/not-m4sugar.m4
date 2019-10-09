@@ -395,6 +395,36 @@ m4_define([n4_list_index],
 			[m4_eval([$3 - 1])])])
 
 
+dnl  n4_mem([macro-name1[, macro-name2[, ... macro-nameN]]], value)
+dnl  **************************************************************************
+dnl
+dnl  Expands to `value` after this has been stored into one or more macros
+dnl
+dnl  For example,
+dnl
+dnl      AC_MSG_NOTICE(n4_mem([one], [two], [Hello world]))
+dnl      AC_MSG_NOTICE(one)
+dnl      AC_MSG_NOTICE(two)
+dnl
+dnl  will print:
+dnl
+dnl      Hello world
+dnl      Hello world
+dnl      Hello world
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_mem],
+	[m4_if([$#], [0], [],
+		[$#], [1], [$1],
+		[m4_define([$1], [$2])n4_mem(m4_shift($@))])])
+
+
 dnl  n4_define_substrings_as(string, regexp, macro0[, macro1[, ... macroN ]])
 dnl  **************************************************************************
 dnl
