@@ -212,7 +212,7 @@ AC_DEFUN([NC_SET_GLOBALLY], [
 
 
 dnl  **************************************************************************
-dnl  Note:  The `NA_` prefix (which stands for "Not Autotools") and the `NC_`
+dnl  NOTE:  The `NA_` prefix (which stands for "Not Autotools") and the `NC_`
 dnl         prefix (which stands for "Not autoConf") are used with the purpose
 dnl         of avoiding collisions with the default Autotools prefixes `AC_`,
 dnl         `AM_`, `AS_`, `AX_`, `LT_`.

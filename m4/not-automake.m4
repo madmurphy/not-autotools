@@ -140,7 +140,7 @@ AC_DEFUN_ONCE([NM_LOAD_ENVIRONMENT],
 
 
 dnl  **************************************************************************
-dnl  Note:  The `NM_` prefix (which stands for "Not autoMake") is used with the
+dnl  NOTE:  The `NM_` prefix (which stands for "Not autoMake") is used with the
 dnl         purpose of avoiding collisions with the default Autotools prefixes
 dnl         `AC_`, `AM_`, `AS_`, `AX_`, `LT_`.
 dnl  **************************************************************************

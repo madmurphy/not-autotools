@@ -94,7 +94,7 @@ AC_DEFUN([NC_MSG_FAILUREBOX],
 
 
 dnl  **************************************************************************
-dnl  Note:  The `NA_` prefix (which stands for "Not Autotools") is used with the
+dnl  NOTE:  The `NA_` prefix (which stands for "Not Autotools") is used with the
 dnl         purpose of avoiding collisions with the default Autotools prefixes
 dnl         `AC_`, `AM_`, `AS_`, `AX_`, `LT_`.
 dnl  **************************************************************************

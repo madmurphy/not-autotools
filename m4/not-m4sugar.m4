@@ -412,6 +412,8 @@ dnl      Hello world
 dnl      Hello world
 dnl      Hello world
 dnl
+dnl  To delete the stored macros you must use `m4_undefine()`.
+dnl
 dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
@@ -660,7 +662,7 @@ m4_define([n4_burn_out],
 
 
 dnl  **************************************************************************
-dnl  Note:  The `n4_` prefix (which stands for "Not m4sugar") is used with the
+dnl  NOTE:  The `n4_` prefix (which stands for "Not m4sugar") is used with the
 dnl         purpose of avoiding collisions with the default Autotools prefix
 dnl         `m4_`.
 dnl  **************************************************************************

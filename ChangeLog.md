@@ -2,6 +2,20 @@ Change Log
 ==========
 
 
+0.9.0
+-----
+
+Changes:
+
+* New library file `not-fancy-texts.m4` has been created containing the
+  new macros `n4_sp()` and `m4_text_center()`
+* New macros `NS_FOR()`, `NS_WHILE()`, `NS_MOVEVAR()` and `NS_REPLACEVAR()`
+  have been created in `not-autoshell.m4`
+* Macro † `NS_SETVAR` has been removed from `not-autoshell.m4`
+* Code review (`NS_SETVARS` in `not-autoshell.m4`; `NC_CONFIG_SHADOW_DIR()` in
+  `not-extended-config.m4`)
+
+
 0.8.0
 -----
 
@@ -148,7 +162,7 @@ Changes:
   `nm4_switch()` and `nm4_unlambda` have been created in `not-m4sugar.m4`
 * New macros `NM_ENVIRONMENT_KEYS`, `NM_GET_AM_VAR()` and `NM_LOAD_ENVIRONMENT`
   have been created in `not-automake.m4`
-* New macros `NS_GETOUT()`, `NS_GETVAR()` and `NS_SETVAR()` have been created
+* New macros `NS_GETOUT()`, `NS_GETVAR()` and † `NS_SETVAR()` have been created
   in `not-autoshell.m4`
 * Macro † `NA_GET_LIB_VERSION_ENV()` has been renamed to
   `NM_SET_VERSION_ENVIRONMENT()` and has been moved to † `not-misc.m4`

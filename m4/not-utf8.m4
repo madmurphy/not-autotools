@@ -24,7 +24,7 @@ dnl  **************************************************************************
 dnl  n4_charcode(character)
 dnl  **************************************************************************
 dnl
-dnl  Returns the numeric value of a single 8-bit character or code unit
+dnl  Expands to the numeric value of a single 8-bit character or code unit
 dnl
 dnl  For example:
 dnl
@@ -37,9 +37,9 @@ dnl
 dnl  There is no way of capturing or expanding a `NUL` character in M4:
 dnl  `m4_len(m4_format([%c], [0]))` is always 0.
 dnl
-dnl  Note: This macro temporarily changes quotes, then restores them to `[` and
-dnl        `]`. That said, it is able to compute _any_ character, including
-dnl        quotes and round brackets.
+dnl  NOTE:  This macro temporarily changes quotes, then restores them to `[`
+dnl         and `]`. That said, it is able to compute _any_ character,
+dnl         including quotes and round brackets.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: `n4_lambda()` from `not-m4sugar.m4`
@@ -53,8 +53,8 @@ m4_define([n4_charcode],
 dnl  n4_codeunit_at(string[, index])
 dnl  **************************************************************************
 dnl
-dnl  Returns the numeric value of the code unit at index `index` in the string
-dnl  `string`
+dnl  Expands to the numeric value of the code unit at index `index` in the
+dnl  string `string`
 dnl
 dnl  For example:
 dnl
@@ -140,7 +140,8 @@ dnl      # Convert it back to a string
 dnl      n4_escape_non_ascii([Le déjeuner sur l'herbe], [%c])
 dnl          => Le déjeuner sur l'herbe
 dnl
-dnl  Note: Unfortunately this macro cannot deal with square and round brackets.
+dnl  NOTE:  Unfortunately this macro cannot deal with square and round
+dnl         brackets.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: `n4_codeunit_at()` and `n4_codepoint_to_ascii()`
@@ -182,7 +183,8 @@ dnl
 dnl      n4_escape_everything([Section § 2])
 dnl          => \x53\x65\x63\x74\x69\x6f\x6e\x20\xc2\xa7\x20\x32
 dnl
-dnl  Note: Unfortunately this macro cannot deal with square and round brackets.
+dnl  NOTE:  Unfortunately this macro cannot deal with square and round
+dnl         brackets.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: `n4_codeunit_at()`
@@ -197,7 +199,7 @@ m4_define([n4_escape_everything],
 
 
 dnl  **************************************************************************
-dnl  Note:  The `n4_` prefix (which stands for "Not m4sugar") is used with the
+dnl  NOTE:  The `n4_` prefix (which stands for "Not m4sugar") is used with the
 dnl         purpose of avoiding collisions with the default Autotools prefix
 dnl         `m4_`.
 dnl  **************************************************************************
