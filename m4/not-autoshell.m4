@@ -150,15 +150,17 @@ AC_DEFUN([NS_REPLACEVAR],
 dnl  NS_FOR(initialization, statement)
 dnl  **************************************************************************
 dnl
-dnl  M4 sugar to create a "for" loop
+dnl  M4 sugar to create a "for" shell loop
 dnl
 dnl  For example:
 dnl
 dnl      # Iterate over all `configure` arguments and check if `--docdir` has
 dnl      # been given
 dnl      NS_FOR([_this_arg_],
-dnl          [AS_CASE([${_this_arg_}], [--docdir=*],
-dnl              [AS_VAR_SET([is_auto_docdir], [no])])])
+dnl          [AS_CASE([${_this_arg_}], [--docdir=*], [
+dnl              AS_VAR_SET([is_auto_docdir], [no])
+dnl              NS_BREAK
+dnl          ])])
 dnl
 dnl      AS_IF([test "x${is_auto_docdir}" != xno],
 dnl          [AC_MSG_NOTICE([Using default value for <docdir>])],
@@ -176,7 +178,7 @@ AC_DEFUN([NS_FOR],
 dnl  NS_WHILE(initialization, statement)
 dnl  **************************************************************************
 dnl
-dnl  M4 sugar to create a "while" loop
+dnl  M4 sugar to create a "while" shell loop
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -185,6 +187,48 @@ dnl
 dnl  **************************************************************************
 AC_DEFUN([NS_WHILE],
 	[{ while $1; do[]m4_newline()$2[]m4_newline()done }])
+
+
+dnl  NS_UNTIL(initialization, statement)
+dnl  **************************************************************************
+dnl
+dnl  M4 sugar to create an "until" shell loop
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NS_UNTIL],
+	[{ until $1; do[]m4_newline()$2[]m4_newline()done }])
+
+
+dnl  NS_BREAK
+dnl  **************************************************************************
+dnl
+dnl  M4 sugar that expands to to a shell "break" command, to be used within
+dnl  loops
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+AC_DEFUN([NS_BREAK],
+	[m4_newline()break;m4_newline()])
+
+
+dnl  NS_CONTINUE
+dnl  **************************************************************************
+dnl
+dnl  M4 sugar that expands to to a shell "continue" command, to be used within
+dnl  loops
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+AC_DEFUN([NS_CONTINUE],
+	[m4_newline()continue;m4_newline()])
 
 
 

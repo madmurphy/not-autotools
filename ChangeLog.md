@@ -2,6 +2,15 @@ Change Log
 ==========
 
 
+0.10.0
+------
+
+Changes:
+
+* New macros `NS_UNTIL()`, `NS_BREAK` and `NS_CONTINUE` have been created in
+  `not-autoshell.m4`
+
+
 0.9.0
 -----
 
