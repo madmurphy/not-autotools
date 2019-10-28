@@ -175,6 +175,56 @@ m4_define([NA_HELP_STRINGS],
 		[m4_text_wrap(m4_argn(1, $1)[,], [  ])m4_newline()NA_HELP_STRINGS(m4_dquote(m4_shift($1))m4_if([$#], [1], [], [, m4_shift($@)]))])])
 
 
+dnl  NC_IF_HAVE_POSIX([if-have-posix], [if-dont-have-posix], [posix-version]])
+dnl  **************************************************************************
+dnl
+dnl  Checks whether the POSIX API is available
+dnl
+dnl  Example #1 (any POSIX version):
+dnl
+dnl      NC_IF_HAVE_POSIX(
+dnl          [AS_VAR_SET([standard_supported], ['posix'])],
+dnl          [AS_VAR_SET([standard_supported], ['c_standard'])]
+dnl      )
+dnl
+dnl  Example #2 (POSIX 2008):
+dnl
+dnl      NC_IF_HAVE_POSIX(
+dnl          [AS_VAR_SET([standard_supported], ['posix2008'])],
+dnl          [AS_VAR_SET([standard_supported], ['c_standard'])],
+dnl          [200809L]
+dnl      )
+dnl
+dnl  If a `posix-version` argument is passed, this macro will look specifically
+dnl  for the version queried. Possible values for `posix-version` are the same
+dnl  values supported by the POSIX standard `_POSIX_C_SOURCE` feature test
+dnl  macro.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Authors: madmurphy, Vilhelm Gray
+dnl  (https://stackoverflow.com/a/18240603/2732907)
+dnl
+AC_DEFUN([NC_IF_HAVE_POSIX], [
+	AC_MSG_CHECKING([whether we have POSIX]m4_ifnblank([$3], [ (]m4_dquote(m4_normalize([$3]))[)]))
+	AC_EGREP_CPP([posix_supported], [
+		#define _POSIX_C_SOURCE ]m4_ifnblank([$3], m4_dquote(m4_normalize([$3])), [200809L])[
+		#include <unistd.h>
+		#ifdef _POSIX_VERSION
+		]m4_ifnblank([$3], [[#]if _POSIX_VERSION == ]m4_dquote(m4_normalize([$3])))[
+		posix_supported
+		]m4_ifnblank([$3], [[#]endif])[
+		#endif
+	], [
+		AC_MSG_RESULT([yes])
+		$1
+	], [
+		AC_MSG_RESULT([no])
+		$2
+	])
+])
+
+
 dnl  NC_SET_GLOBALLY(name1, [value1][, name2, [value2][, ... nameN, [valueN]]])
 dnl  **************************************************************************
 dnl

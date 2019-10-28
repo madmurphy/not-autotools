@@ -2,6 +2,14 @@ Change Log
 ==========
 
 
+0.11.0
+------
+
+Changes:
+
+* New macro `NC_IF_HAVE_POSIX()` has been created in `not-autotools.m4`
+
+
 0.10.0
 ------
 
