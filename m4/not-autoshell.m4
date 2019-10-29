@@ -68,10 +68,10 @@ dnl
 dnl  M4 sugar to get the output of a command
 dnl
 dnl  Same as `$(command)`. This macro works exactly like `m4_esyscmd()`, but
-dnl  instead of executing a command during the `automake` process, it executes
-dnl  it during the `configure` process, when all M4 macros have been already
-dnl  expanded. The returned value cannot therefore be stored in another macro,
-dnl  but must be stored in a shell variable instead.
+dnl  instead of executing a command during the `autoreconf` process, it
+dnl  executes it during the `configure` process, when all M4 macros have been
+dnl  already expanded. The returned value cannot therefore be stored in another
+dnl  macro, but must be stored in a shell variable instead.
 dnl
 dnl  Example:
 dnl

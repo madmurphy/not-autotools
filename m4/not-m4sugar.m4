@@ -305,14 +305,14 @@ dnl  `listN`
 dnl
 dnl  For example,
 dnl
-dnl      n4_case_in(NM_GET_AM_VAR([USER]),
+dnl      n4_case_in(NR_GET_ENV_VAR([USER]),
 dnl          [[rose], [madmurphy], [charlie]],
 dnl              [Official release],
 dnl              [Unofficial release])
 dnl
 dnl  will print "Official release" if the user who generated the `configure`
 dnl  script was in the list above, or it will print "Unofficial release"
-dnl  otherwise (for the `NM_GET_AM_VAR()` macro, see `not-automake.m4`).
+dnl  otherwise (for the `NR_GET_ENV_VAR()` macro, see `not-autoreconf.m4`).
 dnl
 dnl  This macro works exactly like `m4_case()`, but instead of looking for the
 dnl  equality of a target string with one or more other strings, it checks
@@ -320,7 +320,7 @@ dnl  whether a target string is present in one or more given lists.
 dnl
 dnl  Here is a more articulated example:
 dnl
-dnl      n4_case_in(NM_GET_AM_VAR([USER]),
+dnl      n4_case_in(NR_GET_ENV_VAR([USER]),
 dnl          [[rose], [madmurphy], [lili], [frank]],
 dnl              [Official release],
 dnl          [[rick], [karl], [matilde]],
@@ -658,6 +658,43 @@ dnl
 dnl  **************************************************************************
 m4_define([n4_burn_out],
 	[m4_pushdef([_tmp_], m4_dquote(m4_expand(m4_expand([$*]))))[]m4_if(($*), (_tmp_), [_tmp_[]m4_popdef([_tmp_])], [n4_burn_out(_tmp_[]m4_popdef([_tmp_]))])])
+
+
+dnl  n4_includedir(directory)
+dnl  **************************************************************************
+dnl
+dnl  Recursively include every `.m4` file present in a given directory
+dnl
+dnl  Example:
+dnl
+dnl      n4_includedir([not-autotools/m4])
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_includedir],
+	[m4_foreach([_file_], m4_dquote(m4_shift(m4_esyscmd([find '$1' -type f -name '*.m4' -printf ", [[%p]]"]))),
+		[m4_include(_file_)])])
+
+
+dnl  n4_sincludedir(directory)
+dnl  **************************************************************************
+dnl
+dnl  Like `n4_includedir()`, but silently fails if the directory is unreachable
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_sincludedir],
+	[m4_pushdef([_files_], m4_dquote(m4_dquote(m4_shift(m4_esyscmd([find '$1' -type f -name '*.m4' -printf ", [[%p]]" 2>/dev/null])))))[]m4_ifnblank(m4_expand(_files_), [m4_foreach([_file_], _files_, [m4_include(_file_)])])[]m4_popdef([_files_])])
 
 
 

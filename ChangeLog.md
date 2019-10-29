@@ -2,6 +2,22 @@ Change Log
 ==========
 
 
+0.12.0
+------
+
+Changes:
+
+* Library file † `not-automake.m4` has been renamed to `not-autoreconf.m4`
+* Macros † `NM_GET_AM_VAR()`, † `NM_ENVIRONMENT_KEYS` and
+  † `NM_LOAD_ENVIRONMENT` in `not-autoreconf.m4` have been renamed to
+  `NR_GET_ENV_VAR()`, `NR_ENVIRONMENT_KEYS` and `NR_LOAD_ENVIRONMENT`
+* Macro † `NM_SET_VERSION_ENVIRONMENT()` in `not-multiversion.m4` has been
+  renamed to `NR_SET_VERSION_ENVIRONMENT()`
+* New macros `n4_includedir()` and `n4_sincludedir()` have been created in
+  `not-m4sugar.m4`
+* New macro `NR_CONFIG_FILES()` has been created in `not-autoreconf.m4`
+
+
 0.11.0
 ------
 
@@ -41,7 +57,7 @@ Changes:
 * New macro `n4_mem()` has been created in `not-m4sugar.m4`
 * Library file † `not-misc.m4` has been renamed to `not-multiversion.m4`
 * Code review (`NC_CONFIG_SHADOW_DIR()` in `not-extended-config.m4`: removed
-  dependency to `n4_lambda()`; `NM_SET_VERSION_ENVIRONMENT` in
+  dependency to `n4_lambda()`; † `NM_SET_VERSION_ENVIRONMENT` in
   `not-multiversion.m4`: added support for a permanent and a temporary
   multi-version state using the `multiversion.lock` and `multiversion.templock`
   files; `NA_HELP_STRINGS()` in `not-autotools.m4`: harmonized the behavior of
@@ -89,9 +105,10 @@ Changes:
   `not-autoshell.m4`
 * Macros † `NA_REQ_PROGS()` and † `NA_GET_PROGS()` in `not-autotools.m4` have
   been renamed to `NC_REQ_PROGS()` and `NC_GET_PROGS()`
-* Code review (macros `NM_ENVIRONMENT_KEYS` and `NM_LOAD_ENVIRONMENT` in
-  `not-automake.m4`; macro `NM_SET_VERSION_ENVIRONMENT()` in † `not-misc.m4` --
-  the new version of the latter is incompatible with previous versions)
+* Code review (macros † `NM_ENVIRONMENT_KEYS` and † `NM_LOAD_ENVIRONMENT` in
+  † `not-automake.m4`; macro † `NM_SET_VERSION_ENVIRONMENT()` in
+  † `not-misc.m4` -- the new version of the latter is incompatible with
+  previous versions)
 * Documentation
 
 
@@ -101,7 +118,7 @@ Changes:
 Changes:
 
 * New macro `n4_burn_out()`  has been created in `not-m4sugar.m4`
-* Code review (macro `NM_LOAD_ENVIRONMENT()` in `not-automake.m4`, macro
+* Code review (macro † `NM_LOAD_ENVIRONMENT()` in † `not-automake.m4`, macro
   † `NA_SET_GLOBALLY()` in `not-autotools.m4`)
 * Documentation
 
@@ -172,17 +189,17 @@ Changes:
 Changes:
 
 * All M4 macros have been moved into the `m4` folder
-* Created library files `not-automake.m4`, `not-autoshell.m4` and
+* Created library files † `not-automake.m4`, `not-autoshell.m4` and
   † `not-misc.m4`
 * Library file † `not-m4.m4` has been renamed to `not-m4sugar.m4`
 * New macros `nm4_case()`, `nm4_in()`, `nm4_in_args()`, `nm4_lambda()`,
   `nm4_switch()` and `nm4_unlambda` have been created in `not-m4sugar.m4`
-* New macros `NM_ENVIRONMENT_KEYS`, `NM_GET_AM_VAR()` and `NM_LOAD_ENVIRONMENT`
-  have been created in `not-automake.m4`
+* New macros † `NM_ENVIRONMENT_KEYS`, † `NM_GET_AM_VAR()` and
+  † `NM_LOAD_ENVIRONMENT` have been created in † `not-automake.m4`
 * New macros `NS_GETOUT()`, `NS_GETVAR()` and † `NS_SETVAR()` have been created
   in `not-autoshell.m4`
 * Macro † `NA_GET_LIB_VERSION_ENV()` has been renamed to
-  `NM_SET_VERSION_ENVIRONMENT()` and has been moved to † `not-misc.m4`
+  † `NM_SET_VERSION_ENVIRONMENT()` and has been moved to † `not-misc.m4`
 * Macros † `NA_ASK_REPLACEMENTS()`, † `NA_DEFINE_SUBSTRINGS_AS()`,
   † `NA_FOR_EACH_MATCH()`, † `NA_REGEXP_DEPTH()` and † `NA_REPEAT_TEXT()` in
   `not-m4sugar.m4` have been renamed to † `nm4_get_replacements()`,

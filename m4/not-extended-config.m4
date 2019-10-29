@@ -107,9 +107,9 @@ dnl      NC_THREATEN_FILES([...])
 dnl
 dnl  Alternatively you can use `NC_THREATEN_BLINDLY` for automatically adding
 dnl  all the files present in the templates subdirectory. `NC_THREATEN_BLINDLY`
-dnl  can be invoked only once and calls `find` during the Automake process (via
-dnl  `m4_esyscmd()`), therefore it is less efficient and probably less portable
-dnl  than listing each file by hand.
+dnl  can be invoked only once and calls `find` during the `autoreconf` process
+dnl  (via `m4_esyscmd()`), therefore it is less efficient and probably less
+dnl  portable than listing each file by hand.
 dnl
 dnl  It is not currently supported by design to nest `NC_THREATEN_FILES()`
 dnl  or `NC_THREATEN_BLINDLY` within conditionals evaluated at `configure` time
