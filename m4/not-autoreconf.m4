@@ -148,6 +148,24 @@ AC_DEFUN_ONCE([NR_LOAD_ENVIRONMENT],
 	[m4_esyscmd_s([echo "m4_changequote({{<<, >>}}){{<<>>}}$(env | sed 's/^\([^=]\+\)=\(.*\)$/m4_define({{<<RENV_\1>>}}, {{<<\2>>}})/g'){{<<>>}}m4_changequote([, ])"])])
 
 
+dnl  NR_NEWFILE(file-name[, file-content])
+dnl  **************************************************************************
+dnl
+dnl  Creates a new file with a custom content
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.  
+dnl
+dnl  Expansion type: literal (void)
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NR_NEWFILE],
+	[m4_ifblank([$1],
+		[m4_fatal([NR_NEWFILE(): file name cannot be empty])],
+		[m4_syscmd([cat << 'NA_END_OF_FILE' > '$1']m4_newline()[$2]m4_newline()[NA_END_OF_FILE])])])
+
+
 dnl  NR_CONFIG_FILES(file1[, file2[, file3[, ... fileN]]])
 dnl  **************************************************************************
 dnl
@@ -198,7 +216,7 @@ dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NR_CONFIG_FILES],
-	[m4_ifnblank([$1], [m4_pushdef([_sep_idx_], m4_quote(m4_bregexp([$1], [:])))m4_syscmd([cat << 'END_HEREDOC' > ']m4_if(_sep_idx_, [-1], m4_normalize([[$1]]), [m4_normalize(m4_quote(m4_substr([$1], [0], _sep_idx_)))])[']m4_newline()m4_quote(m4_include(m4_if(_sep_idx_, [-1], m4_normalize([[$1.m4]]), [m4_normalize(m4_quote(m4_substr([$1], m4_eval(_sep_idx_[ + 1]))))])))[END_HEREDOC])m4_popdef([_sep_idx_])])m4_if([$#], [1], [], [NR_CONFIG_FILES(m4_shift($@))])])
+	[m4_ifnblank([$1], [m4_pushdef([_sep_idx_], m4_quote(m4_bregexp([$1], [:])))m4_syscmd([cat << 'NA_END_OF_FILE' > ']m4_if(_sep_idx_, [-1], m4_normalize([[$1]]), [m4_normalize(m4_quote(m4_substr([$1], [0], _sep_idx_)))])[']m4_newline()m4_quote(m4_include(m4_if(_sep_idx_, [-1], m4_normalize([[$1.m4]]), [m4_normalize(m4_quote(m4_substr([$1], m4_eval(_sep_idx_[ + 1]))))])))[NA_END_OF_FILE])m4_popdef([_sep_idx_])])m4_if([$#], [1], [], [NR_CONFIG_FILES(m4_shift($@))])])
 
 
 

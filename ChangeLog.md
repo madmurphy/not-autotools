@@ -2,6 +2,14 @@ Change Log
 ==========
 
 
+0.13.0
+------
+
+Changes:
+
+* New macro `NR_NEWFILE()` has been created in `not-autoreconf.m4`
+
+
 0.12.0
 ------
 
