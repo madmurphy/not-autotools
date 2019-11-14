@@ -175,21 +175,21 @@ m4_define([NA_HELP_STRINGS],
 		[m4_text_wrap(m4_argn(1, $1)[,], [  ])m4_newline()NA_HELP_STRINGS(m4_dquote(m4_shift($1))m4_if([$#], [1], [], [, m4_shift($@)]))])])
 
 
-dnl  NC_IF_HAVE_POSIX([if-have-posix], [if-dont-have-posix], [posix-version]])
+dnl  NC_IF_HAVE_POSIX_C([if-have-posix], [if-dont-have-posix], [posix-version]])
 dnl  **************************************************************************
 dnl
 dnl  Checks whether the POSIX API is available
 dnl
 dnl  Example #1 (any POSIX version):
 dnl
-dnl      NC_IF_HAVE_POSIX(
+dnl      NC_IF_HAVE_POSIX_C(
 dnl          [AS_VAR_SET([standard_supported], ['posix'])],
 dnl          [AS_VAR_SET([standard_supported], ['c_standard'])]
 dnl      )
 dnl
 dnl  Example #2 (POSIX 2008):
 dnl
-dnl      NC_IF_HAVE_POSIX(
+dnl      NC_IF_HAVE_POSIX_C(
 dnl          [AS_VAR_SET([standard_supported], ['posix2008'])],
 dnl          [AS_VAR_SET([standard_supported], ['c_standard'])],
 dnl          [200809L]
@@ -205,7 +205,7 @@ dnl  Requires: nothing
 dnl  Authors: madmurphy, Vilhelm Gray
 dnl  (https://stackoverflow.com/a/18240603/2732907)
 dnl
-AC_DEFUN([NC_IF_HAVE_POSIX], [
+AC_DEFUN([NC_IF_HAVE_POSIX_C], [
 	AC_MSG_CHECKING([whether we have POSIX]m4_ifnblank([$3], [ (]m4_dquote(m4_normalize([$3]))[)]))
 	AC_EGREP_CPP([posix_supported], [
 		#define _POSIX_C_SOURCE ]m4_ifnblank([$3], m4_dquote(m4_normalize([$3])), [200809L])[

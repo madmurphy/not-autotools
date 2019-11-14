@@ -2,6 +2,14 @@ Change Log
 ==========
 
 
+0.14.0
+------
+
+Changes:
+
+* Macro † `NC_IF_HAVE_POSIX()` has been renamed to `NC_IF_HAVE_POSIX_C()`
+
+
 0.13.0
 ------
 
@@ -31,7 +39,7 @@ Changes:
 
 Changes:
 
-* New macro `NC_IF_HAVE_POSIX()` has been created in `not-autotools.m4`
+* New macro † `NC_IF_HAVE_POSIX()` has been created in `not-autotools.m4`
 
 
 0.10.0
