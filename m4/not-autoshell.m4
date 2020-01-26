@@ -206,8 +206,7 @@ AC_DEFUN([NS_UNTIL],
 dnl  NS_BREAK
 dnl  **************************************************************************
 dnl
-dnl  M4 sugar that expands to to a shell "break" command, to be used within
-dnl  loops
+dnl  M4 sugar that expands to a shell "break" command, to be used within loops
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -220,7 +219,7 @@ AC_DEFUN([NS_BREAK],
 dnl  NS_CONTINUE
 dnl  **************************************************************************
 dnl
-dnl  M4 sugar that expands to to a shell "continue" command, to be used within
+dnl  M4 sugar that expands to a shell "continue" command, to be used within
 dnl  loops
 dnl
 dnl  Expansion type: shell code

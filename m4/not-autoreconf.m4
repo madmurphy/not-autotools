@@ -208,7 +208,7 @@ dnl          printf("Hello world!\n");
 dnl          return 0;
 dnl      }
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.  
+dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal (void)
 dnl  Requires: nothing

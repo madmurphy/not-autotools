@@ -24,7 +24,7 @@ dnl  **************************************************************************
 dnl  NA_SANITIZE_VARNAME(string)
 dnl  **************************************************************************
 dnl
-dnl  Replaces `/\W/g,` with `'_'` and `/^\d/` with `V\0`
+dnl  Replaces `/\W/g,` with `'_'` and `/^\d/` with `_\0`
 dnl
 dnl  Useful for sanitizing strings that need to be used as variable names in
 dnl  several programming languages (Bash, C, JavaScript, etc.).
@@ -35,9 +35,8 @@ dnl      AC_MSG_NOTICE([NA_SANITIZE_VARNAME([an.invalid-variable_name])])
 dnl
 dnl  will print `an_invalid_variable_name`.
 dnl
-dnl  If `string` begins with a number, an upper case letter `V` will be
-dnl  prepended to the latter (e.g.:
-dnl  `NA_SANITIZE_VARNAME([0123FOO])` => `V0123FOO`).
+dnl  If `string` begins with a number, an underscore will be prepended to the
+dnl  latter (e.g.: `NA_SANITIZE_VARNAME([0123FOO])` => `_0123FOO`).
 dnl
 dnl  This macro can be invoked before `AC_INIT()`.
 dnl
@@ -47,9 +46,247 @@ dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NA_SANITIZE_VARNAME],
-	[m4_if(m4_bregexp(m4_normalize([$1]), [[0-9]]), [0], [V])[]m4_translit(m4_normalize([$1]),
+	[m4_if(m4_bregexp(m4_normalize([$1]), [[0-9]]), [0], [_])[]m4_translit(m4_normalize([$1]),
 		[ !"#$%&\'()*+,-./:;<=>?@[\\]^`{|}~],
 		[__________________________________])])
+
+
+dnl  NA_ESC_APOS(string)
+dnl  **************************************************************************
+dnl
+dnl  Escapes all the occurrences of the apostrophe character in `string`
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NA_ESC_APOS],
+	[m4_bpatsubst([$@], ['], ['\\''])])
+
+
+dnl  NA_DOUBLE_DOLLAR(string)
+dnl  **************************************************************************
+dnl
+dnl  Replaces all the occurrences of the dollar character in `string` with two
+dnl  dollar characters (Makefile escaping)
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NA_DOUBLE_DOLLAR],
+	[m4_bpatsubst([$@], [\$\|@S|@], [@S|@@S|@])])
+
+
+dnl  NA_TRIANGLE_BRACKETS_TO_MAKE_VARS(string)
+dnl  **************************************************************************
+dnl
+dnl  Replaces all variables enclosed within triangle brackets with Makefile
+dnl  syntax for variables
+dnl
+dnl  For example,
+dnl
+dnl      NA_TRIANGLE_BRACKETS_TO_MAKE_VARS([cp 'some_file' '<docdir>/<PACKAGE_TARNAME>'])
+dnl
+dnl  expands to
+dnl
+dnl      cp 'some_file' '$(docdir)/$(PACKAGE_TARNAME)'
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NA_TRIANGLE_BRACKETS_TO_MAKE_VARS],
+	[m4_bpatsubst([$@], [<\([A-Za-z0-9_]*\)>], [@S|@@{:@\1@:}@])])
+
+
+dnl  NA_TRIANGLE_BRACKETS_TO_SHELL_VARS(string)
+dnl  **************************************************************************
+dnl
+dnl  Replaces all variables enclosed within triangle brackets with shell syntax
+dnl  for variables
+dnl
+dnl  For example,
+dnl
+dnl      NA_TRIANGLE_BRACKETS_TO_SHELL_VARS([cp 'some_file' "<docdir>/<PACKAGE_TARNAME>"])
+dnl
+dnl  expands to
+dnl
+dnl      cp 'some_file' "${docdir}/${PACKAGE_TARNAME}"
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NA_TRIANGLE_BRACKETS_TO_SHELL_VARS],
+	[m4_bpatsubst([$@], [<\([A-Za-z0-9_]*\)>], [@S|@{\1}])])
+
+
+dnl  NA_AMENDMENTS_SED_EXPR([amendment1[, amendment2[, ... amendmentN]]])
+dnl  **************************************************************************
+dnl
+dnl  Creates a `sed` expression using all the "exception[-replacement_file]"
+dnl  pairs passed as arguments ("amendments")
+dnl
+dnl  This macro works like `NA_AMEND()`, except that only creates a
+dnl  valid `sed` expression without actually ever invoking `sed` (hence no
+dnl  `output-file` or `amendable-file` parameters are used here). For more
+dnl  information about this macro, please refer to `NA_AMEND()`.
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([NA_AMENDMENTS_SED_EXPR],
+	[m4_ifblank([$1],
+		['/!\s*START_EXCEPTION\s*@{:@@<:@^@:}@@:>@*@:}@\s*!/{d};/!\s*END_EXCEPTION\s*@{:@@<:@^@:}@@:>@*@:}@\s*!/{d};/!\s*ENTRY_POINT\s*@{:@@<:@^@:}@@:>@*@:}@\s*!/{d};/!\s*START_OMISSION\s*!/,/!\s*END_OMISSION\s*!/{d}'],
+		['m4_ifnblank(m4_normalize(m4_argn([2], $1)), [/!\s*END_EXCEPTION\s*@{:@m4_normalize(m4_argn([1], $1))@:}@\s*!/{r '"m4_normalize(m4_argn([2], $1))"$'\n};/!\s*ENTRY_POINT\s*@{:@m4_normalize(m4_argn([1], $1))@:}@\s*!/{r '"m4_normalize(m4_argn([2], $1))"@S|@'\n};])/!\s*START_EXCEPTION\s*@{:@m4_normalize(m4_argn([1], $1))@:}@\s*!/,/!\s*END_EXCEPTION\s*@{:@m4_normalize(m4_argn([1], $1))@:}@\s*!/{d};/!\s*START_EXCEPTION\s*@{:@m4_normalize(m4_argn([1], $1))@:}@\s*!/{d};'NA_AMENDMENTS_SED_EXPR(m4_shift($@))])])
+
+
+dnl  NA_AMEND(output-file, amendable-file[, amendment1[, ... amendmentN]])
+dnl  **************************************************************************
+dnl
+dnl  Creates a new file, amending a model with the content of one or more files
+dnl
+dnl  This macro requires a `output-file` parameter and a `amendable-file`
+dnl  parameter followed by a variable number of amendments containing
+dnl  information about the amendable sections in `amendable-file`.
+dnl
+dnl  Each amendment is a list composed of one or two members (further members
+dnl  will be ignored), where the first member contains the name of the section
+dnl  to replace, and the second member, if present, the path of the file that
+dnl  provides a replacement. If the second member is absent or empty the
+dnl  exception referred to by the first member is simply erased. For example,
+dnl  the following code,
+dnl
+dnl      NA_AMEND([src/main.c], [models/main.c],
+dnl          [[OFF_T_TYPE],      []],
+dnl          [[I_O_FUNCTIONS],   [posix-io.c]]],
+dnl          [[I_O_FUNCTIONS],   [posix-io.c]])
+dnl
+dnl  creates a new file `src/main.c` using `models/main.c` as model, after
+dnl  erasing the replaceable section named `OFF_T_TYPE` and replacing the
+dnl  section named `I_O_FUNCTIONS` with the content of the `posix-io.c` file.
+dnl
+dnl  Replaceable sections in the model can be either **exceptions** or
+dnl  **entry points**.
+dnl
+dnl  **Exceptions** are blocks of text enclosed between an opening line
+dnl  containing the tag `!START_EXCEPTION(amendment-name)!` and a closing line
+dnl  containing the tag `!END_EXCEPTION(amendment-name)!`.
+dnl
+dnl  For example:
+dnl
+dnl      /*@@@@@@@@@@@@@@@@ !START_EXCEPTION(I_O_FUNCTIONS)! @@@@@@@@@@@@@@@@*/
+dnl
+dnl      This is the content of the exception `I_O_FUNCTIONS`...
+dnl
+dnl      /*@@@@@@@@@@@@@@@@@ !END_EXCEPTION(I_O_FUNCTIONS)! @@@@@@@@@@@@@@@@@*/
+dnl
+dnl  If no amendment for a particular exception is passed to `NA_AMEND()`
+dnl  the original content of the exception block is used.
+dnl
+dnl  All opening and closing lines are always erased entirely (even when they
+dnl  contain further text, as the `/*@...` and `...@*/` characters in the
+dnl  example above).
+dnl
+dnl  **Entry points** instead are single lines containing the tag
+dnl  `!ENTRY_POINT([amendment-name])!`, and are used as placeholders for
+dnl  optional amendments that do not replace existing text:
+dnl
+dnl      /*@@@@@@@@@@@@@@@@@@ !ENTRY_POINT(I_O_FUNCTIONS)! @@@@@@@@@@@@@@@@@@*/
+dnl
+dnl  Furthermore, this macro provides also a way to store meta-information or
+dnl  comments in the model, as the blocks of text enclosed between the tags
+dnl  `!START_OMISSION!` and `!END_OMISSION!` are always removed:
+dnl
+dnl      /*@@@@@@@@@@@@@@@@@@@@@@@@ !START_OMISSION! @@@@@@@@@@@@@@@@@@@@@@@@*/
+dnl
+dnl      This text will be lost.
+dnl
+dnl      /*@@@@@@@@@@@@@@@@@@@@@@@@@ !END_OMISSION! @@@@@@@@@@@@@@@@@@@@@@@@@*/
+dnl
+dnl  Because this macro is based on a `sed` expression, amendment names can
+dnl  contain alphanumeric characters only.
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: `NA_AMENDMENTS_SED_EXPR()`
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NA_AMEND],
+	[{ echo 'Creating $1...'; sed NA_AMENDMENTS_SED_EXPR(m4_shift2($@)) "$2" > "$1"; }])
+
+
+dnl  NC_SUBST_NOTMAKE(var[, value])
+dnl  **************************************************************************
+dnl
+dnl  Calls `AC_SUBST(var[, value])` immediately followed by
+dnl  `AM_SUBST_NOTMAKE(var)`
+dnl
+dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NC_SUBST_NOTMAKE], [
+	AC_SUBST([$1][]m4_if(m4_eval([$# > 1]), [1], [, [$2]]))
+	AM_SUBST_NOTMAKE([$1])
+])
+
+
+dnl  NC_GLOBAL_LITERALS(name1, [val1][, name2, [val2][, ... nameN, [valN]]])
+dnl  **************************************************************************
+dnl
+dnl  For each `nameN`-`valN` pair, creates a new argumentless macro named
+dnl  `[GL_]nameN` (where the `GL_` prefix stands for "Global Literal") and a
+dnl  new output substitution named `nameN`, both expanding to `valN` when
+dnl  invoked
+dnl
+dnl  For example:
+dnl
+dnl      NC_GLOBAL_LITERALS(
+dnl          [PROJECT_DESCRIPTION],  [Some description],
+dnl          [COPYLEFT],             [madmurphy]
+dnl      )
+dnl      AC_MSG_NOTICE([package copyleft: ]GL_COPYLEFT)
+dnl      AC_MSG_NOTICE([package copyleft: ${COPYLEFT}])
+dnl
+dnl  Each argument can safely contain any arbitrary character, however all the
+dnl  `nameN` arguments will be processed by `NA_SANITIZE_VARNAME()`, and all
+dnl  the `valN` arguments will be processed by `m4_normalize()`.
+dnl
+dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: `NA_SANITIZE_VARNAME()` and `NA_ESC_APOS()`
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NC_GLOBAL_LITERALS], [
+	m4_define([GL_]NA_SANITIZE_VARNAME([$1]), m4_normalize([$2]))
+	AC_SUBST(NA_SANITIZE_VARNAME([$1]), ['NA_ESC_APOS(m4_normalize([$2]))'])
+	m4_if(m4_eval([$# > 2]), [1], [NC_GLOBAL_LITERALS(m4_shift2($@))])
+])
 
 
 dnl  NC_GET_PROGS(prog1[, prog2, [prog3[, ... progN ]]])
@@ -175,88 +412,47 @@ m4_define([NA_HELP_STRINGS],
 		[m4_text_wrap(m4_argn(1, $1)[,], [  ])m4_newline()NA_HELP_STRINGS(m4_dquote(m4_shift($1))m4_if([$#], [1], [], [, m4_shift($@)]))])])
 
 
-dnl  NC_IF_HAVE_POSIX_C([if-have-posix], [if-dont-have-posix], [posix-version]])
+dnl  NC_MAKETARGET_SUBST(target[, prerequisites], recipe)
 dnl  **************************************************************************
 dnl
-dnl  Checks whether the POSIX API is available
+dnl  Creates a `make` substitution containing a target declaration
 dnl
-dnl  Example #1 (any POSIX version):
+dnl  The `target` argument is used for a `configure` substitution named
+dnl  `[na_]target`, to be placed as the only content of a single line in the
+dnl  `Makefile.am` file.
 dnl
-dnl      NC_IF_HAVE_POSIX_C(
-dnl          [AS_VAR_SET([standard_supported], ['posix'])],
-dnl          [AS_VAR_SET([standard_supported], ['c_standard'])]
-dnl      )
+dnl  For example, after placing the following content in `configure.ac`,
 dnl
-dnl  Example #2 (POSIX 2008):
+dnl      NC_MAKETARGET_SUBST([echo-test], ['clean all'],
+dnl          ['echo test'])
 dnl
-dnl      NC_IF_HAVE_POSIX_C(
-dnl          [AS_VAR_SET([standard_supported], ['posix2008'])],
-dnl          [AS_VAR_SET([standard_supported], ['c_standard'])],
-dnl          [200809L]
-dnl      )
+dnl  and the following line in `Makefile.am`,
 dnl
-dnl  If a `posix-version` argument is passed, this macro will look specifically
-dnl  for the version queried. Possible values for `posix-version` are the same
-dnl  values supported by the POSIX standard `_POSIX_C_SOURCE` feature test
-dnl  macro.
+dnl      @na_echo_test@
 dnl
-dnl  Expansion type: shell code
-dnl  Requires: nothing
-dnl  Authors: madmurphy, Vilhelm Gray
-dnl  (https://stackoverflow.com/a/18240603/2732907)
+dnl  a new `make` target named `echo-test` will be available, with `clean` and
+dnl  `all` as prerequisites
 dnl
-AC_DEFUN([NC_IF_HAVE_POSIX_C], [
-	AC_MSG_CHECKING([whether we have POSIX]m4_ifnblank([$3], [ (]m4_dquote(m4_normalize([$3]))[)]))
-	AC_EGREP_CPP([posix_supported], [
-		#define _POSIX_C_SOURCE ]m4_ifnblank([$3], m4_dquote(m4_normalize([$3])), [200809L])[
-		#include <unistd.h>
-		#ifdef _POSIX_VERSION
-		]m4_ifnblank([$3], [[#]if _POSIX_VERSION == ]m4_dquote(m4_normalize([$3])))[
-		posix_supported
-		]m4_ifnblank([$3], [[#]endif])[
-		#endif
-	], [
-		AC_MSG_RESULT([yes])
-		$1
-	], [
-		AC_MSG_RESULT([no])
-		$2
-	])
-])
-
-
-dnl  NC_SET_GLOBALLY(name1, [value1][, name2, [value2][, ... nameN, [valueN]]])
-dnl  **************************************************************************
+dnl  The `target` argument must be a literal.
 dnl
-dnl  For each `nameN`-`valueN` pair, creates a new argumentless macro named
-dnl  `[GL_]nameN` (where the `GL_` prefix stands for "Global Literal") and a
-dnl  new output substitution named `nameN`, both expanding to `valueN` when
-dnl  invoked
+dnl  The `prerequisites` argument can be blank or omitted (in this case the
+dnl  macro will take only two arguments). This argument supports shell
+dnl  expansion and must be properly quoted.
 dnl
-dnl  For example:
-dnl
-dnl      NC_SET_GLOBALLY(
-dnl          [PROJECT_DESCRIPTION],  [Some description],
-dnl          [COPYLEFT],             [madmurphy]
-dnl      )
-dnl      AC_MSG_NOTICE([package copyleft: ]GL_COPYLEFT)
-dnl      AC_MSG_NOTICE([package copyleft: ${COPYLEFT}])
-dnl
-dnl  Each argument can safely contain any arbitrary character, however all the
-dnl  `nameN` arguments will be processed by `NA_SANITIZE_VARNAME()`, and all
-dnl  the `valueN` arguments will be processed by `m4_normalize()`.
-dnl
-dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl  Each line of the `recipe` argument will be indented of one TAB. This
+dnl  argument supports shell expansion and must be properly quoted.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()`
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
-AC_DEFUN([NC_SET_GLOBALLY], [
-	m4_define([GL_]NA_SANITIZE_VARNAME([$1]), m4_normalize([$2]))
-	AC_SUBST(NA_SANITIZE_VARNAME([$1]), ['m4_bpatsubst(m4_normalize([$2]), ['], ['\\''])'])
-	m4_if(m4_eval([$# > 2]), [1], [NC_SET_GLOBALLY(m4_shift2($@))])
+AC_DEFUN([NC_MAKETARGET_SUBST], [
+	AC_SUBST(NA_SANITIZE_VARNAME([na_$1]),
+		[m4_if(m4_eval([$# > 2]), [1],
+			['$1[]m4_ifblank([$2], ['@S|@':\n'], [: '$2@S|@'\n'])"@S|@@{:@echo $3],
+			[$1@S|@':\n'"@S|@@{:@echo $2]) | sed s/^/\\t/g@:}@"])
+	AM_SUBST_NOTMAKE(NA_SANITIZE_VARNAME([na_$1]))
 ])
 
 

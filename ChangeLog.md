@@ -2,12 +2,30 @@ Change Log
 ==========
 
 
+0.15.0
+------
+
+Changes:
+
+* New library file `not-cc.m4` has been created together with the new macros
+  `NC_CC_CHECK_SIZEOF()`, `NC_CC_CHECK_CHAR_BIT` and `NC_CC_HAVE_HEADERS()`
+* New macros `NA_AMEND()`, `NA_AMENDMENTS_SED_EXPR()`, `NA_DOUBLE_DOLLAR()`,
+  `NA_ESC_APOS()`, `NA_TRIANGLE_BRACKETS_TO_MAKE_VARS()`,
+  `NA_TRIANGLE_BRACKETS_TO_SHELL_VARS()`, `NC_MAKETARGET_SUBST()` and
+  `NC_SUBST_NOTMAKE()` have been created in `not-autotools.m4`
+* Macro † `NC_IF_HAVE_POSIX_C()` has been renamed to
+  `NC_CC_IF_HAVE_POSIX_C()` and has been moved to `not-cc.m4`
+* Macro † `NC_SET_GLOBALLY()` in `not-autotools.m4` has been renamed to
+  `NC_GLOBAL_LITERALS()`
+* Code review (macro `NA_SANITIZE_VARNAME()` in `not-autotools.m4`)
+
+
 0.14.0
 ------
 
 Changes:
 
-* Macro † `NC_IF_HAVE_POSIX()` has been renamed to `NC_IF_HAVE_POSIX_C()`
+* Macro † `NC_IF_HAVE_POSIX()` has been renamed to † `NC_IF_HAVE_POSIX_C()`
 
 
 0.13.0
@@ -98,7 +116,7 @@ Changes:
 * New macro `NA_HELP_STRINGS()` has been created in `not-autotools.m4`
 * Code review (`NC_CONFIG_SHADOW_DIR()` in `not-extended-config.m4`)
 * Macro † `NA_SET_GLOBALLY()` in `not-autotools.m4` has been renamed to
-  `NC_SET_GLOBALLY()`
+  † `NC_SET_GLOBALLY()`
 * Documentation
 
 
