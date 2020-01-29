@@ -245,18 +245,19 @@ AC_DEFUN_ONCE([NC_CONFIG_SHADOW_DIR], [
 
 	AC_DEFUN([NC_THREATEN_FILES], [
 		AM_COND_IF([HAVE_EXTENDED_CONFIG], [
-			AC_CONFIG_FILES(m4_foreach([_F_ITER_], m4_dquote(]m4_dquote(][$][@][)[),
-				[n4_case_in(m4_quote(_F_ITER_), m4_quote(NC_THREATENED_LIST),
-					[n4_case_in(m4_quote(_F_ITER_), m4_quote(NC_SHADOW_REDEF), [],
-						[m4_define([NC_SHADOW_REDEF],
-							m4_ifset([NC_SHADOW_REDEF],
-								[m4_dquote(NC_SHADOW_REDEF,[ ]_F_ITER_)],
-								[m4_dquote(_F_ITER_)]))])],
-					[m4_define([NC_THREATENED_LIST],
-						m4_ifset([NC_THREATENED_LIST],
-								[m4_dquote(NC_THREATENED_LIST, _F_ITER_)],
-								[m4_dquote(_F_ITER_)]))
-					m4_quote([${srcdir}/]NC_CONFNEW_SUBDIR[/]_F_ITER_[:]NC_SHADOW_DIR[/]_F_ITER_[.in])])]))
+			AC_CONFIG_FILES(m4_foreach([_F_ITER_], m4_dquote(]m4_dquote(m4_map_args_sep([m4_normalize(], [)], [,], ][$][@][))[),
+				[m4_ifnblank(m4_quote(_F_ITER_),
+					[n4_case_in(m4_quote(_F_ITER_), m4_quote(NC_THREATENED_LIST),
+						[n4_case_in(m4_quote(_F_ITER_), m4_quote(NC_SHADOW_REDEF), [],
+							[m4_define([NC_SHADOW_REDEF],
+								m4_ifset([NC_SHADOW_REDEF],
+									[m4_dquote(NC_SHADOW_REDEF,[ ]_F_ITER_)],
+									[m4_dquote(_F_ITER_)]))])],
+						[m4_define([NC_THREATENED_LIST],
+							m4_ifset([NC_THREATENED_LIST],
+									[m4_dquote(NC_THREATENED_LIST, _F_ITER_)],
+									[m4_dquote(_F_ITER_)]))
+						m4_quote([${srcdir}/]NC_CONFNEW_SUBDIR[/]_F_ITER_[:]NC_SHADOW_DIR[/]_F_ITER_[.in])])])]))
 		])
 
 		m4_ifdef([NC_SHADOW_REDEF],
