@@ -219,6 +219,38 @@ AC_DEFUN([NR_CONFIG_FILES],
 	[m4_ifnblank([$1], [m4_pushdef([_sep_idx_], m4_quote(m4_bregexp([$1], [:])))m4_syscmd([cat << 'NA_END_OF_FILE' > ']m4_if(_sep_idx_, [-1], m4_normalize([[$1]]), [m4_normalize(m4_quote(m4_substr([$1], [0], _sep_idx_)))])[']m4_newline()m4_quote(m4_include(m4_if(_sep_idx_, [-1], m4_normalize([[$1.m4]]), [m4_normalize(m4_quote(m4_substr([$1], m4_eval(_sep_idx_[ + 1]))))])))[NA_END_OF_FILE])m4_popdef([_sep_idx_])])m4_if([$#], [1], [], [NR_CONFIG_FILES(m4_shift($@))])])
 
 
+dnl  NR_PROG_VERSION(program)
+dnl  **************************************************************************
+dnl
+dnl  Launches `program --version` via `m4_esyscmd()` and passes the output to
+dnl  `grep -o -m 1 '[0-9]\+.[0-9]\+\(.[0-9]\+\(.[0-9]\+\)\?\)\?\S*'`
+dnl
+dnl  For example,
+dnl
+dnl      AC_MSG_NOTICE([autoconf version: ]NR_PROG_VERSION([autoconf]))
+dnl
+dnl  will generate the following output:
+dnl
+dnl      configure: autoconf version: 2.69
+dnl
+dnl  For caching the result of a single `NR_PROG_VERSION()` call, the
+dnl  `n4_expand_once()` macro from `not-m4sugar.m4` is usually a good solution.
+dnl  For example to cache into a `MY_AC_VERSION` macro the current version of
+dnl  `autoconf`, use:
+dnl
+dnl      n4_expand_once([MY_AC_VERSION], [NR_PROG_VERSION], [autoconf])
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([NR_PROG_VERSION],
+		[m4_esyscmd_s(m4_changequote({{<<, >>}}){{<<'$1' --version | grep -o -m 1 '[0-9]\+.[0-9]\+\(.[0-9]\+\(.[0-9]\+\)\?\)\?\S*'>>}}m4_changequote({{<<[>>}}, {{<<]>>}}))])
+
+
 
 dnl  **************************************************************************
 dnl  NOTE:  The `NR_` prefix (which stands for "Not autoReconf") is used with

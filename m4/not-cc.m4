@@ -167,7 +167,7 @@ AC_DEFUN([NC_CC_CHECK_SIZEOF], [
 dnl  NC_CC_CHECK_CHAR_BIT
 dnl  **************************************************************************
 dnl
-dnl  Calculates the number of bits of the `char` data type using compile checks
+dnl  Calculates the size in bits of the `char` data type using compile checks
 dnl
 dnl  The C Standard guarantees that a `char` data type is able to store at
 dnl  least 8 bits, but does not guarantee that a `char` is exactly 8 bits,

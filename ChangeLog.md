@@ -2,6 +2,17 @@ Change Log
 ==========
 
 
+0.16.0
+------
+
+Changes:
+
+* New macros `n4_expand_once()` and `n4_expanded_once()` have been created in
+  `not-m4sugar.m4`
+* New macro `NR_PROG_VERSION()` has been created in `not-autoreconf.m4`
+* Code review (macro `n4_define_substrings_as()` in `not-m4sugar.m4`)
+
+
 0.15.1
 ------
 

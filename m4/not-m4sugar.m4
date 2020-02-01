@@ -427,6 +427,89 @@ m4_define([n4_mem],
 		[m4_define([$1], [$2])n4_mem(m4_shift($@))])])
 
 
+dnl  n4_expanded_once(placeholder, macro[, arg1[, arg2[, ... argN ]]])
+dnl  **************************************************************************
+dnl
+dnl  Calls `macro[(arg1[, arg2[, ... argN ]])]` and stores the result into a
+dnl  novel `placeholder` macro
+dnl
+dnl  For example,
+dnl
+dnl      n4_expanded_once([MY_AM_VERSION], [NR_PROG_VERSION], [automake])
+dnl      n4_expanded_once([MY_AC_VERSION], [NR_PROG_VERSION], [autoconf])
+dnl      n4_expanded_once([MY_LT_VERSION], [NR_PROG_VERSION], [libtool])
+dnl      n4_expanded_once([MY_ACLOCAL_VERSION], [NR_PROG_VERSION], [aclocal])
+dnl
+dnl      AC_MSG_NOTICE([automake version: MY_AM_VERSION])
+dnl      AC_MSG_NOTICE([autoconf version: MY_AC_VERSION])
+dnl      AC_MSG_NOTICE([libtool version: MY_LT_VERSION])
+dnl      AC_MSG_NOTICE([aclocal version: MY_ACLOCAL_VERSION])
+dnl
+dnl  will generate the following output:
+dnl
+dnl      configure: automake version: 1.16.1
+dnl      configure: autoconf version: 2.69
+dnl      configure: libtool version: 2.4.6.42-b88ce
+dnl      configure: aclocal version: 1.16.1
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal (void)
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_expanded_once],
+	[m4_define([$1], $2(m4_shift2($@)))])
+
+
+dnl  n4_expand_once(placeholder, macro[, arg1[, arg2[, ... argN ]]])
+dnl  **************************************************************************
+dnl
+dnl  Creates a new macro named `placeholder` that when invoked redefines itself
+dnl  once and for all as the expansion of `macro[(arg1[, arg2[, ... argN ]])]`
+dnl
+dnl  This macro is very similar to `n4_expanded_once()`, except that it waits
+dnl  for the first invocation of `placeholder` to expand `macro`. This allows
+dnl  expensive operations (such as system calls) to be skipped if not used.
+dnl
+dnl  For example,
+dnl
+dnl      n4_expand_once([MY_AM_VERSION], [NR_PROG_VERSION], [automake])
+dnl      n4_expand_once([MY_AC_VERSION], [NR_PROG_VERSION], [autoconf])
+dnl      n4_expand_once([MY_LT_VERSION], [NR_PROG_VERSION], [libtool])
+dnl      n4_expand_once([MY_ACLOCAL_VERSION], [NR_PROG_VERSION], [aclocal])
+dnl
+dnl      m4_if(something, [1], [
+dnl          AC_MSG_NOTICE([automake version: MY_AM_VERSION])
+dnl          AC_MSG_NOTICE([autoconf version: MY_AC_VERSION])
+dnl          AC_MSG_NOTICE([libtool version: MY_LT_VERSION])
+dnl          AC_MSG_NOTICE([aclocal version: MY_ACLOCAL_VERSION])
+dnl      ])
+dnl
+dnl  will generate the following output if the expansion of `something` equals
+dnl  `1`,
+dnl
+dnl      configure: automake version: 1.16.1
+dnl      configure: autoconf version: 2.69
+dnl      configure: libtool version: 2.4.6.42-b88ce
+dnl      configure: aclocal version: 1.16.1
+dnl
+dnl  otherwise no system call will be made -- for the `NR_PROG_VERSION()` macro
+dnl  please see `not-autoreconf.m4`.
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal (void)
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_expand_once],
+	[m4_define([$1],
+		[m4_define([$1], $2(m4_shift2($@)))])])
+
+
 dnl  n4_define_substrings_as(string, regexp, macro0[, macro1[, ... macroN ]])
 dnl  **************************************************************************
 dnl
@@ -464,11 +547,11 @@ dnl
 dnl  **************************************************************************
 m4_define([n4_define_substrings_as],
 	[m4_bregexp([$1], [$2],
-		m4_if([$3], [], [],
+		m4_ifnblank([$3],
 			[[m4_define(m4_normalize([$3]), [m4_quote(\&)])]])[]m4_if(m4_eval([$# > 3]), [1],
-			[m4_for([_idx_], [1], [$# - 3], [1],
-				[m4_if(m4_normalize(m4_argn(_idx_, m4_shift3($@))), [], [],
-					[[m4_define(m4_normalize(m4_argn(]_idx_[, m4_shift3($@))), m4_quote(\]_idx_[))]])])]))])
+			[m4_for([_idx_], [4], [$#], [1],
+				[m4_ifnblank(m4_quote(m4_argn(_idx_, $@)),
+					[[m4_define(m4_normalize(m4_argn(]_idx_[, $@)), m4_quote(\]m4_eval(_idx_[ - 3])[))]])])]))])
 
 
 dnl  n4_repeat(n_times, text)
