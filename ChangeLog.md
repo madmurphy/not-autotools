@@ -2,6 +2,19 @@ Change Log
 ==========
 
 
+0.17.0
+------
+
+Changes:
+
+* Macro † `NC_CC_IF_HAVE_POSIX_C()` in `not-cc.m4` has been rewritten (now
+  supports only one optional argument and caches the result of the check) and
+  renamed to `NC_CC_CHECK_POSIX()`
+* Code review (macros `NA_TRIANGLE_BRACKETS_TO_MAKE_VARS()` and
+  `NA_TRIANGLE_BRACKETS_TO_SHELL_VARS()` in `not-autotools.m4`; macro
+  `NC_CC_CHECK_SIZEOF()` in `not-cc.m4`)
+
+
 0.16.0
 ------
 
@@ -33,7 +46,7 @@ Changes:
   `NA_TRIANGLE_BRACKETS_TO_SHELL_VARS()`, `NC_MAKETARGET_SUBST()` and
   `NC_SUBST_NOTMAKE()` have been created in `not-autotools.m4`
 * Macro † `NC_IF_HAVE_POSIX_C()` has been renamed to
-  `NC_CC_IF_HAVE_POSIX_C()` and has been moved to `not-cc.m4`
+  † `NC_CC_IF_HAVE_POSIX_C()` and has been moved to `not-cc.m4`
 * Macro † `NC_SET_GLOBALLY()` in `not-autotools.m4` has been renamed to
   `NC_GLOBAL_LITERALS()`
 * Code review (macro `NA_SANITIZE_VARNAME()` in `not-autotools.m4`)

@@ -151,7 +151,7 @@ AC_DEFUN([NC_CC_CHECK_SIZEOF], [
 		done
 	])
 	AS_IF([test "x${ac_cv_]__label__[}" = x], [
-		AC_MSG_RESULT([??])
+		AC_MSG_RESULT([unknown])
 		AC_MSG_ERROR([cannot determine a size for $1])
 	])
 	AC_MSG_RESULT([${ac_cv_]__label__[}])
@@ -227,25 +227,26 @@ AC_DEFUN([NC_CC_CHECK_CHAR_BIT], [
 ])
 
 
-dnl  NC_CC_IF_HAVE_POSIX_C([if-have-posix], [if-dont-have-posix], [posix-version]])
+dnl  NC_CC_CHECK_POSIX([posix-version])
 dnl  **************************************************************************
 dnl
 dnl  Checks whether the POSIX C API is available
 dnl
 dnl  Example #1 (any POSIX version):
 dnl
-dnl      NC_CC_IF_HAVE_POSIX_C(
-dnl          [AS_VAR_SET([standard_supported], ['posix'])],
-dnl          [AS_VAR_SET([standard_supported], ['c_standard'])]
-dnl      )
+dnl      NC_CC_CHECK_POSIX
+dnl
+dnl      AS_IF([test "x${ac_cv_have_posix_c}" = xyes],
+dnl          [AC_MSG_NOTICE([The POSIX C Standard is supported])],
+dnl          [AC_MSG_NOTICE([The POSIX C Standard is not supported])])
 dnl
 dnl  Example #2 (POSIX 2008):
 dnl
-dnl      NC_CC_IF_HAVE_POSIX_C(
-dnl          [AS_VAR_SET([standard_supported], ['posix2008'])],
-dnl          [AS_VAR_SET([standard_supported], ['c_standard'])],
-dnl          [200809L]
-dnl      )
+dnl      NC_CC_CHECK_POSIX([200809L])
+dnl
+dnl      AS_IF([test "x${ac_cv_have_posix_200809L_c}" = xyes],
+dnl          [AC_MSG_NOTICE([The POSIX C Standard version 2008 is supported])],
+dnl          [AC_MSG_NOTICE([The POSIX C Standard version 2008 is not supported])])
 dnl
 dnl  If a `posix-version` argument is passed, this macro will look specifically
 dnl  for the version queried. Possible values for `posix-version` are the same
@@ -260,26 +261,29 @@ dnl  Authors: madmurphy, Vilhelm Gray
 dnl  (https://stackoverflow.com/a/18240603/2732907)
 dnl
 dnl  **************************************************************************
-AC_DEFUN([NC_CC_IF_HAVE_POSIX_C], [
-	AC_MSG_CHECKING([whether we have POSIX]m4_ifnblank([$3],
-		[ @{:@]m4_dquote(m4_normalize([$3]))[@:}@]))
-	AC_EGREP_CPP([posix_supported], [
-		@%:@define _POSIX_C_SOURCE ]m4_ifnblank([$3],
-			m4_dquote(m4_normalize([$3])), [200809L])[
-		@%:@include <unistd.h>
-		@%:@ifdef _POSIX_VERSION
-		]m4_ifnblank([$3],
-			[@%:@if _POSIX_VERSION == ]m4_dquote(m4_normalize([$3])))[
-		posix_supported
-		]m4_ifnblank([$3], [@%:@endif])[
-		@%:@endif
-	], [
-		AC_MSG_RESULT([yes])
-		$1
-	], [
-		AC_MSG_RESULT([no])
-		$2
+AC_DEFUN([NC_CC_CHECK_POSIX], [
+	AC_MSG_CHECKING([whether we have POSIX]m4_ifnblank([$1],
+		[[ @{:@$1@:}@]]))
+	AC_CACHE_VAL([ac_cv_have_posix]m4_ifnblank([$1], [[_$1]])[_c], [
+		AC_EGREP_CPP([posix_supported], [
+			@%:@define _POSIX_C_SOURCE ]m4_ifnblank([$1],
+				[[$1]], [[200809L]])[
+			@%:@include <unistd.h>
+			@%:@ifdef _POSIX_VERSION
+			]m4_ifnblank([$1],
+				[[@%:@if _POSIX_VERSION == $1]])[
+			posix_supported
+			]m4_ifnblank([$1], [@%:@endif])[
+			@%:@endif
+		], [
+			AS_VAR_SET([ac_cv_have_posix]m4_ifnblank([$1], [[_$1]])[_c],
+				['yes'])
+		], [
+			AS_VAR_SET([ac_cv_have_posix]m4_ifnblank([$1], [[_$1]])[_c],
+				['no'])
+		])
 	])
+	AC_MSG_RESULT([${ac_cv_have_posix]m4_ifnblank([$1], [[_$1]])[_c}])
 ])
 
 

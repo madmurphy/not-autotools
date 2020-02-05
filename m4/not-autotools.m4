@@ -106,7 +106,10 @@ dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NA_TRIANGLE_BRACKETS_TO_MAKE_VARS],
-	[m4_bpatsubst([$@], [<\([A-Za-z0-9_]*\)>], [@S|@@{:@\1@:}@])])
+	[m4_bpatsubst([$*], [<\([A-Za-z0-9_@*%<?^+|]+\)>],
+		[m4_if(m4_len([\1]), [1],
+			[@S|@\1],
+			[@S|@@{:@\1@:}@])])])
 
 
 dnl  NA_TRIANGLE_BRACKETS_TO_SHELL_VARS(string)
@@ -131,7 +134,7 @@ dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NA_TRIANGLE_BRACKETS_TO_SHELL_VARS],
-	[m4_bpatsubst([$@], [<\([A-Za-z0-9_]*\)>], [@S|@{\1}])])
+	[m4_bpatsubst([$*], [<\([A-Za-z0-9_:#*%@$|{}]*\)>], [@S|@{\1}])])
 
 
 dnl  NA_AMENDMENTS_SED_EXPR([amendment1[, amendment2[, ... amendmentN]]])
