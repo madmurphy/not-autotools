@@ -2,6 +2,17 @@ Change Log
 ==========
 
 
+0.18.0
+------
+
+Changes:
+
+* New macros `NS_TEXT_WRAP()`, `NS_TEXT_WRAP_UNQUOTED()` and
+  `NS_TEXT_WRAP_CENTER()` have been created in `not-autoshell.m4`
+* Code review (macro `m4_text_center()` in `not-fancy-texts.m4`)
+* Documentation
+
+
 0.17.0
 ------
 

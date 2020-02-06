@@ -88,7 +88,11 @@ dnl          src/libfoo.pc.in
 dnl          src/Makefile
 dnl      ])
 dnl
-dnl      NC_THREATEN_FILES([package.json], [src/winres.rc], [...])
+dnl      NC_THREATEN_FILES(
+dnl          [package.json],
+dnl          [src/winres.rc],
+dnl          [...]
+dnl      )
 dnl
 dnl  The files so indicized are now expected to have their template inside the
 dnl  directory previously passed to `NC_CONFIG_SHADOW_DIR()` exactly in the
@@ -103,6 +107,9 @@ dnl
 dnl      [... DO SOMETHING ELSE ...]
 dnl
 dnl      NC_THREATEN_FILES([package.json])
+dnl
+dnl      [...]
+dnl
 dnl      NC_THREATEN_FILES([...])
 dnl
 dnl  Alternatively you can use `NC_THREATEN_BLINDLY` for automatically adding
@@ -169,12 +176,13 @@ dnl
 dnl  And finally, to add a bit of salt, you should also consider to include
 dnl  these two targets in your `Makefile.am`:
 dnl      
-dnl      clean-local:
+dnl      distclean-local:
 dnl          -rm -rf $(confnewdir)
 dnl
 dnl      if HAVE_UPDATES
-dnl      
-dnl      synch:
+dnl
+dnl      .PHONY: mergenew
+dnl      mergenew:
 dnl          -cp -rf $(confnewdir)/* ./
 dnl      
 dnl      endif

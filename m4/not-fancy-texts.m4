@@ -36,8 +36,7 @@ m4_define([n4_sp],
 		[n4_sp(m4_eval([$1 - 1]))[ ]])])
 
 
-dnl  m4_text_center(text[, prefix[, screen-width[=79[,
-dnl      max-width[=screen-width - m4_len(prefix)]]]]])
+dnl  m4_text_center(text[, prefix[, max-width = screen-width - m4_len(prefix)[, screen-width = 79]]])
 dnl  **************************************************************************
 dnl
 dnl  Relatively similar to `m4_text_wrap()`, but the text is centered
@@ -55,7 +54,7 @@ dnl      fringilla metus. Sed bibendum orci leo, a aliquet lectus ornare et.
 dnl      Nam imperdiet justo non felis ullamcorper pharetra. Curabitur ut
 dnl      condimentum urna. Sed pretium quam non metus pulvinar accumsan.
 dnl      Suspendisse in ullamcorper diam. Praesent at sollicitudin nisl. Nunc
-dnl      sollicitudin maximus dignissim.], [|*|], 70, 50)
+dnl      sollicitudin maximus dignissim.], [|*|], 50, 70)
 dnl      \*/
 dnl
 dnl  will print
@@ -89,8 +88,9 @@ dnl
 dnl  **************************************************************************
 m4_define([m4_text_center],
 	[m4_bpatsubst(_m4_text_wrap([$1], [], [],
-		m4_default_quoted([$4], m4_eval(m4_default_quoted([$3], [79])[ - ]m4_len([$2])))), [^.*$],
-			[m4_escape([$2]n4_sp(m4_eval((m4_default_quoted([$3], [79])[ - ]m4_len([\&])[ - ]m4_len([$2])) / 2))[\&])])])
+			m4_default_nblank_quoted([$3], m4_eval(m4_default_nblank_quoted([$4], [79])[ - ]m4_len([$2])))),
+		[^.*$],
+		[m4_escape([$2]n4_sp(m4_eval((m4_default_nblank_quoted([$4], [79])[ - ]m4_len([\&])[ - ]m4_len([$2])) / 2))[\&])])])
 
 
 
