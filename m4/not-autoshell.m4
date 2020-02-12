@@ -230,6 +230,168 @@ AC_DEFUN([NS_CONTINUE],
 	[m4_newline()continue;m4_newline()])
 
 
+dnl  NS_TEST_EQ(left1, right1[, left2, right2[, ... leftN, rightN]])
+dnl  **************************************************************************
+dnl
+dnl  Checks if all equality tests have succeeded and triggers `true` or `false`
+dnl  accordingly
+dnl
+dnl  For example,
+dnl
+dnl      AS_VAR_SET([first], [yes])
+dnl      AS_VAR_SET([second], [no])
+dnl
+dnl      AS_IF([NS_TEST_EQ(
+dnl              [${first}], [yes],
+dnl              [${second}], [no])],
+dnl          [AC_MSG_NOTICE([Test passed])],
+dnl          [AC_MSG_NOTICE([Test not passed])])
+dnl
+dnl  will print
+dnl
+dnl      Test passed
+dnl
+dnl  To understand how the macro works, the following code
+dnl
+dnl      NS_TEST_EQ([one], [two], [three], [four])
+dnl
+dnl  expands to
+dnl
+dnl      test "xonethree" = "xtwofour"
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NS_TEST_EQ],
+	[m4_if([$#], [0], [], [$#], [1], [], [$#], [2],
+		[test "x[]_AS_QUOTE([[$1]])" = "x[]_AS_QUOTE([[$2]])"],
+		[NS_TEST_EQ([$1$3], [$2$4]m4_if([$#], [3], [], [$#], [4], [],
+			[, m4_shift3(m4_shift($@))]))])])
+
+
+dnl  NS_TEST_NE(left1, right1[, left2, right2[, ... leftN, rightN]])
+dnl  **************************************************************************
+dnl
+dnl  Checks if at least one equality test has failed and triggers `true` or
+dnl  `false` accordingly
+dnl
+dnl  For example,
+dnl
+dnl      AS_VAR_SET([first], [yes])
+dnl      AS_VAR_SET([second], [no])
+dnl
+dnl      AS_IF([NS_TEST_NE(
+dnl              [${first}], [yes],
+dnl              [${second}], [no])],
+dnl          [AC_MSG_NOTICE([Test passed])],
+dnl          [AC_MSG_NOTICE([Test not passed])])
+dnl
+dnl  will print
+dnl
+dnl      Test not passed
+dnl
+dnl  To understand how the macro works, the following code
+dnl
+dnl      NS_TEST_NE([one], [two], [three], [four])
+dnl
+dnl  expands to
+dnl
+dnl      test "xonethree" != "xtwofour"
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NS_TEST_NE],
+	[m4_if([$#], [0], [], [$#], [1], [], [$#], [2],
+		[test "x[]_AS_QUOTE([[$1]])" != "x[]_AS_QUOTE([[$2]])"],
+		[NS_TEST_NE([$1$3], [$2$4]m4_if([$#], [3], [], [$#], [4], [],
+			[, m4_shift3(m4_shift($@))]))])])
+
+
+dnl  NS_TEST_AEQ(string1, string2[, string3[, ... stringN]])
+dnl  **************************************************************************
+dnl
+dnl  Check if all arguments expand to the same string and triggers `true` or
+dnl  `false` accordingly
+dnl
+dnl  For example,
+dnl
+dnl      AC_HEADER_STDBOOL
+dnl
+dnl      AC_CHECK_HEADERS([stddef.h stdint.h stdio.h stdlib.h])
+dnl
+dnl      AS_IF([NS_TEST_AEQ([yes],
+dnl          [${ac_cv_header_stdio_h}], [${ac_cv_header_stddef_h}],
+dnl          [${ac_cv_header_stdbool_h}], [${ac_cv_header_stdint_h}],
+dnl          [${ac_cv_header_stdlib_h}])],
+dnl              [AC_MSG_NOTICE([Test passed])],
+dnl              [AC_MSG_ERROR([Test not passed])])
+dnl
+dnl  will likely print
+dnl
+dnl      Test passed
+dnl
+dnl  To understand how the macro works, the following code
+dnl
+dnl      NS_TEST_AEQ([one], [two], [three], [four])
+dnl
+dnl  expands to
+dnl
+dnl      test "xtwothreefour" = "xoneoneone"
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NS_TEST_AEQ],
+	[test "x[]_AS_QUOTE(m4_dquote(m4_joinall(, m4_shift($@))))" = "x[]_AS_QUOTE(m4_dquote(m4_for([], [2], [$#], [1], [[$1]])))"])
+
+
+dnl  NS_TEST_NAE(string1, string2[, string3[, ... stringN]])
+dnl  **************************************************************************
+dnl
+dnl  Check if all arguments do **not** expand to the same string and triggers
+dnl  `true` or `false` accordingly
+dnl
+dnl  For example,
+dnl
+dnl      AC_HEADER_STDBOOL
+dnl
+dnl      AC_CHECK_HEADERS([stddef.h stdint.h stdio.h stdlib.h])
+dnl
+dnl      AS_IF([NS_TEST_NAE([yes],
+dnl          [${ac_cv_header_stdio_h}], [${ac_cv_header_stddef_h}],
+dnl          [${ac_cv_header_stdbool_h}], [${ac_cv_header_stdint_h}],
+dnl          [${ac_cv_header_stdlib_h}])],
+dnl              [AC_MSG_ERROR([Test not passed])],
+dnl              [AC_MSG_NOTICE([Test passed])])
+dnl
+dnl  will likely print
+dnl
+dnl      Test passed
+dnl
+dnl  To understand how the macro works, the following code
+dnl
+dnl      NS_TEST_NAE([one], [two], [three], [four])
+dnl
+dnl  expands to
+dnl
+dnl      test "xtwothreefour" != "xoneoneone"
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NS_TEST_NAE],
+	[test "x[]_AS_QUOTE(m4_dquote(m4_joinall(, m4_shift($@))))" != "x[]_AS_QUOTE(m4_dquote(m4_for([], [2], [$#], [1], [[$1]])))"])
+
+
 dnl  NS_TEXT_WRAP(text[, max-width=79])
 dnl  **************************************************************************
 dnl
@@ -292,7 +454,7 @@ AC_DEFUN([NS_TEXT_WRAP], [{
 	while :; do
 		_oldtxt_="${_newtxt_}"
 		_newtxt_="$(echo -n "${_oldtxt_}" | sed '
-			s/^..\{'m4_ifblank([$2], ['79'], [$2])'\}/&\x00/;
+			s/^..\{'m4_default_nblank([$2], ['79'])'\}/&\x00/;
 			s/^\(\S\+\)\x00\(\S*\)\s\|\(^\|\s\)\(\S*\)\x00/\1\2\x00\4/;
 			s/^\x00//;
 			s/\x00/\n/;
@@ -340,7 +502,7 @@ dnl  **************************************************************************
 AC_DEFUN([NS_TEXT_WRAP_UNQUOTED],
 	[m4_if([$#], [0],
 		[NS_TEXT_WRAP],
-		[NS_TEXT_WRAP(["]m4_dquote(_AS_QUOTE([$1]))["]m4_if([$#], [1], [], [, $2]))])])
+		[NS_TEXT_WRAP(["]m4_dquote(_AS_QUOTE([[$1]]))["]m4_if([$#], [1], [], [, $2]))])])
 
 
 dnl  NS_TEXT_WRAP_CENTER(text[, max-width=60[, screen-width=79]])

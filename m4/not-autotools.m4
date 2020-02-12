@@ -155,7 +155,7 @@ dnl  Requires: nothing
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
-m4_define([NA_AMENDMENTS_SED_EXPR],
+AC_DEFUN([NA_AMENDMENTS_SED_EXPR],
 	[m4_ifblank([$1],
 		['/!\s*START_EXCEPTION\s*@{:@@<:@^@:}@@:>@*@:}@\s*!/{d};/!\s*END_EXCEPTION\s*@{:@@<:@^@:}@@:>@*@:}@\s*!/{d};/!\s*ENTRY_POINT\s*@{:@@<:@^@:}@@:>@*@:}@\s*!/{d};/!\s*START_OMISSION\s*!/,/!\s*END_OMISSION\s*!/{d}'],
 		['m4_ifnblank(m4_normalize(m4_argn([2], $1)), [/!\s*END_EXCEPTION\s*@{:@m4_normalize(m4_argn([1], $1))@:}@\s*!/{r '"m4_normalize(m4_argn([2], $1))"$'\n};/!\s*ENTRY_POINT\s*@{:@m4_normalize(m4_argn([1], $1))@:}@\s*!/{r '"m4_normalize(m4_argn([2], $1))"@S|@'\n};])/!\s*START_EXCEPTION\s*@{:@m4_normalize(m4_argn([1], $1))@:}@\s*!/,/!\s*END_EXCEPTION\s*@{:@m4_normalize(m4_argn([1], $1))@:}@\s*!/{d};/!\s*START_EXCEPTION\s*@{:@m4_normalize(m4_argn([1], $1))@:}@\s*!/{d};'NA_AMENDMENTS_SED_EXPR(m4_shift($@))])])
@@ -164,7 +164,7 @@ m4_define([NA_AMENDMENTS_SED_EXPR],
 dnl  NA_AMEND(output-file, amendable-file[, amendment1[, ... amendmentN]])
 dnl  **************************************************************************
 dnl
-dnl  Creates a new file, amending a model with the content of one or more files
+dnl  Creates a new file amending a model with the content of one or more files
 dnl
 dnl  This macro requires a `output-file` parameter and a `amendable-file`
 dnl  parameter followed by a variable number of amendments containing
@@ -238,6 +238,70 @@ AC_DEFUN([NA_AMEND],
 	[{ echo 'Creating $1...'; sed NA_AMENDMENTS_SED_EXPR(m4_shift2($@)) "$2" > "$1"; }])
 
 
+dnl  NC_ARG_MISSING(argument)
+dnl  **************************************************************************
+dnl
+dnl  Checks whether `argument` or `argument=*` has **not** been passed to the
+dnl  `configure` script, and triggers `true` or `false` accordingly
+dnl
+dnl  Sometimes it might be relatively hard to know whether a particular
+dnl  variable has been set by the user or not, since the `configure` script
+dnl  will assign some default value to it even if the user has not expressed
+dnl  any wish via command line (think of the `${docdir}` variable for example,
+dnl  set either to the value of the `--docdir=...` argument specified by the
+dnl  user or to the `'${datarootdir}/doc/${PACKAGE_TARNAME}'` default string).
+dnl
+dnl  It is always possible to compare the current value with the default value
+dnl  normally assigned by the `configure` script... but what if the latter
+dnl  changes with new releases of GNU Autoconf?
+dnl
+dnl  To solve the problem this macro looks directly to the actual arguments
+dnl  passed by the user.
+dnl
+dnl  For example:
+dnl
+dnl      AS_IF([NC_ARG_MISSING([--docdir])],
+dnl          [AC_MSG_NOTICE([Option `--docdir` has not been specified])],
+dnl          [AC_MSG_NOTICE([Option `--docdir` has been specified])])
+dnl
+dnl  In order to know the opposite condition (i.e. whether a particular
+dnl  argument *has* been passed to the `configure` script) it is possible to
+dnl  use the `!` shell operator. For example:
+dnl
+dnl      AS_IF([! NC_ARG_MISSING([--docdir])],
+dnl          [AC_MSG_NOTICE([Option `--docdir` has been specified])],
+dnl          [AC_MSG_NOTICE([Option `--docdir` has not been specified])])
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NC_ARG_MISSING],
+	[{ case " @S|@{@} " in *" _AS_QUOTE([$1]) "*|*" _AS_QUOTE([$1])="*) false; ;; esac; }])
+
+
+dnl  NC_ARG_MISSING_WITHVAL(argument)
+dnl  **************************************************************************
+dnl
+dnl  Checks whether `argument=*` has **not** been passed to the `configure`
+dnl  script, and triggers `true` or `false` accordingly
+dnl
+dnl  Like `NC_ARG_MISSING()` but this macro considers missing also any argument
+dnl  that is present but does not have an equals sign (and possibly a value)
+dnl  following it. Neither the equals sign or the value must be passed to the
+dnl  macro. For example, to know whether `--docdir=*` has been passed to the
+dnl  `configure` script, use `NC_ARG_MISSING_WITHVAL([--docdir])`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NC_ARG_MISSING_WITHVAL],
+	[{ case " @S|@{@} " in *" _AS_QUOTE([$1])="*) false; ;; esac; }])
+
+
 dnl  NC_SUBST_NOTMAKE(var[, value])
 dnl  **************************************************************************
 dnl
@@ -298,8 +362,7 @@ dnl
 dnl  Checks whether one or more programs can be retrieved automatically
 dnl
 dnl. For each program `progx` an uppercase shell variable named `PROGX`
-dnl  containing the path where `progx` is located will be created. If a program
-dnl  is not reachable an error will be generated.
+dnl  containing the path where `progx` is located will be created.
 dnl
 dnl  For example:
 dnl
@@ -318,7 +381,6 @@ dnl
 dnl  **************************************************************************
 AC_DEFUN([NC_GET_PROGS], [
 	AC_PATH_PROG(m4_toupper(NA_SANITIZE_VARNAME([$1])), [$1])
-	AS_IF([test "x@S|@{]m4_toupper(NA_SANITIZE_VARNAME([$1]))[}" = x], [AC_MSG_ERROR([$1 utility not found])])
 	m4_if(m4_eval([$# > 1]), [1], [NC_GET_PROGS(m4_shift($@))])
 ])
 
@@ -327,7 +389,8 @@ dnl  NC_REQ_PROGS(prog1, [descr1][, prog2, [descr2][, ... progN, [descrN]]])
 dnl  **************************************************************************
 dnl
 dnl  Checks whether one or more programs have been provided by the user or can
-dnl  be retrieved automatically
+dnl  be retrieved automatically, generating an error if both conditions are
+dnl  absent
 dnl
 dnl  For each program `progx` an uppercase shell variable named `PROGX`
 dnl  containing the path where `progx` is located will be created. If a program
@@ -407,12 +470,12 @@ dnl  Requires: nothing
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
-m4_define([NA_HELP_STRINGS],
+AC_DEFUN([NA_HELP_STRINGS],
 	[m4_if(m4_count($1), [1],
 		[m4_if([$#], [0], [], [$#], [1],
 			[m4_text_wrap($1, [  ])],
 			[AS_HELP_STRING(m4_normalize($1), [$2])m4_if([$#], [2], [], [m4_newline()NA_HELP_STRINGS(m4_shift2($@))])])],
-		[m4_text_wrap(m4_argn(1, $1)[,], [  ])m4_newline()NA_HELP_STRINGS(m4_dquote(m4_shift($1))m4_if([$#], [1], [], [, m4_shift($@)]))])])
+		[m4_text_wrap(m4_car($1)[,], [  ])m4_newline()NA_HELP_STRINGS(m4_dquote(m4_shift($1))m4_if([$#], [1], [], [, m4_shift($@)]))])])
 
 
 dnl  NC_MAKETARGET_SUBST(target[, prerequisites], recipe)
@@ -442,8 +505,8 @@ dnl  The `prerequisites` argument can be blank or omitted (in this case the
 dnl  macro will take only two arguments). This argument supports shell
 dnl  expansion and must be properly quoted.
 dnl
-dnl  Each line of the `recipe` argument will be indented of one TAB. This
-dnl  argument supports shell expansion and must be properly quoted.
+dnl  Each line of the `recipe` argument will be indented of one TAB. The latter
+dnl  supports shell expansion and must be properly quoted.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()`

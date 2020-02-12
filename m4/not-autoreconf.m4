@@ -247,7 +247,7 @@ dnl  Requires: nothing
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
-m4_define([NR_PROG_VERSION],
+AC_DEFUN([NR_PROG_VERSION],
 		[m4_esyscmd_s(m4_changequote({{<<, >>}}){{<<'$1' --version | grep -o -m 1 '[0-9]\+.[0-9]\+\(.[0-9]\+\(.[0-9]\+\)\?\)\?\S*'>>}}m4_changequote({{<<[>>}}, {{<<]>>}}))])
 
 

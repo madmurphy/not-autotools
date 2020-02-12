@@ -2,6 +2,19 @@ Change Log
 ==========
 
 
+0.19.0
+------
+
+Changes:
+
+* New macros `NC_ARG_MISSING()` and `NC_ARG_MISSING_WITHVAL()` have been
+  created in `not-autotools.m4`
+* New macros `NS_TEST_AEQ()`, `NS_TEST_EQ()`, `NS_TEST_NAE()` and
+  `NS_TEST_NE()`  have been created in `not-autoshell.m4`
+* Code review (macros `NS_TEXT_WRAP()` and `NS_TEXT_WRAP_UNQUOTED()` in
+  `not-autoshell.m4`; macro `NC_GET_PROGS()` in  `not-autotools.m4`)
+
+
 0.18.0
 ------
 
@@ -9,7 +22,7 @@ Changes:
 
 * New macros `NS_TEXT_WRAP()`, `NS_TEXT_WRAP_UNQUOTED()` and
   `NS_TEXT_WRAP_CENTER()` have been created in `not-autoshell.m4`
-* Code review (macro `m4_text_center()` in `not-fancy-texts.m4`)
+* Code review (macro `n4_text_center()` in `not-fancy-texts.m4`)
 * Documentation
 
 
@@ -118,7 +131,7 @@ Changes:
 Changes:
 
 * New library file `not-fancy-texts.m4` has been created containing the
-  new macros `n4_sp()` and `m4_text_center()`
+  new macros `n4_sp()` and `n4_text_center()`
 * New macros `NS_FOR()`, `NS_WHILE()`, `NS_MOVEVAR()` and `NS_REPLACEVAR()`
   have been created in `not-autoshell.m4`
 * Macro † `NS_SETVAR` has been removed from `not-autoshell.m4`

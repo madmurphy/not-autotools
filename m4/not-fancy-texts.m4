@@ -36,7 +36,7 @@ m4_define([n4_sp],
 		[n4_sp(m4_eval([$1 - 1]))[ ]])])
 
 
-dnl  m4_text_center(text[, prefix[, max-width = screen-width - m4_len(prefix)[, screen-width = 79]]])
+dnl  n4_text_center(text[, prefix[, max-width = screen-width - m4_len(prefix)[, screen-width = 79]]])
 dnl  **************************************************************************
 dnl
 dnl  Relatively similar to `m4_text_wrap()`, but the text is centered
@@ -44,7 +44,7 @@ dnl
 dnl  For example,
 dnl
 dnl      /*\
-dnl      m4_text_center([Lorem ipsum dolor sit amet, consectetur adipiscing
+dnl      n4_text_center([Lorem ipsum dolor sit amet, consectetur adipiscing
 dnl      elit. Ut in tristique turpis. Nunc nibh purus, faucibus a erat nec,
 dnl      porta suscipit mi. Phasellus id sodales orci, sit amet semper sem.
 dnl      Morbi scelerisque molestie erat at cursus. In tincidunt varius neque,
@@ -86,7 +86,7 @@ dnl  Requires: `n4_sp()`
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
-m4_define([m4_text_center],
+m4_define([n4_text_center],
 	[m4_bpatsubst(_m4_text_wrap([$1], [], [],
 			m4_default_nblank_quoted([$3], m4_eval(m4_default_nblank_quoted([$4], [79])[ - ]m4_len([$2])))),
 		[^.*$],
