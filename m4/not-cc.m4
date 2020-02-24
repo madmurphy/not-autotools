@@ -6,7 +6,7 @@ dnl        | . ` |/ _ \| __| |  _  | | | | __/ _ \| __/ _ \ / _ \| / __|
 dnl        | |\  | (_) | |_  | | | | |_| | || (_) | || (_) | (_) | \__ \
 dnl        \_| \_/\___/ \__| \_| |_/\__,_|\__\___/ \__\___/ \___/|_|___/
 dnl
-dnl            A collection of useful m4-ish macros for GNU Autotools
+dnl              A collection of useful m4 macros for GNU Autotools
 dnl
 dnl                                               -- Released under GNU GPL3 --
 dnl
@@ -20,36 +20,6 @@ dnl  C   C O M P I L E R   T E S T S
 dnl  **************************************************************************
 
 
-
-dnl  NC_CC_HAVE_HEADERS(header1, [var1][, header2, [var2][, ... headerN, [varN]]])
-dnl  **************************************************************************
-dnl
-dnl  Creates a shell variable `varN` for each header `headerN` passed as
-dnl  argument, and sets it to either `yes` or `no` depending on the presence of
-dnl  the header in the system
-dnl
-dnl  Example:
-dnl
-dnl    NC_CC_HAVE_HEADERS(
-dnl        [stdio.h],   [have_stdio_h],
-dnl        [limits.h],  [have_limits_h]
-dnl    )
-dnl
-dnl  Expansion type: shell code
-dnl  Requires: nothing
-dnl  Author: madmurphy
-dnl
-dnl  **************************************************************************
-AC_DEFUN([NC_CC_HAVE_HEADERS], [
-	m4_if([$#], [0], [], [$#], [1], [], [
-		AC_CHECK_HEADER([m4_normalize([$1])],
-			[AS_VAR_SET([m4_normalize([$2])], [yes])],
-			[AS_VAR_SET([m4_normalize([$2])], [no])])
-		m4_if([$#], [2], [], [NC_CC_HAVE_HEADERS(m4_shift2($@))])
-	])
-])
-
-
 dnl  NC_CC_CHECK_SIZEOF(data-type[, headers[, store-as[, extra-sizes]]])
 dnl  **************************************************************************
 dnl
@@ -59,12 +29,13 @@ dnl
 dnl  This macro is based on the **Autoconf Archive**'s macro
 dnl  `AX_COMPILE_CHECK_SIZEOF()`, to which some improvements have been added:
 dnl
-dnl  - A `store-as` argument has been implemented in order to store the size of
-dnl    *expressions* (which often contain characters forbidden as variable
-dnl    names), such as `NC_CC_CHECK_SIZEOF([sizeof(char)], [], [size_t])`,
-dnl    where `sizeof(sizeof(char))` (previously impossible to store, since it
-dnl    does not form a valid variable name) is now stored as `size_t` (i.e.,
-dnl    a preprocessor macro named `SIZEOF_SIZE_T` and a `configure` variable
+dnl  - An optional `store-as` argument has been implemented for storing the
+dnl    size of *expressions* (which often contain characters forbidden as
+dnl    variable names), such as
+dnl    `NC_CC_CHECK_SIZEOF([sizeof(char)], [], [size_t])`, where
+dnl    `sizeof(sizeof(char))` (previously impossible to store, since it does
+dnl    not form a valid variable name) is now stored as `size_t` (i.e., a
+dnl    preprocessor macro named `SIZEOF_SIZE_T` and a `configure` variable
 dnl    named `${ac_cv_sizeof_size_t}` are created) -- remember that
 dnl    `sizeof(sizeof(char))` is of type `size_t` by definition
 dnl  - The `#include <sys/types.h>` line, previously automatically passed to
@@ -125,6 +96,7 @@ dnl  This macro can be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()` from `not-autotools.m4`
+dnl  Version: 1.0.0
 dnl  Authors: (c) 2008 Kaveh Ghazi <ghazi@caip.rutgers.edu>, (c) 2017 Reini
 dnl    Urban <rurban@cpan.org>, (c) 2020 madmurphy <madmurphy333@gmail.com>
 dnl
@@ -201,6 +173,7 @@ dnl  This macro can be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -257,8 +230,9 @@ dnl  This macro can be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Authors: madmurphy, Vilhelm Gray
-dnl  (https://stackoverflow.com/a/18240603/2732907)
+dnl    (https://stackoverflow.com/a/18240603/2732907)
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NC_CC_CHECK_POSIX], [

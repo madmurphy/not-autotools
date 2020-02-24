@@ -6,7 +6,7 @@ dnl        | . ` |/ _ \| __| |  _  | | | | __/ _ \| __/ _ \ / _ \| / __|
 dnl        | |\  | (_) | |_  | | | | |_| | || (_) | || (_) | (_) | \__ \
 dnl        \_| \_/\___/ \__| \_| |_/\__,_|\__\___/ \__\___/ \___/|_|___/
 dnl
-dnl            A collection of useful m4-ish macros for GNU Autotools
+dnl              A collection of useful m4 macros for GNU Autotools
 dnl
 dnl                                               -- Released under GNU GPL3 --
 dnl
@@ -28,8 +28,8 @@ dnl  Checks whether this package must cohabitate with other versions of itself
 dnl
 dnl  The macro checks whether a file named either `multiversion.lock` or
 dnl  `multiversion.templock`, or a `MULTIVERSION_PACKAGE` environment variable
-dnl  were present during the `autoreconf` process and sets the versioning
-dnl  macros accordingly.
+dnl  are present during the `autoreconf` process and sets the versioning macros
+dnl  accordingly.
 dnl
 dnl  This macro can be invoked only once. Note that `autoreconf` runs at a
 dnl  different time (and often even on a different computer) than the
@@ -55,14 +55,15 @@ dnl    or if the `MULTIVERSION_PACKAGE` environment variable was set to any
 dnl    value other than `no` or during the autoreconf process, expands to
 dnl    `if-not-multiversion` otherwise
 dnl
-dnl  `NR_SET_VERSION_ENVIRONMENT()` is usually invoked right before
+dnl  `NR_SET_VERSION_ENVIRONMENT()` is usually invoked immediately before
 dnl  `AC_INIT()`.
 dnl
 dnl  For instance, in
 dnl
 dnl      NA_GET_VERSION_ENVIRONMENT([gphoto], [2], [5], [23])
 dnl      AC_PREREQ([2.69])
-dnl      AC_INIT([lib]NR_PROJECT_DISTNAME, NR_PROJECT_MAJVER[.]NR_PROJECT_MINVER[.]NR_PROJECT_REVVER)
+dnl      AC_INIT([lib]NR_PROJECT_DISTNAME,
+dnl          NR_PROJECT_MAJVER[.]NR_PROJECT_MINVER[.]NR_PROJECT_REVVER)
 dnl
 dnl  `AC_PACKAGE_NAME` will expand to `libgphoto` or `libgphoto2` depending on
 dnl  whether a file named `multiversion.(temp)lock` was found or whether the
@@ -91,10 +92,11 @@ dnl  and the following target to your `Makefile.am` (check that there is a TAB
 dnl  indentation after `distclean-local:`):
 dnl
 dnl      distclean-local:
-dnl          rm -f 'multiversion.templock'
+dnl              rm -f 'multiversion.templock'
 dnl
 dnl  Expansion type: literal (blank)
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************

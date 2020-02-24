@@ -2,6 +2,26 @@ Change Log
 ==========
 
 
+0.20.0
+------
+
+Changes:
+
+* New macro `NC_REQUIRE()` has been created in `not-autotools.m4`
+* Macro † `NC_CC_HAVE_HEADERS()` has been removed from `not-cc.m4` (the only
+  feature this macro was adding to the native `AC_CHECK_HEADERS()` was the
+  possibility to give custom names to the shell variables created for each
+  header)
+* Macro `n4_repeat()` has been simplified -- for complex cases please use
+  `m4_for()`
+* Code review (macro `NC_CONFIG_SHADOW_DIR()` in `not-extended-config.m4`;
+  macro `NS_TEXT_WRAP()` in `not-autoshell.m4`; macros `NC_GET_PROGS()` and
+  `NC_REQ_PROGS()` in `not-autotools.m4`)
+* A version string has been added to all macros and has been set to `1.0.0`,
+  independently of possible previous versions (i.e. versioning begins now)
+* Documentation
+
+
 0.19.0
 ------
 
@@ -64,7 +84,7 @@ Changes:
 Changes:
 
 * New library file `not-cc.m4` has been created together with the new macros
-  `NC_CC_CHECK_SIZEOF()`, `NC_CC_CHECK_CHAR_BIT` and `NC_CC_HAVE_HEADERS()`
+  `NC_CC_CHECK_SIZEOF()`, `NC_CC_CHECK_CHAR_BIT` and † `NC_CC_HAVE_HEADERS()`
 * New macros `NA_AMEND()`, `NA_AMENDMENTS_SED_EXPR()`, `NA_DOUBLE_DOLLAR()`,
   `NA_ESC_APOS()`, `NA_TRIANGLE_BRACKETS_TO_MAKE_VARS()`,
   `NA_TRIANGLE_BRACKETS_TO_SHELL_VARS()`, `NC_MAKETARGET_SUBST()` and

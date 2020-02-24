@@ -6,7 +6,7 @@ dnl        | . ` |/ _ \| __| |  _  | | | | __/ _ \| __/ _ \ / _ \| / __|
 dnl        | |\  | (_) | |_  | | | | |_| | || (_) | || (_) | (_) | \__ \
 dnl        \_| \_/\___/ \__| \_| |_/\__,_|\__\___/ \__\___/ \___/|_|___/
 dnl
-dnl            A collection of useful m4-ish macros for GNU Autotools
+dnl              A collection of useful m4 macros for GNU Autotools
 dnl
 dnl                                               -- Released under GNU GPL3 --
 dnl
@@ -32,6 +32,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -56,6 +57,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -82,6 +84,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -105,6 +108,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -122,6 +126,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -140,6 +145,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -168,6 +174,7 @@ dnl          [AC_MSG_NOTICE([Using user-given value for <docdir>])])
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -182,6 +189,7 @@ dnl  M4 sugar to create a "while" shell loop
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -196,6 +204,7 @@ dnl  M4 sugar to create an "until" shell loop
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -210,6 +219,7 @@ dnl  M4 sugar that expands to a shell "break" command, to be used within loops
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 AC_DEFUN([NS_BREAK],
@@ -224,6 +234,7 @@ dnl  loops
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 AC_DEFUN([NS_CONTINUE],
@@ -261,6 +272,7 @@ dnl      test "xonethree" = "xtwofour"
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -302,6 +314,7 @@ dnl      test "xonethree" != "xtwofour"
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -345,6 +358,7 @@ dnl      test "xtwothreefour" = "xoneoneone"
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -385,6 +399,7 @@ dnl      test "xtwothreefour" != "xoneoneone"
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -446,21 +461,26 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NS_TEXT_WRAP], [{
+	AC_REQUIRE([AC_PROG_SED])
 	_newtxt_=$1
-	while :; do
+	while :
+	do
 		_oldtxt_="${_newtxt_}"
-		_newtxt_="$(echo -n "${_oldtxt_}" | sed '
+		_newtxt_="$(echo -n "${_oldtxt_}" | ${SED} '
 			s/^..\{'m4_default_nblank([$2], ['79'])'\}/&\x00/;
 			s/^\(\S\+\)\x00\(\S*\)\s\|\(^\|\s\)\(\S*\)\x00/\1\2\x00\4/;
 			s/^\x00//;
 			s/\x00/\n/;
 		')"
 		test "x${_newtxt_}" != "x${_oldtxt_}" || break
-	done; echo "${_newtxt_}"; }])
+	done
+	echo "${_newtxt_}"
+}])
 
 
 dnl  NS_TEXT_WRAP_UNQUOTED(text[, max-width=79])
@@ -496,6 +516,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -538,7 +559,8 @@ dnl
 dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
-dnl  Requires: nothing
+dnl  Requires: `NS_TEXT_WRAP()`
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************

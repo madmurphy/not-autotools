@@ -6,7 +6,7 @@ dnl        | . ` |/ _ \| __| |  _  | | | | __/ _ \| __/ _ \ / _ \| / __|
 dnl        | |\  | (_) | |_  | | | | |_| | || (_) | || (_) | (_) | \__ \
 dnl        \_| \_/\___/ \__| \_| |_/\__,_|\__\___/ \__\___/ \___/|_|___/
 dnl
-dnl            A collection of useful m4-ish macros for GNU Autotools
+dnl              A collection of useful m4 macros for GNU Autotools
 dnl
 dnl                                               -- Released under GNU GPL3 --
 dnl
@@ -28,6 +28,7 @@ dnl  Prints an arbitrary number of white spaces
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -83,6 +84,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: `n4_sp()`
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************

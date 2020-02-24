@@ -6,7 +6,7 @@ dnl        | . ` |/ _ \| __| |  _  | | | | __/ _ \| __/ _ \ / _ \| / __|
 dnl        | |\  | (_) | |_  | | | | |_| | || (_) | || (_) | (_) | \__ \
 dnl        \_| \_/\___/ \__| \_| |_/\__,_|\__\___/ \__\___/ \___/|_|___/
 dnl
-dnl            A collection of useful m4-ish macros for GNU Autotools
+dnl              A collection of useful m4 macros for GNU Autotools
 dnl
 dnl                                               -- Released under GNU GPL3 --
 dnl
@@ -37,6 +37,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -84,6 +85,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -141,6 +143,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal (void)
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -151,12 +154,13 @@ AC_DEFUN_ONCE([NR_LOAD_ENVIRONMENT],
 dnl  NR_NEWFILE(file-name[, file-content])
 dnl  **************************************************************************
 dnl
-dnl  Creates a new file with a custom content
+dnl  Creates a new file with a custom content when `autoreconf` is run
 dnl
 dnl  This macro can be invoked before `AC_INIT()`.  
 dnl
 dnl  Expansion type: literal (void)
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -212,6 +216,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal (void)
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -244,6 +249,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************

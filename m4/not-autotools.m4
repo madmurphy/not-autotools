@@ -6,7 +6,7 @@ dnl        | . ` |/ _ \| __| |  _  | | | | __/ _ \| __/ _ \ / _ \| / __|
 dnl        | |\  | (_) | |_  | | | | |_| | || (_) | || (_) | (_) | \__ \
 dnl        \_| \_/\___/ \__| \_| |_/\__,_|\__\___/ \__\___/ \___/|_|___/
 dnl
-dnl            A collection of useful m4-ish macros for GNU Autotools
+dnl              A collection of useful m4 macros for GNU Autotools
 dnl
 dnl                                               -- Released under GNU GPL3 --
 dnl
@@ -42,6 +42,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -60,6 +61,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -77,6 +79,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -102,6 +105,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -130,6 +134,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -152,6 +157,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -202,10 +208,11 @@ dnl
 dnl      /*@@@@@@@@@@@@@@@@@ !END_EXCEPTION(I_O_FUNCTIONS)! @@@@@@@@@@@@@@@@@*/
 dnl
 dnl  If no amendment for a particular exception is passed to `NA_AMEND()`
-dnl  the original content of the exception block is used.
+dnl  the original content of the exception block is kept untouched, except for
+dnl  the tags that surround it, which will be removed.
 dnl
 dnl  All opening and closing lines are always erased entirely (even when they
-dnl  contain further text, as the `/*@...` and `...@*/` characters in the
+dnl  contain further text -- as the `/*@...` and `...@*/` characters in the
 dnl  example above).
 dnl
 dnl  **Entry points** instead are single lines containing the tag
@@ -231,11 +238,40 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_AMENDMENTS_SED_EXPR()`
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NA_AMEND],
 	[{ echo 'Creating $1...'; sed NA_AMENDMENTS_SED_EXPR(m4_shift2($@)) "$2" > "$1"; }])
+
+
+dnl  NC_REQUIRE(macro1[, macro2[, macro3[, ... macroN]]])
+dnl  **************************************************************************
+dnl
+dnl  Variadic version of `AC_REQUIRE()` that can be invoked also from the
+dnl  global scope
+dnl
+dnl  For example:
+dnl
+dnl      NC_REQUIRE([AC_PROG_LN_S], [AC_PROG_SED])
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NC_REQUIRE],
+	[m4_if([$#], [0],
+		[m4_warn([syntax],
+			[macro NC_REQUIRE() has been called without arguments])],
+		[m4_ifblank([$1],
+			[m4_warn([syntax],
+				[ignoring empty argument in NC_REQUIRE()])],
+			[AC_REQUIRE(m4_normalize([$1]))])[]m4_if([$#], [1], [],
+			[m4_newline()NC_REQUIRE(m4_shift($@))])])])
+
 
 
 dnl  NC_ARG_MISSING(argument)
@@ -274,6 +310,7 @@ dnl          [AC_MSG_NOTICE([Option `--docdir` has not been specified])])
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -295,6 +332,7 @@ dnl  `configure` script, use `NC_ARG_MISSING_WITHVAL([--docdir])`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -312,11 +350,12 @@ dnl  This macro can be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NC_SUBST_NOTMAKE], [
-	AC_SUBST([$1][]m4_if(m4_eval([$# > 1]), [1], [, [$2]]))
+	AC_SUBST([$1][]m4_if([$#], [0], [], [$#], [1], [], [, [$2]]))
 	AM_SUBST_NOTMAKE([$1])
 ])
 
@@ -346,6 +385,7 @@ dnl  This macro can be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()` and `NA_ESC_APOS()`
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -376,16 +416,16 @@ dnl  This macro can be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()`
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
-AC_DEFUN([NC_GET_PROGS], [
-	AC_PATH_PROG(m4_toupper(NA_SANITIZE_VARNAME([$1])), [$1])
-	m4_if(m4_eval([$# > 1]), [1], [NC_GET_PROGS(m4_shift($@))])
-])
+AC_DEFUN([NC_GET_PROGS],
+	[m4_ifnblank([$1],
+		[m4_newline()AC_PATH_PROG(m4_toupper(NA_SANITIZE_VARNAME([$1])), [$1])[]NC_GET_PROGS(m4_shift($@))])])
 
 
-dnl  NC_REQ_PROGS(prog1, [descr1][, prog2, [descr2][, ... progN, [descrN]]])
+dnl  NC_REQ_PROGS(prog1[, descr1][, prog2[, descr2][, ... progN[, descrN]]])
 dnl  **************************************************************************
 dnl
 dnl  Checks whether one or more programs have been provided by the user or can
@@ -412,17 +452,20 @@ dnl  This macro can be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()`
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
-AC_DEFUN([NC_REQ_PROGS], [
-	AC_ARG_VAR(m4_toupper(NA_SANITIZE_VARNAME([$1])), m4_default_quoted(m4_normalize([$2]), [$1 utility]))
-	AS_IF([test "x@S|@{]m4_toupper(NA_SANITIZE_VARNAME([$1]))[}" = x], [
-		AC_PATH_PROG(m4_toupper(NA_SANITIZE_VARNAME([$1])), [$1])
-		AS_IF([test "x@S|@{]m4_toupper(NA_SANITIZE_VARNAME([$1]))[}" = x], [AC_MSG_ERROR([$1 utility not found])])
-	])
-	m4_if(m4_eval([$# > 2]), [1], [NC_REQ_PROGS(m4_shift2($@))])
-])
+AC_DEFUN([NC_REQ_PROGS],
+	[m4_ifnblank([$1], [
+		AC_ARG_VAR(m4_toupper(NA_SANITIZE_VARNAME([$1])),
+			m4_default_quoted(m4_normalize([$2]), [$1 utility]))
+		AS_IF([test "x@S|@{]m4_toupper(NA_SANITIZE_VARNAME([$1]))[}" = x], [
+			AC_PATH_PROG(m4_toupper(NA_SANITIZE_VARNAME([$1])), [$1])
+			AS_IF([test "x@S|@{]m4_toupper(NA_SANITIZE_VARNAME([$1]))[}" = x],
+				[AC_MSG_ERROR([$1 utility not found])])
+		])[]NC_REQ_PROGS(m4_shift2($@))
+	])])
 
 
 dnl  NA_HELP_STRINGS(list1, help1[, list2, help2[, ... listN, helpN]])
@@ -467,6 +510,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -490,14 +534,16 @@ dnl
 dnl  For example, after placing the following content in `configure.ac`,
 dnl
 dnl      NC_MAKETARGET_SUBST([echo-test], ['clean all'],
-dnl          ['echo test'])
+dnl          ['echo '\''Hello world'\'' && date;'])
 dnl
 dnl  and the following line in `Makefile.am`,
 dnl
 dnl      @na_echo_test@
 dnl
-dnl  a new `make` target named `echo-test` will be available, with `clean` and
-dnl  `all` as prerequisites
+dnl  the latter will be substituted with the following `Makefile` recipe:
+dnl
+dnl      echo-test: clean all
+dnl              echo 'Hello world' && date;
 dnl
 dnl  The `target` argument must be a literal.
 dnl
@@ -510,14 +556,16 @@ dnl  supports shell expansion and must be properly quoted.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()`
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NC_MAKETARGET_SUBST], [
+	AC_REQUIRE([AC_PROG_SED])
 	AC_SUBST(NA_SANITIZE_VARNAME([na_$1]),
 		[m4_if(m4_eval([$# > 2]), [1],
 			['$1[]m4_ifblank([$2], ['@S|@':\n'], [: '$2@S|@'\n'])"@S|@@{:@echo $3],
-			[$1@S|@':\n'"@S|@@{:@echo $2]) | sed s/^/\\t/g@:}@"])
+			[$1@S|@':\n'"@S|@@{:@echo $2]) | ${SED} s/^/\\t/g@:}@"])
 	AM_SUBST_NOTMAKE(NA_SANITIZE_VARNAME([na_$1]))
 ])
 

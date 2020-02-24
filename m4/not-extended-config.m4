@@ -6,7 +6,7 @@ dnl        | . ` |/ _ \| __| |  _  | | | | __/ _ \| __/ _ \ / _ \| / __|
 dnl        | |\  | (_) | |_  | | | | |_| | || (_) | || (_) | (_) | \__ \
 dnl        \_| \_/\___/ \__| \_| |_/\__,_|\__\___/ \__\___/ \___/|_|___/
 dnl
-dnl            A collection of useful m4-ish macros for GNU Autotools
+dnl              A collection of useful m4 macros for GNU Autotools
 dnl
 dnl                                               -- Released under GNU GPL3 --
 dnl
@@ -70,7 +70,7 @@ dnl  and get erased every time `make maintainer-clean` is invoked. But extended
 dnl  configuration behaves differently: files persist and get distributed as
 dnl  such, and there is no reason to keep their template in the main tree.
 dnl
-dnl  Now that the shadow directory has been initialized, you need to list the
+dnl  Now that the shadow directory has been initialized you need to list the
 dnl  files expected to have a shadow template. The macro `NC_THREATEN_FILES()`
 dnl  works similarly to `AC_CONFIG_FILES()`, but with two important
 dnl  differences: it requires each file to be listed as a different argument,
@@ -80,7 +80,7 @@ dnl  latter is launched with an `--enable-extended-config` parameter.
 dnl
 dnl  A good point of your `configure.ac` where to place `NC_THREATEN_FILES()`
 dnl  file is immediately after `AC_CONFIG_FILES()`. But you are free to place
-dnl  it anywere between `NC_CONFIG_SHADOW_DIR()` and `NC_SHADOW_MAYBE_OUTPUT`.
+dnl  it anywere between `NC_CONFIG_SHADOW_DIR()` and `AC_OUTPUT`.
 dnl
 dnl      AC_CONFIG_FILES([
 dnl          Makefile
@@ -96,7 +96,7 @@ dnl      )
 dnl
 dnl  The files so indicized are now expected to have their template inside the
 dnl  directory previously passed to `NC_CONFIG_SHADOW_DIR()` exactly in the
-dnl  same relative path, and with a `.in` file extension. So, for instance, the
+dnl  same relative path and with a `.in` file extension. So, for instance, the
 dnl  template of `src/winres.rc` in the example above is expected to be
 dnl  `my_shadows/src/winres.rc.in`.
 dnl
@@ -143,14 +143,15 @@ dnl  "threatened" files are added to `NC_THREATENED_LIST`. The latter is a
 dnl  macro that expands to a comma separated array. You can use `m4_foreach()`
 dnl  to iterate through it.
 dnl
-dnl  After having threatened all the files that you needed to threaten, you are
-dnl  now free to call `NC_SHADOW_MAYBE_OUTPUT`. Remember that the latter
-dnl  **must** follow `AC_OUTPUT`:
+dnl  After having configured all the files that you needed to configure and
+dnl  threatened all the files that you needed to threaten, you are now free to
+dnl  call `AC_OUTPUT`.
 dnl
 dnl      AC_OUTPUT
-dnl      NC_SHADOW_MAYBE_OUTPUT
 dnl
-dnl  The other way around will not work.
+dnl  A further optional macro, `NC_SHADOW_AFTER_OUTPUT()`, can be used for
+dnl  internal checks or executing additional actions after `AC_OUTPUT` has been
+dnl  invoked, but it is not required.
 dnl
 dnl  In the end, your `configure.ac` will look more or less like this example:
 dnl
@@ -171,8 +172,6 @@ dnl      ...
 dnl
 dnl      AC_OUTPUT
 dnl
-dnl      NC_SHADOW_MAYBE_OUTPUT
-dnl
 dnl  And finally, to add a bit of salt, you should also consider to include
 dnl  these two targets in your `Makefile.am`:
 dnl      
@@ -187,47 +186,57 @@ dnl          -cp -rf $(confnewdir)/* ./
 dnl      
 dnl      endif
 dnl
-dnl  Here follows the list of all macros, conditionals and `make` variables
-dnl  exported after `NC_CONFIG_SHADOW_DIR()` is invoked.
+dnl  Here follows the list of all macros, conditionals and variables exported
+dnl  after `NC_CONFIG_SHADOW_DIR()` is invoked.
 dnl
 dnl  Macros:
 dnl
 dnl  - `NC_CONFNEW_SUBDIR`: expands to the path of the sandbox directory
-dnl    without the `$(srcdir)` prefix
 dnl    (currently `confnew`)
 dnl  - `NC_SHADOW_DIR`: expands exactly to the argument passed to
 dnl    `NC_CONFIG_SHADOW_DIR()`
-dnl  - `NC_SHADOW_MAYBE_OUTPUT`: finalizes the extended configuration mode
+dnl  - `NC_SHADOW_AFTER_OUTPUT()`: further actions in extended configuration
+dnl    mode
 dnl  - `NC_THREATENED_LIST`: expands to the comma-separated list of the
 dnl    threatened files
 dnl  - `NC_THREATEN_BLINDLY`: recursively registers all the templates in
 dnl    `NC_CONFNEW_SUBDIR` as sources for the extended configuration mode
-dnl  - `NC_THREATEN_FILES()`: marks the files passed as arguments as
-dnl    "threatened", and expects their template to be in `NC_SHADOW_DIR`
+dnl  - `NC_THREATEN_FILES()`: marks as "threatened" all the files passed as
+dnl    arguments, and expects their template to be in `NC_SHADOW_DIR`
 dnl
-dnl  Conditionals:
+dnl  `configure` shell variables:
+dnl
+dnl  - `${enable_extended_config}`: either `no`, `merge` or `sandbox`
+dnl    depending on the `--enable-extended-config[=MODE]` argument passed to
+dnl    the `configure` script
+dnl  - `${confnewdir}`: the sandbox folder (currently `confnew`)
+dnl  - `${nc_threatlist}`: like the `NC_THREATENED_LIST` macro, but each file
+dnl    is separated by a new line character instead of a comma
+dnl
+dnl  Automake conditionals:
 dnl
 dnl  - `HAVE_EXTENDED_CONFIG`: always `true` when the user invokes `configure`
 dnl    with the `--enable-extended-config` option
 dnl  - `HAVE_UPDATES`: `true` only in sandbox mode, i.e., when the user invokes
 dnl    `configure` with the `--enable-extended-config=sandbox` option
 dnl
-dnl  `make` variables:
+dnl  `Makefile` variables:
 dnl
-dnl  - `$(confnewdir)`: points to the sandbox folder (currently
-dnl    `$(srcdir)/confnew`).
+dnl  - `$(confnewdir)`: the sandbox folder (currently `confnew`)
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `n4_case_in()` from `not-m4sugar.m4`
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN_ONCE([NC_CONFIG_SHADOW_DIR], [
 
+	AC_REQUIRE([AC_PROG_LN_S])
 	m4_define([NC_SHADOW_DIR], [$1])
 	m4_define([NC_CONFNEW_SUBDIR], [confnew])
 	m4_define([NC_THREATENED_LIST], [])
-	AC_SUBST([confnewdir], ['@S|@@{:@srcdir@:}@/]NC_CONFNEW_SUBDIR['])
+	AC_SUBST([confnewdir], [']NC_CONFNEW_SUBDIR['])
 
 	AC_ARG_ENABLE([extended-config],
 		[AS_HELP_STRING([--enable-extended-config@<:@=MODE@:>@],
@@ -236,9 +245,8 @@ AC_DEFUN_ONCE([NC_CONFIG_SHADOW_DIR], [
 			changes only and not on the state of this machine; possible values
 			for MODE are: omitted or "yes" or "merge" for updating these files
 			immediately, "sandbox" for safely putting their updated version
-			into the <srcdir>/]m4_quote(NC_CONFNEW_SUBDIR)[ directory without
-			modifying the package tree, or "no" for doing nothing
-			@<:@default=no@:>@])],
+			into the ]m4_quote(NC_CONFNEW_SUBDIR)[ directory without modifying
+			the package tree, or "no" for doing nothing @<:@default=no@:>@])],
 			[AS_IF([test "x${enableval}" = x -o "x${enableval}" = xyes],
 					[AS_VAR_SET([enable_extended_config], ['merge'])],
 				[test "x${enableval}" != xsandbox -a "x${enableval}" != xmerge], [
@@ -249,8 +257,32 @@ AC_DEFUN_ONCE([NC_CONFIG_SHADOW_DIR], [
 
 	AM_CONDITIONAL([HAVE_EXTENDED_CONFIG], [test "x${enable_extended_config}" != xno])
 	AM_CONDITIONAL([HAVE_UPDATES], [test "x${enable_extended_config}" = xsandbox])
-	AM_COND_IF([HAVE_EXTENDED_CONFIG], [AS_MKDIR_P(["${srcdir}/]m4_quote(NC_CONFNEW_SUBDIR)["])])
 
+	AM_COND_IF([HAVE_EXTENDED_CONFIG], [
+		AS_MKDIR_P(["]m4_quote(NC_CONFNEW_SUBDIR)["])
+		AC_CONFIG_COMMANDS([extended-config], [
+			AS_IF([test "x${extconfmode}" = xmerge], [
+				AS_VAR_SET([abs_srcdir], ["$(cd "${srcdir}" && pwd)"])
+				echo "${threatlist}" | while read -r _FILE_; do
+					mv "NC_CONFNEW_SUBDIR/${_FILE_}" "${srcdir}/${_FILE_}" && \
+					(cd "$(dirname "NC_CONFNEW_SUBDIR/${_FILE_}")" && \
+					${LN_S} "${abs_srcdir}/${_FILE_}" "$(basename "NC_CONFNEW_SUBDIR/${_FILE_}")")
+				done
+				AC_MSG_NOTICE([extended configuration has been merged with the package tree.])
+				AS_UNSET([abs_srcdir])
+			], [
+				AC_MSG_NOTICE([extended configuration has been saved in ./NC_CONFNEW_SUBDIR.])
+			])
+			AS_UNSET([threatlist])
+			AS_UNSET([extconfmode])
+		], [
+			AS_VAR_SET([extconfmode], ['${enable_extended_config}'])
+			AS_VAR_SET([threatlist], ['${nc_threatlist}'])
+		])
+	])
+
+	dnl  NC_THREATEN_FILES(file1[, file2[, file3[, ... fileN]]])
+	dnl  **********************************************************************
 	AC_DEFUN([NC_THREATEN_FILES], [
 		AM_COND_IF([HAVE_EXTENDED_CONFIG], [
 			AC_CONFIG_FILES(m4_foreach([_F_ITER_], m4_dquote(]m4_dquote(m4_map_args_sep([m4_normalize(], [)], [,], ][$][@][))[),
@@ -265,29 +297,27 @@ AC_DEFUN_ONCE([NC_CONFIG_SHADOW_DIR], [
 							m4_ifset([NC_THREATENED_LIST],
 									[m4_dquote(NC_THREATENED_LIST, _F_ITER_)],
 									[m4_dquote(_F_ITER_)]))
-						m4_quote([${srcdir}/]NC_CONFNEW_SUBDIR[/]_F_ITER_[:]NC_SHADOW_DIR[/]_F_ITER_[.in])])])]))
+						m4_quote(NC_CONFNEW_SUBDIR[/]_F_ITER_[:]NC_SHADOW_DIR[/]_F_ITER_[.in])])])]))
 		])
-
+		AS_VAR_SET([nc_threatlist], ["]m4_join(m4_newline(), NC_THREATENED_LIST)["])
 		m4_ifdef([NC_SHADOW_REDEF],
 			[m4_warn([syntax], [redefined threatened files ]m4_quote(NC_SHADOW_REDEF)[ - skip])])
 	])
 
+	dnl  NC_THREATEN_BLINDLY
+	dnl  **********************************************************************
 	AC_DEFUN_ONCE([NC_THREATEN_BLINDLY],
 		[NC_THREATEN_FILES(m4_shift(m4_bpatsubst(m4_quote(m4_esyscmd([find ']m4_quote(NC_SHADOW_DIR)[' -type f -name '*.in' -printf ", [[%P{/@/}]]"])), [\.in{/@/}], [])))])
 
-	AC_DEFUN_ONCE([NC_SHADOW_MAYBE_OUTPUT], [
-		m4_ifset([NC_THREATENED_LIST], [
-			AM_COND_IF([HAVE_UPDATES],
-				[AC_MSG_NOTICE([extended configuration has been saved in ${srcdir}/]m4_quote(NC_CONFNEW_SUBDIR)[.])],
-				[AM_COND_IF([HAVE_EXTENDED_CONFIG], [
-					cp -rf "${srcdir}/]m4_quote(NC_CONFNEW_SUBDIR)["/* "${srcdir}"/ && \
-						rm -rf "${srcdir}/]m4_quote(NC_CONFNEW_SUBDIR)["
-					AC_MSG_NOTICE([extended configuration has been merged with the package tree.])
-				])])
-		], [
-			m4_warn([syntax], [NC_SHADOW_MAYBE_OUTPUT has been invoked but no files have been threatened.])
-		])
-	])
+	dnl  NC_SHADOW_AFTER_OUTPUT[(if-merge-cmds[, if-sandbox-cmds])]
+	dnl  **********************************************************************
+	AC_DEFUN_ONCE([NC_SHADOW_AFTER_OUTPUT],
+		[m4_ifset([NC_THREATENED_LIST],
+			[AM_COND_IF([HAVE_UPDATES],
+				[m4_expand(m4_argn([2], ]m4_dquote(]m4_dquote(][$][@][)[)[))],
+				[AM_COND_IF([HAVE_EXTENDED_CONFIG],
+					[m4_expand(m4_argn([1], ]m4_dquote(]m4_dquote(]m4_dquote(][$][@][)[)[)[))])])],
+			[m4_warn([syntax], [NC_CONFIG_SHADOW_DIR has been invoked but no files have been threatened.])])])
 
 ])
 

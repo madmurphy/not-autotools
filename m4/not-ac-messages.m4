@@ -6,7 +6,7 @@ dnl        | . ` |/ _ \| __| |  _  | | | | __/ _ \| __/ _ \ / _ \| / __|
 dnl        | |\  | (_) | |_  | | | | |_| | || (_) | || (_) | (_) | \__ \
 dnl        \_| \_/\___/ \__| \_| |_/\__,_|\__\___/ \__\___/ \___/|_|___/
 dnl
-dnl            A collection of useful m4-ish macros for GNU Autotools
+dnl              A collection of useful m4 macros for GNU Autotools
 dnl
 dnl                                               -- Released under GNU GPL3 --
 dnl
@@ -28,6 +28,7 @@ dnl  Wraps `message` in a text box, then passes it to `AC_MSG_NOTICE()`
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -46,6 +47,7 @@ dnl  `AC_MSG_WARN()`
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -64,6 +66,7 @@ dnl  `AC_MSG_ERROR()`, possibly with `exit-status`
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -82,6 +85,7 @@ dnl  `AC_MSG_FAILURE()`, possibly with `exit-status`
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************

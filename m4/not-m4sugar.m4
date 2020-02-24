@@ -6,7 +6,7 @@ dnl        | . ` |/ _ \| __| |  _  | | | | __/ _ \| __/ _ \ / _ \| / __|
 dnl        | |\  | (_) | |_  | | | | |_| | || (_) | || (_) | (_) | \__ \
 dnl        \_| \_/\___/ \__| \_| |_/\__,_|\__\___/ \__\___/ \___/|_|___/
 dnl
-dnl            A collection of useful m4-ish macros for GNU Autotools
+dnl              A collection of useful m4 macros for GNU Autotools
 dnl
 dnl                                               -- Released under GNU GPL3 --
 dnl
@@ -122,6 +122,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl  Further reading: https://www.gnu.org/software/m4/manual/m4-1.4.18/html_node/Composition.html
 dnl
@@ -211,6 +212,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -222,7 +224,7 @@ dnl  n4_let(macro-name1, expand-val1[, ... macro-nameN, expand-valN], expression
 dnl  **************************************************************************
 dnl
 dnl  Exactly like `n4_with()`, but allows to use infinite computed expansions
-dnl  and give them names
+dnl  and name them
 dnl
 dnl  This macro in fact creates a complete M4 scoping mechanism. See the
 dnl  documentation of `n4_with()` for more information.
@@ -263,6 +265,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -290,6 +293,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: `n4_let()`
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -337,6 +341,7 @@ dnl
 dnl  Expansion type: literal
 dnl  Requires: Autoconf >= 2.62: for the `m4_cond()` macro -- see:
 dnl  https://www.gnu.org/software/autoconf/manual/autoconf-2.62/html_node/Conditional-constructs.html
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl  Further reading: https://www.gnu.org/software/autoconf/manual/autoconf-2.69/html_node/Conditional-constructs.html#index-m4_005fcase-1363
 dnl
@@ -380,6 +385,7 @@ dnl
 dnl  Expansion type: literal
 dnl  Requires: Autoconf >= 2.62: for the `m4_cond()` macro -- see:
 dnl  https://www.gnu.org/software/autoconf/manual/autoconf-2.62/html_node/Conditional-constructs.html
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -418,6 +424,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -431,7 +438,7 @@ dnl  n4_expanded_once(placeholder, macro[, arg1[, arg2[, ... argN ]]])
 dnl  **************************************************************************
 dnl
 dnl  Calls `macro[(arg1[, arg2[, ... argN ]])]` and stores the result into a
-dnl  novel `placeholder` macro
+dnl  novel `placeholder` macro containing a literal
 dnl
 dnl  For example,
 dnl
@@ -456,6 +463,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal (void)
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -502,6 +510,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal (void)
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -542,6 +551,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal (void)
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -559,60 +569,27 @@ dnl  **************************************************************************
 dnl
 dnl  Repeats `text` `n_times`
 dnl
-dnl  Every occurrence of `$#` within `text` will be replaced with the current
-dnl  index. For example,
+dnl  For example,
 dnl
-dnl      n4_repeat([4], [foo $#...])
+dnl      n4_repeat([30], [%])
 dnl
-dnl  will expand to
+dnl  expands to
 dnl
-dnl      foo 1...foo 2...foo 3...foo 4...
+dnl      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 dnl
-dnl  If `n4_repeat()` is invoked from within a macro body, `$#` will be
-dnl  replaced with higher priority with the current macro's number of
-dnl  arguments. For instance,
-dnl
-dnl      m4_define([print_foo], [n4_repeat([4], [foo $#...])])
-dnl      print_foo
-dnl
-dnl  will expand to
-dnl
-dnl      foo 0...foo 0...foo 0...foo 0...
-dnl
-dnl  Therefore, in order to inhibit the immediate expansion of `$#` it is
-dnl  necessary temporarily to break its components, as in the following
-dnl  example,
-dnl
-dnl      m4_define([print_foo], [n4_repeat([4], [foo ][$][#][...])])
-dnl      print_foo
-dnl
-dnl  which will finally expand to
-dnl
-dnl      foo 1...foo 2...foo 3...foo 4...
-dnl
-dnl  This applies also to macro calls. For example,
-dnl
-dnl      m4_define([even_numbers],
-dnl          [(0)n4_repeat([$1], [, m4_eval(][$][#][ * 2)])])
-dnl
-dnl      Even numbers: even_numbers([10]) ...
-dnl
-dnl  will expand to
-dnl
-dnl      Even numbers: (0), 2, 4, 6, 8, 10, 12, 14, 16, 18, 20 ...
-dnl
-dnl  However, for complex cases it is suggested to use `m4_for()`.
+dnl  For complex cases please use `m4_for()`.
 dnl
 dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 m4_define([n4_repeat],
 	[m4_if(m4_eval([$1 > 0]), [1],
-		[n4_repeat(m4_decr([$1]), [$2])[]m4_bpatsubst([$2], [\$][#], [$1])])])
+		[$2[]n4_repeat(m4_eval([$1 - 1]), [$2])])])
 
 
 dnl  n4_redepth(regexp)
@@ -634,6 +611,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -663,6 +641,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: `n4_redepth()`
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -693,6 +672,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: `n4_redepth()`
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -736,6 +716,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -756,6 +737,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -773,6 +755,7 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
+dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
