@@ -226,7 +226,7 @@ dnl  - `$(confnewdir)`: the sandbox folder (currently `confnew`)
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `n4_case_in()` from `not-m4sugar.m4`
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -313,10 +313,15 @@ AC_DEFUN_ONCE([NC_CONFIG_SHADOW_DIR], [
 	dnl  **********************************************************************
 	AC_DEFUN_ONCE([NC_SHADOW_AFTER_OUTPUT],
 		[m4_ifset([NC_THREATENED_LIST],
-			[AM_COND_IF([HAVE_UPDATES],
-				[m4_expand(m4_argn([2], ]m4_dquote(]m4_dquote(][$][@][)[)[))],
-				[AM_COND_IF([HAVE_EXTENDED_CONFIG],
-					[m4_expand(m4_argn([1], ]m4_dquote(]m4_dquote(]m4_dquote(][$][@][)[)[)[))])])],
+			[m4_ifnblank(m4_quote(]m4_dquote(][$][1][$][2][)[),
+				[AM_COND_IF([HAVE_UPDATES],
+					m4_ifblank(m4_quote(]m4_dquote(]m4_dquote(][$][2][)[)[),
+						[[:]],
+						[[m4_expand(m4_argn([2],
+							]m4_dquote(]m4_dquote(]m4_dquote(]m4_dquote(][$][@][)[)[)[)[))]])[]m4_ifnblank(m4_quote(]m4_dquote(]m4_dquote(][$][1][)[)[), [,
+							[AM_COND_IF([HAVE_EXTENDED_CONFIG],
+								[m4_expand(m4_argn([1],
+									]m4_dquote(]m4_dquote(]m4_dquote(]m4_dquote(]m4_dquote(][$][@][)[)[)[)[)[))])]]))])],
 			[m4_warn([syntax], [NC_CONFIG_SHADOW_DIR has been invoked but no files have been threatened.])])])
 
 ])

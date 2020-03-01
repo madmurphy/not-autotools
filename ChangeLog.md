@@ -2,6 +2,14 @@ Change Log
 ==========
 
 
+0.20.1
+------
+
+Changes:
+
+* Code review (macro `NC_CONFIG_SHADOW_DIR()` in `not-extended-config.m4`)
+
+
 0.20.0
 ------
 
