@@ -2,6 +2,20 @@ Change Log
 ==========
 
 
+0.21.0
+------
+
+Changes:
+
+* New macro `NC_GLOBAL_LITERALS_NOTMAKE()` has been created in
+  `not-autotools.m4`
+* Macro `NC_MAKETARGET_SUBST()` in `not-autotools.m4` has been expanded and
+  now supports order-only prerequisites as well
+* Code review (macros `NC_GLOBAL_LITERALS()` and `NC_REQ_PROGS()` in
+  `not-autotools.m4`; macro `NC_CONFIG_SHADOW_DIR()` in
+  `not-extended-config.m4`)
+
+
 0.20.1
 ------
 
@@ -23,7 +37,7 @@ Changes:
 * Macro `n4_repeat()` has been simplified -- for complex cases please use
   `m4_for()`
 * Code review (macro `NC_CONFIG_SHADOW_DIR()` in `not-extended-config.m4`;
-  macro `NS_TEXT_WRAP()` in `not-autoshell.m4`; macros `NC_GET_PROGS()` and
+  macros `NS_TEXT_WRAP()` in `not-autoshell.m4`; macros `NC_GET_PROGS()` and
   `NC_REQ_PROGS()` in `not-autotools.m4`)
 * A version string has been added to all macros and has been set to `1.0.0`,
   independently of possible previous versions (i.e. versioning begins now)

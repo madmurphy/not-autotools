@@ -385,15 +385,37 @@ dnl  This macro can be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()` and `NA_ESC_APOS()`
+dnl  Version: 1.0.1
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NC_GLOBAL_LITERALS],
+	[m4_pushdef([_lit_], m4_quote(NA_SANITIZE_VARNAME([$1])))[]m4_define([GL_]_lit_,
+		m4_normalize([$2]))
+	AC_SUBST(_lit_, ['NA_ESC_APOS(m4_normalize([$2]))'])[]m4_popdef([_lit_])[]m4_if(m4_eval([$# > 2]), [1],
+		[NC_GLOBAL_LITERALS(m4_shift2($@))])])
+
+
+dnl  NC_GLOBAL_LITERALS_NOTMAKE(name1, [val1][, ... nameN, [valN]]])
+dnl  **************************************************************************
+dnl
+dnl  Exactly like `NC_GLOBAL_LITERALS`, but does not create `Makefile`
+dnl  variables
+dnl
+dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: `NA_SANITIZE_VARNAME()` and `NA_ESC_APOS()`
 dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
-AC_DEFUN([NC_GLOBAL_LITERALS], [
-	m4_define([GL_]NA_SANITIZE_VARNAME([$1]), m4_normalize([$2]))
-	AC_SUBST(NA_SANITIZE_VARNAME([$1]), ['NA_ESC_APOS(m4_normalize([$2]))'])
-	m4_if(m4_eval([$# > 2]), [1], [NC_GLOBAL_LITERALS(m4_shift2($@))])
-])
+AC_DEFUN([NC_GLOBAL_LITERALS_NOTMAKE],
+	[m4_pushdef([_lit_], m4_quote(NA_SANITIZE_VARNAME([$1])))[]m4_define([GL_]_lit_,
+		m4_normalize([$2]))
+	AC_SUBST(_lit_, ['NA_ESC_APOS(m4_normalize([$2]))'])
+	AM_SUBST_NOTMAKE(_lit_)[]m4_popdef([_lit_])[]m4_if(m4_eval([$# > 2]), [1],
+		[NC_GLOBAL_LITERALS_NOTMAKE(m4_shift2($@))])])
 
 
 dnl  NC_GET_PROGS(prog1[, prog2, [prog3[, ... progN ]]])
@@ -452,20 +474,20 @@ dnl  This macro can be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()`
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NC_REQ_PROGS],
-	[m4_ifnblank([$1], [
-		AC_ARG_VAR(m4_toupper(NA_SANITIZE_VARNAME([$1])),
+	[m4_ifnblank([$1],
+		[m4_pushdef([_lit_], m4_quote(m4_toupper(NA_SANITIZE_VARNAME([$1]))))
+		AC_ARG_VAR(_lit_,
 			m4_default_quoted(m4_normalize([$2]), [$1 utility]))
-		AS_IF([test "x@S|@{]m4_toupper(NA_SANITIZE_VARNAME([$1]))[}" = x], [
-			AC_PATH_PROG(m4_toupper(NA_SANITIZE_VARNAME([$1])), [$1])
-			AS_IF([test "x@S|@{]m4_toupper(NA_SANITIZE_VARNAME([$1]))[}" = x],
-				[AC_MSG_ERROR([$1 utility not found])])
-		])[]NC_REQ_PROGS(m4_shift2($@))
-	])])
+		AS_IF([test "x@S|@{]_lit_[}" = x], [
+			AC_PATH_PROG(_lit_, [$1])
+			AS_IF([test "x@S|@{]_lit_[}" = x],
+				[AC_MSG_ERROR([$1 utility not found])])[]m4_popdef([_lit_])
+		])[]NC_REQ_PROGS(m4_shift2($@))])])
 
 
 dnl  NA_HELP_STRINGS(list1, help1[, list2, help2[, ... listN, helpN]])
@@ -522,14 +544,15 @@ AC_DEFUN([NA_HELP_STRINGS],
 		[m4_text_wrap(m4_car($1)[,], [  ])m4_newline()NA_HELP_STRINGS(m4_dquote(m4_shift($1))m4_if([$#], [1], [], [, m4_shift($@)]))])])
 
 
-dnl  NC_MAKETARGET_SUBST(target[, prerequisites], recipe)
+dnl  NC_MAKETARGET_SUBST(target[, [[prerequisites, ]order-only-pr, ]recipe])
 dnl  **************************************************************************
 dnl
 dnl  Creates a `make` substitution containing a target declaration
 dnl
 dnl  The `target` argument is used for a `configure` substitution named
-dnl  `[na_]target`, to be placed as the only content of a single line in the
-dnl  `Makefile.am` file.
+dnl  `[na_target_]target`, to be placed as the only content of a single line in
+dnl  the `Makefile.am` file. Each line of the `recipe` argument will be
+dnl  indented of one TAB.
 dnl
 dnl  For example, after placing the following content in `configure.ac`,
 dnl
@@ -538,35 +561,127 @@ dnl          ['echo '\''Hello world'\'' && date;'])
 dnl
 dnl  and the following line in `Makefile.am`,
 dnl
-dnl      @na_echo_test@
+dnl      @na_target_echo_test@
 dnl
 dnl  the latter will be substituted with the following `Makefile` recipe:
 dnl
 dnl      echo-test: clean all
 dnl              echo 'Hello world' && date;
 dnl
-dnl  The `target` argument must be a literal.
+dnl  Exactly like the second argument of `AC_SUBST()`, all arguments here
+dnl  except the first one support shell expansion and must be properly quoted.
 dnl
-dnl  The `prerequisites` argument can be blank or omitted (in this case the
-dnl  macro will take only two arguments). This argument supports shell
-dnl  expansion and must be properly quoted.
+dnl  Example #1: Target name and recipe
 dnl
-dnl  Each line of the `recipe` argument will be indented of one TAB. The latter
-dnl  supports shell expansion and must be properly quoted.
+dnl  configure.ac:
+dnl
+dnl      NC_MAKETARGET_SUBST([echo-test], ['echo foobar'])
+dnl
+dnl  Makefile.am:
+dnl
+dnl      @na_target_echo_test@
+dnl
+dnl  Result in Makefile:
+dnl
+dnl      echo-test:
+dnl              echo foobar
+dnl
+dnl  Example #2: Target name, prerequisites and recipe
+dnl
+dnl  configure.ac:
+dnl
+dnl      NC_MAKETARGET_SUBST([echo-test], ['foo'], ['echo foobar'])
+dnl
+dnl  Makefile.am:
+dnl
+dnl      @na_target_echo_test@
+dnl
+dnl  Result in Makefile:
+dnl
+dnl      echo-test: foo
+dnl              echo foobar
+dnl
+dnl  Example #3: Target name, prerequisites, order-only prerequisites and
+dnl  recipe
+dnl
+dnl  configure.ac:
+dnl
+dnl      NC_MAKETARGET_SUBST([echo-test], ['foo'], ['bar'], ['echo foobar'])
+dnl
+dnl  Makefile.am:
+dnl
+dnl      @na_target_echo_test@
+dnl
+dnl  Result in Makefile:
+dnl
+dnl      echo-test: foo | bar
+dnl              echo foobar
+dnl
+dnl  Example #4: Target name, order-only prerequisites and recipe
+dnl
+dnl  configure.ac:
+dnl
+dnl      NC_MAKETARGET_SUBST([echo-test], [], ['bar'], ['echo foobar'])
+dnl
+dnl  Makefile.am:
+dnl
+dnl      @na_target_echo_test@
+dnl
+dnl  Result in Makefile:
+dnl
+dnl      echo-test: | bar
+dnl              echo foobar
+dnl
+dnl  Example #5: Target name only
+dnl
+dnl  This is a special case. As no `recipe` is provided, a Make variable is
+dnl  used for the recipe's content. The Make variable is a newly created
+dnl  substitution named exactly like the target – but please notice the
+dnl  different way in which hyphens are treated in the two names. The content
+dnl  of this substitution is left to you, so you will have to make sure
+dnl  yourself that it is a suitable content for a recipe.
+dnl
+dnl  configure.ac:
+dnl
+dnl      AS_VAR_SET([echo_test], ['echo foobar'])
+dnl      NC_MAKETARGET_SUBST([echo-test])
+dnl
+dnl  Makefile.am:
+dnl
+dnl      @na_target_echo_test@
+dnl
+dnl  Result in Makefile:
+dnl
+dnl      echo_test = echo foobar
+dnl      ...
+dnl      echo-test:
+dnl              $(echo_test)
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()`
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NC_MAKETARGET_SUBST], [
+	m4_pushdef([__tgtname__],
+		m4_quote(NA_SANITIZE_VARNAME([$1])))
 	AC_REQUIRE([AC_PROG_SED])
-	AC_SUBST(NA_SANITIZE_VARNAME([na_$1]),
-		[m4_if(m4_eval([$# > 2]), [1],
-			['$1[]m4_ifblank([$2], ['@S|@':\n'], [: '$2@S|@'\n'])"@S|@@{:@echo $3],
-			[$1@S|@':\n'"@S|@@{:@echo $2]) | ${SED} s/^/\\t/g@:}@"])
-	AM_SUBST_NOTMAKE(NA_SANITIZE_VARNAME([na_$1]))
+	m4_if([$#], [0], [], [$#], [1], [
+		AC_SUBST(__tgtname__)
+		AC_SUBST([na_target_]__tgtname__, ['$1:'@S|@'\n\t''@S|@@{:@__tgtname__@:}@'])
+	], [
+		AS_VAR_SET([_na_recipe_], m4_argn([$#], $@))
+		AC_SUBST([na_target_]__tgtname__,
+		['$1:m4_if([$#], [2], ['@S|@'\n'], [$#], [3],
+			[m4_ifblank([$2], ['], [ '$2])@S|@'\n'],
+			[m4_ifblank([$3],
+				[m4_ifblank([$2], ['], [ '$2])],
+				[m4_ifblank([$2], [ | '$3], [ '$2' | '$3])])@S|@'\n'])"@S|@@{:@echo "${_na_recipe_}" | ${SED} s/^/\\t/g@:}@"])
+		AS_UNSET([_na_recipe_])
+	])
+	AM_SUBST_NOTMAKE([na_target_]__tgtname__)
+	m4_popdef([__tgtname__])
 ])
 
 
