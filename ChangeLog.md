@@ -2,6 +2,16 @@ Change Log
 ==========
 
 
+0.21.1
+------
+
+Changes:
+
+* Code review (macros `n4_includedir()` and `n4_sincludedir()` in
+  `not-m4sugar.m4`; macros `NS_TEST_EQ()`, `NS_TEST_NE()`, `NS_TEST_AEQ()` and
+  `NS_TEST_NAE()` in `not-autoshell.m4`)
+
+
 0.21.0
 ------
 

@@ -304,7 +304,7 @@ m4_define([n4_qlet],
 dnl  n4_case_in(text, list1, if-found1[, ... listN, if-foundN], [if-not-found])
 dnl  **************************************************************************
 dnl
-dnl  Searches for the first occurence of `text` in each comma-separated list
+dnl  Searches for the first occurrence of `text` in each comma-separated list
 dnl  `listN`
 dnl
 dnl  For example,
@@ -361,7 +361,7 @@ m4_define([n4_case_in],
 dnl  n4_list_index(list, target, [add-to-return-value], [if-not-found])
 dnl  **************************************************************************
 dnl
-dnl  Searches for the first occurence of `target` in the comma-separated list
+dnl  Searches for the first occurrence of `target` in the comma-separated list
 dnl  `list` and returns its position, or `-1` if `target` has not been found
 dnl
 dnl  For example,
@@ -737,13 +737,13 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 m4_define([n4_includedir],
 	[m4_foreach([_file_], m4_dquote(m4_shift(m4_esyscmd([find '$1' -type f -name '*.m4' -printf ", [[%p]]"]))),
-		[m4_include(_file_)])])
+		[m][4_include(_file_)])])
 
 
 dnl  n4_sincludedir(directory)
@@ -755,12 +755,12 @@ dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 m4_define([n4_sincludedir],
-	[m4_pushdef([_files_], m4_dquote(m4_dquote(m4_shift(m4_esyscmd([find '$1' -type f -name '*.m4' -printf ", [[%p]]" 2>/dev/null])))))[]m4_ifnblank(m4_expand(_files_), [m4_foreach([_file_], _files_, [m4_include(_file_)])])[]m4_popdef([_files_])])
+	[m4_pushdef([_files_], m4_dquote(m4_dquote(m4_shift(m4_esyscmd([find '$1' -type f -name '*.m4' -printf ", [[%p]]" 2>/dev/null])))))[]m4_ifnblank(m4_expand(_files_), [m4_foreach([_file_], _files_, [m][4_include(_file_)])])[]m4_popdef([_files_])])
 
 
 

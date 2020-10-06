@@ -268,18 +268,18 @@ dnl      NS_TEST_EQ([one], [two], [three], [four])
 dnl
 dnl  expands to
 dnl
-dnl      test "xonethree" = "xtwofour"
+dnl      test "?one?three" = "?two?four"
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NS_TEST_EQ],
-	[m4_if([$#], [0], [], [$#], [1], [], [$#], [2],
-		[test "x[]_AS_QUOTE([[$1]])" = "x[]_AS_QUOTE([[$2]])"],
-		[NS_TEST_EQ([$1$3], [$2$4]m4_if([$#], [3], [], [$#], [4], [],
+	[m4_if([$#], [0], [:], [$#], [1], [:], [$#], [2],
+		[test "_AS_QUOTE([[?$1]])" != "_AS_QUOTE([[?$2]])"],
+		[NS_TEST_EQ([$1?$3], [$2?$4]m4_if([$#], [3], [], [$#], [4], [],
 			[, m4_shift3(m4_shift($@))]))])])
 
 
@@ -310,18 +310,18 @@ dnl      NS_TEST_NE([one], [two], [three], [four])
 dnl
 dnl  expands to
 dnl
-dnl      test "xonethree" != "xtwofour"
+dnl      test "?one?three" != "?two?four"
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NS_TEST_NE],
-	[m4_if([$#], [0], [], [$#], [1], [], [$#], [2],
-		[test "x[]_AS_QUOTE([[$1]])" != "x[]_AS_QUOTE([[$2]])"],
-		[NS_TEST_NE([$1$3], [$2$4]m4_if([$#], [3], [], [$#], [4], [],
+	[m4_if([$#], [0], [:], [$#], [1], [:], [$#], [2],
+		[test "_AS_QUOTE([[?$1]])" != "_AS_QUOTE([[?$2]])"],
+		[NS_TEST_NE([$1?$3], [$2?$4]m4_if([$#], [3], [], [$#], [4], [],
 			[, m4_shift3(m4_shift($@))]))])])
 
 
@@ -354,16 +354,17 @@ dnl      NS_TEST_AEQ([one], [two], [three], [four])
 dnl
 dnl  expands to
 dnl
-dnl      test "xtwothreefour" = "xoneoneone"
+dnl      test "?two?three?four" != "?one?one?one"
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NS_TEST_AEQ],
-	[test "x[]_AS_QUOTE(m4_dquote(m4_joinall(, m4_shift($@))))" = "x[]_AS_QUOTE(m4_dquote(m4_for([], [2], [$#], [1], [[$1]])))"])
+	[m4_if([$#], [0], [:], [$#], [1], [:],
+		[test "_AS_QUOTE(m4_dquote(?[]m4_joinall(?, m4_shift($@))))" = "_AS_QUOTE(m4_dquote(m4_for([], [2], [$#], [1], [[?$1]])))"])])
 
 
 dnl  NS_TEST_NAE(string1, string2[, string3[, ... stringN]])
@@ -395,16 +396,17 @@ dnl      NS_TEST_NAE([one], [two], [three], [four])
 dnl
 dnl  expands to
 dnl
-dnl      test "xtwothreefour" != "xoneoneone"
+dnl      test "?two?three?four" != "?one?one?one"
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NS_TEST_NAE],
-	[test "x[]_AS_QUOTE(m4_dquote(m4_joinall(, m4_shift($@))))" != "x[]_AS_QUOTE(m4_dquote(m4_for([], [2], [$#], [1], [[$1]])))"])
+	[m4_if([$#], [0], [:], [$#], [1], [:],
+		[test "_AS_QUOTE(m4_dquote(?[]m4_joinall(?, m4_shift($@))))" != "_AS_QUOTE(m4_dquote(m4_for([], [2], [$#], [1], [[?$1]])))"])])
 
 
 dnl  NS_TEXT_WRAP(text[, max-width=79])
@@ -443,7 +445,7 @@ dnl  brackets, so that its output can be easily captured or piped, as in the
 dnl  following example,
 dnl
 dnl      AS_VAR_SET([FOO],
-dnl          ["$(NS_TEXT_WRAP(['Hello world!'], [5]))"])
+dnl          ["$(NS_TEXT_WRAP(['Hello world!'], [6]))"])
 dnl
 dnl      AS_ECHO("${FOO}")
 dnl
@@ -468,8 +470,7 @@ dnl  **************************************************************************
 AC_DEFUN([NS_TEXT_WRAP], [{
 	AC_REQUIRE([AC_PROG_SED])
 	_newtxt_=$1
-	while :
-	do
+	while :; do
 		_oldtxt_="${_newtxt_}"
 		_newtxt_="$(echo -n "${_oldtxt_}" | ${SED} '
 			s/^..\{'m4_default_nblank([$2], ['79'])'\}/&\x00/;
