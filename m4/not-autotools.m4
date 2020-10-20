@@ -148,10 +148,11 @@ dnl
 dnl  Creates a `sed` expression using all the "exception[-replacement_file]"
 dnl  pairs passed as arguments ("amendments")
 dnl
-dnl  This macro works like `NA_AMEND()`, except that only creates a
-dnl  valid `sed` expression without actually ever invoking `sed` (hence no
-dnl  `output-file` or `amendable-file` parameters are used here). For more
-dnl  information about this macro, please refer to `NA_AMEND()`.
+dnl  This macro is mostly meant to be used internally by `NA_AMEND()` (although
+dnl  it can be invoked directly). It works like `NA_AMEND()`, except that only
+dnl  creates a valid `sed` expression without actually ever invoking `sed`
+dnl  (hence no `output-file` or `amendable-file` parameters are used here). For
+dnl  more information, please refer to the documentation of `NA_AMEND()`.
 dnl
 dnl  This macro can be invoked before `AC_INIT()`.
 dnl
@@ -488,6 +489,49 @@ AC_DEFUN([NC_REQ_PROGS],
 			AS_IF([test "x@S|@{]_lit_[}" = x],
 				[AC_MSG_ERROR([$1 utility not found])])[]m4_popdef([_lit_])
 		])[]NC_REQ_PROGS(m4_shift2($@))])])
+
+
+dnl  NC_QUERY_PROGS(prog1[, descr1][, prog2[, descr2][, ... progN[, descrN]]])
+dnl  **************************************************************************
+dnl
+dnl  Checks whether one or more programs have been provided by the user or can
+dnl  be retrieved automatically, generating an `HAVE_*` conditional for each
+dnl  program
+dnl
+dnl  This macro is identical to `NC_REQ_PROGS()`, but instead of generating an
+dnl  error if a program is not found it simply creates Automake conditionals
+dnl  for each program given, each named `HAVE_[PROGN]` (where `[PROGN]` stands
+dnl  for the name of each program in uppercase).
+dnl
+dnl  For example:
+dnl
+dnl      NC_QUERY_PROGS(
+dnl          [find],             [Unix find utility],
+dnl          [xargs],            [Unix xargs utility],
+dnl          [customprogram],    [Some custom program],
+dnl          [etcetera],         [Et cetera]
+dnl      )
+dnl
+dnl      AM_COND_IF([HAVE_CUSTOMPROGRAM],
+dnl          [AC_MSG_NOTICE([Some custom program found or given by the user])],
+dnl          [AC_MSG_NOTICE([Some custom program not found])])
+dnl
+dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: `NA_SANITIZE_VARNAME()`
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NC_QUERY_PROGS],
+	[m4_ifnblank([$1],
+		[m4_pushdef([_lit_], m4_quote(m4_toupper(NA_SANITIZE_VARNAME([$1]))))
+		AC_ARG_VAR(_lit_,
+			m4_default_quoted(m4_normalize([$2]), [$1 utility]))
+		AS_IF([test "x@S|@{]_lit_[}" = x], [AC_PATH_PROG(_lit_, [$1])])
+		AM_CONDITIONAL([HAVE_]_lit_,
+			[test "x@S|@{]_lit_[}" != x])[]NC_QUERY_PROGS(m4_shift2($@))])])
 
 
 dnl  NA_HELP_STRINGS(list1, help1[, list2, help2[, ... listN, helpN]])

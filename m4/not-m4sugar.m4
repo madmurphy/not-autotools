@@ -124,7 +124,7 @@ dnl  Expansion type: literal
 dnl  Requires: nothing
 dnl  Version: 1.0.0
 dnl  Author: madmurphy
-dnl  Further reading: https://www.gnu.org/software/m4/manual/m4-1.4.18/html_node/Composition.html
+dnl  Further reading: https://www.gnu.org/software/m4/manual/html_node/Composition.html
 dnl
 dnl  **************************************************************************
 m4_define([n4_lambda],
@@ -358,7 +358,7 @@ m4_define([n4_case_in],
 			[$4])])
 
 
-dnl  n4_list_index(list, target, [add-to-return-value], [if-not-found])
+dnl  n4_list_index(target, list, [add-to-return-value], [if-not-found])
 dnl  **************************************************************************
 dnl
 dnl  Searches for the first occurrence of `target` in the comma-separated list
@@ -366,8 +366,8 @@ dnl  `list` and returns its position, or `-1` if `target` has not been found
 dnl
 dnl  For example,
 dnl
-dnl      n4_list_index([[foo], [bar], [hello]],
-dnl          [bar])
+dnl      n4_list_index([bar],
+dnl          [[foo], [bar], [hello]])
 dnl
 dnl  expands to `1`.
 dnl
@@ -385,20 +385,103 @@ dnl
 dnl  Expansion type: literal
 dnl  Requires: Autoconf >= 2.62: for the `m4_cond()` macro -- see:
 dnl  https://www.gnu.org/software/autoconf/manual/autoconf-2.62/html_node/Conditional-constructs.html
-dnl  Version: 1.0.0
+dnl  Version: 2.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 m4_define([n4_list_index],
 	[m4_cond([m4_eval([$# < 2])], [1],
 			[-1],
-		[m4_argn(1, $1)], [$2],
+		[m4_argn([1], $2)], [$1],
 			[m4_eval([$3 + 0])],
-		[m4_eval(m4_count($1)[ > 1])], [1],
-			[n4_list_index(m4_dquote(m4_shift($1)), [$2], m4_eval([$3 + 1]), m4_if(m4_eval([$# > 3]), [1], [$4], [m4_eval([$3 - 1])]))],
+		[m4_eval(m4_count($2)[ > 1])], [1],
+			[n4_list_index([$1],
+				m4_dquote(m4_shift($2)),
+				m4_eval([$3 + 1]),
+				m4_if(m4_eval([$# > 3]), [1],
+					[$4],
+					[m4_eval([$3 - 1])]))],
 		[m4_eval([$# > 3])], [1],
 			[$4],
 			[m4_eval([$3 - 1])])])
+
+
+dnl  n4_arg_index(target, arg1[, arg2[, arg3[, ... argN]]])
+dnl  **************************************************************************
+dnl
+dnl  Searches for the first occurrence of `target` in the arguments passed and
+dnl  returns its position, or `-1` if `target` has not been found
+dnl
+dnl  For example,
+dnl
+dnl      n4_arg_index([bar],
+dnl          [foo], [bar], [hello])
+dnl
+dnl  expands to `1`.
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: `n4_list_index()`
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_arg_index],
+	[n4_list_index([$1], m4_quote(m4_shift($@)))])
+
+
+dnl  n4_joinalln(separator-list, tree1[, tree2[, ... tree2]])
+dnl  **************************************************************************
+dnl
+dnl  Like `m4_joinall()`, but walks through multi-dimensional lists of any
+dnl  dimensions
+dnl
+dnl  The first separator will be used for the top level, the second separator
+dnl  will be used for the first nesting, and so on.
+dnl
+dnl  For example,
+dnl
+dnl      n4_joinalln([[  =>  ], [ = ], [ + ]],
+dnl          [[[a], [b]],
+dnl              [[c], [d]]],
+dnl          [[[e]],
+dnl              [[f], [g], [h], [i]]])
+dnl
+dnl  expands to
+dnl
+dnl      a + b = c + d  =>  e = f + g + h + i
+dnl
+dnl  Or, for example,
+dnl
+dnl      n4_joinalln([m4_newline(), [ = ]],
+dnl          [[foo],        [bar]],
+dnl          [[hello],      [world]])
+dnl
+dnl  expands to
+dnl
+dnl      foo = bar
+dnl      hello = world
+dnl
+dnl  If the length of `separator-list` exceeds the maximum nesting present, the
+dnl  separators in excess will be ignored. If instead any of the lists
+dnl  possesses a deeper nesting than the number of separators passed, the
+dnl  innermost nested lists will be returned verbatim.
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_joinalln],
+	[m4_if(m4_count($1), [1],
+		[m4_joinall($1, m4_shift($@))],
+		[m4_map_args_sep([n4_joinalln(m4_quote(m4_shift(m4_dquote_elt($1))), m4_unquote(],
+			[))],
+			[]m4_dquote(m4_argn([1], $1))[], m4_shift($@))])])
 
 
 dnl  n4_mem([macro-name1[, macro-name2[, ... macro-nameN]]], value)
@@ -417,6 +500,17 @@ dnl
 dnl      Hello world
 dnl      Hello world
 dnl      Hello world
+dnl
+dnl  Or, showing a more concrete scenario,
+dnl
+dnl      AC_INIT([libfoo],
+dnl          m4_joinall([.],
+dnl              n4_mem([PROJECT_MAJVER], [1]),
+dnl              n4_mem([PROJECT_MINVER], [4]),
+dnl              n4_mem([PROJECT_REVVER], [2])))
+dnl
+dnl  will call `AC_INIT()` for libfoo 1.4.2 while storing the three macros
+dnl  `PROJECT_MAJVER`, `PROJECT_MINVER` and `PROJECT_REVVER` for later uses.
 dnl
 dnl  To delete the stored macros you must use `m4_undefine()`.
 dnl

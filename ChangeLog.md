@@ -2,6 +2,17 @@ Change Log
 ==========
 
 
+0.22.0
+------
+
+Changes:
+
+* New macros `n4_joinalln()` and `n4_list_index()` have been created in
+  `not-m4sugar.m4`
+* New macro `NC_QUERY_PROGS()` has been created in `not-autotools.m4`
+* The argument order of `n4_list_index()` in `not-m4sugar.m4` has changed
+
+
 0.21.1
 ------
 
