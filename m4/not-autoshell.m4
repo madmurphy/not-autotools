@@ -153,6 +153,260 @@ AC_DEFUN([NS_REPLACEVAR],
 	[{ @S|@{$2+:} false && { AS_VAR_COPY([$1], [$2]); AS_UNSET([$2]); } || AS_UNSET([$1]) }])
 
 
+dnl  NS_IF(test1, run1[, test2, run2[, testN, runN]][, run-if-false])
+dnl  **************************************************************************
+dnl
+dnl  Shell `if` / `else`
+dnl
+dnl  This macro is a clone of `AS_IF()` written with the main purpose of being
+dnl  safely used by the `NS_PP_IF()` macro families. It has been designed as M4
+dnl  sugar to be used internally by the **Not Autotools** project, but can be
+dnl  safely invoked by the final user. Usage is identical to `AS_IF()`.
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NS_IF],
+[m4_if([$#], [0], [],
+[$#], [1], [],
+[$#], [2], [if [$1]
+then :
+	$2
+fi],
+[$#], [3],
+[if [$1]
+then :
+	$2[]m4_ifnblank([$3], [
+else :
+	$3])
+fi],
+[if [$1]
+then :
+	$2
+el[]NS_IF(m4_shift2($@))])])
+
+
+dnl  NS_PP_IF(macro, test1, run1[, test2, run2[, testN, runN]][, run-if-false])
+dnl  **************************************************************************
+dnl
+dnl  Shell `if` / `else`, preprocessing each `runN` argument with `macro`
+dnl
+dnl  Example:
+dnl
+dnl      AS_VAR_SET([TESTNUM], [31])
+dnl
+dnl      NS_PP_IF([AC_MSG_NOTICE],
+dnl          [test "${TESTNUM}" -eq 44],
+dnl              [Number is 44],
+dnl          [test "${TESTNUM}" -eq 31],
+dnl              [Number is 31],
+dnl              [Invalid number])
+dnl
+dnl  Prints:
+dnl
+dnl      configure: Number is 31
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: `NS_IF()`
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NS_PP_IF],
+	[NS_IF(m4_shift(m4_for([__argn__], [3], m4_eval([(($# + 1) >> 1) << 1]),
+		[2], [, m4_argn(m4_decr(__argn__), $@), $1(m4_argn(__argn__,
+		$@))])[])[]m4_if(m4_eval([($# >> 1) << 1]), [$#],
+		[, $1(m4_argn($#, $@))]))])
+
+
+dnl  NS_STDOUT([text])
+dnl  **************************************************************************
+dnl
+dnl  A version of `AS_ECHO()` guaranteed to output immediatelly to the Standard
+dnl  Output
+dnl
+dnl  As in `AS_ECHO()` the `text` argument is passed verbatim, without shell
+dnl  quoting. For a version that treats the `text` argument in the same way as
+dnl  `AC_MSG_NOTICE()` does, please see `NS_STDOUT_UNQUOTED()`.
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NS_STDOUT],
+	[echo $1])
+
+
+dnl  NS_STDOUT_UNQUOTED([text])
+dnl  **************************************************************************
+dnl
+dnl  A version of `AS_ECHO()` guaranteed to output immediatelly to the Standard
+dnl  Output, with backquote expansion protection
+dnl
+dnl  This is a quote-safe version of `NS_STDOUT()`. The `text` argument does
+dnl  not need shell quotes, which will be escaped if found.
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NS_STDOUT_UNQUOTED],
+	[echo "_AS_QUOTE([$1])"])
+
+
+dnl  NS_ECHO_IF(test1, echo1[, test2, echo2[, testN, echoN]][, echo-if-false])
+dnl  **************************************************************************
+dnl
+dnl  M4 sugar to produce a conditional version of `AS_ECHO()`
+dnl
+dnl  Example:
+dnl
+dnl      NS_ECHO_IF([test "${TESTNUM}" -eq 44],
+dnl              ['Number is 44'],
+dnl          [test "${TESTNUM}" -eq 31],
+dnl              ['Number is 31'],
+dnl              ["Invalid number ${TESTNUM}"])
+dnl
+dnl  Prints:
+dnl
+dnl      Number is 31
+dnl
+dnl  The `echoN` arguments are passed verbatim, without shell quoting. For a
+dnl  version that treats the `echoN` arguments in the same way as
+dnl  `AC_MSG_NOTICE()` does, please see `NS_ECHO_IF_UNQUOTED()`.
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: `NS_PP_IF()`
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NS_ECHO_IF],
+	[NS_PP_IF([AS_ECHO], $@)])
+
+
+dnl  NS_ECHO_IF_UNQUOTED(test1, echo1[, testN, echoN][, echo-if-false])
+dnl  **************************************************************************
+dnl
+dnl  M4 sugar to produce a conditional version of `AS_ECHO()` with backquote
+dnl  expansion protection
+dnl
+dnl  This is a quote-safe version of `NS_ECHO_IF()`. The `echoN` arguments do
+dnl  not need shell quotes, which will be escaped if found.
+dnl
+dnl  Example:
+dnl
+dnl      NS_ECHO_IF_UNQUOTED([test "${TESTNUM}" -eq 44],
+dnl              [Number is 44],
+dnl          [test "${TESTNUM}" -eq 31],
+dnl              [Number is 31],
+dnl              [Invalid number ${TESTNUM}])
+dnl
+dnl  Prints:
+dnl
+dnl      Number is 31
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: `NS_PP_IF()`
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NS_ECHO_IF_UNQUOTED],
+	[NS_PP_IF([_AS_ECHO], $@)])
+
+
+dnl  NS_STRING_IF(test1, str1[, test2, str2[, testN, strN]][, string-if-false])
+dnl  **************************************************************************
+dnl
+dnl  A ternary-operator-like macro for shell strings
+dnl
+dnl  Example:
+dnl
+dnl      AS_VAR_SET([NUMSTATUS],
+dnl          NS_STRING_IF([test "${TESTNUM}" -eq 44],
+dnl                  ['valid'],
+dnl              [test "${TESTNUM}" -eq 31],
+dnl                  ['mostly valid'],
+dnl                  ["invalid (${TESTNUM})"]))
+dnl
+dnl      AC_MSG_NOTICE([Status is "${NUMSTATUS}"])
+dnl
+dnl  Prints:
+dnl
+dnl      configure: Status is "mostly valid"
+dnl
+dnl  The `strN` arguments are passed verbatim, without shell quoting. For a
+dnl  version that treats the `strN` arguments in the same way as
+dnl  `AC_MSG_NOTICE()` does, please see `NS_STRING_IF_UNQUOTED()`.
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: `NS_PP_IF()` and `NS_STDOUT()`
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NS_STRING_IF],
+	["@S|@@{:@{ NS_PP_IF([NS_STDOUT], $@) }@:}@"])
+
+
+dnl  NS_STRING_IF_UNQUOTED(test1, str1[, testN, strN][, string-if-false])
+dnl  **************************************************************************
+dnl
+dnl  A ternary-operator-like macro for shell strings, with backquote expansion
+dnl  protection
+dnl
+dnl  This is a quote-safe version of `NS_STRING_IF()`. The `strN` arguments do
+dnl  not need shell quotes, which will be escaped if found.
+dnl
+dnl  Example:
+dnl
+dnl      AS_VAR_SET([NUMSTATUS],
+dnl          NS_STRING_IF_UNQUOTED([test "${TESTNUM}" -eq 44],
+dnl                  [valid],
+dnl              [test "${TESTNUM}" -eq 31],
+dnl                  [mostly valid],
+dnl                  [invalid (${TESTNUM})]))
+dnl
+dnl      AC_MSG_NOTICE([Status is "${NUMSTATUS}"])
+dnl
+dnl  Prints:
+dnl
+dnl      configure: Status is "mostly valid"
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: `NS_PP_IF()` and `NS_STDOUT_UNQUOTED()`
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NS_STRING_IF_UNQUOTED],
+	["@S|@@{:@{ NS_PP_IF([NS_STDOUT_UNQUOTED], $@) }@:}@"])
+
+
 dnl  NS_FOR(initialization, statement)
 dnl  **************************************************************************
 dnl
@@ -187,6 +441,8 @@ dnl  **************************************************************************
 dnl
 dnl  M4 sugar to create a "while" shell loop
 dnl
+dnl  See `NS_FOR()` for an example -- the syntax is identical.
+dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
 dnl  Version: 1.0.0
@@ -202,6 +458,8 @@ dnl  **************************************************************************
 dnl
 dnl  M4 sugar to create an "until" shell loop
 dnl
+dnl  See `NS_FOR()` for an example -- the syntax is identical.
+dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
 dnl  Version: 1.0.0
@@ -212,7 +470,7 @@ AC_DEFUN([NS_UNTIL],
 	[{ until $1; do[]m4_newline()$2[]m4_newline()done }])
 
 
-dnl  NS_BREAK
+dnl  NS_BREAK()
 dnl  **************************************************************************
 dnl
 dnl  M4 sugar that expands to a shell "break" command, to be used within loops
@@ -226,7 +484,7 @@ AC_DEFUN([NS_BREAK],
 	[m4_newline()break;m4_newline()])
 
 
-dnl  NS_CONTINUE
+dnl  NS_CONTINUE()
 dnl  **************************************************************************
 dnl
 dnl  M4 sugar that expands to a shell "continue" command, to be used within
@@ -304,6 +562,8 @@ dnl  will print
 dnl
 dnl      Test not passed
 dnl
+dnl  All arguments do not need shell quotes, which will be escaped if found.
+dnl
 dnl  To understand how the macro works, the following code
 dnl
 dnl      NS_TEST_NE([one], [two], [three], [four])
@@ -348,6 +608,8 @@ dnl  will likely print
 dnl
 dnl      Test passed
 dnl
+dnl  All arguments do not need shell quotes, which will be escaped if found.
+dnl
 dnl  To understand how the macro works, the following code
 dnl
 dnl      NS_TEST_AEQ([one], [two], [three], [four])
@@ -390,6 +652,8 @@ dnl  will likely print
 dnl
 dnl      Test passed
 dnl
+dnl  All arguments do not need shell quotes, which will be escaped if found.
+dnl
 dnl  To understand how the macro works, the following code
 dnl
 dnl      NS_TEST_NAE([one], [two], [three], [four])
@@ -417,7 +681,7 @@ dnl
 dnl  This macro is similar to the Unix `fmt` command, but it is implemented
 dnl  using only `sed`. The `text` argument is passed verbatim, without shell
 dnl  quoting. For a version that treats the `text` argument in the same way as
-dnl  `AC_MSG_NOTICE()` does, see `NS_TEXT_WRAP_UNQUOTED()`.
+dnl  `AC_MSG_NOTICE()` does, please see `NS_TEXT_WRAP_UNQUOTED()`.
 dnl
 dnl  For example, the following code:
 dnl
@@ -487,9 +751,11 @@ AC_DEFUN([NS_TEXT_WRAP], [{
 dnl  NS_TEXT_WRAP_UNQUOTED(text[, max-width=79])
 dnl  **************************************************************************
 dnl
-dnl  M4 sugar to wrap a text into a fixed-width column
+dnl  M4 sugar to wrap a text into a fixed-width column, with backquote
+dnl  expansion protection
 dnl
-dnl  Quote-safe version of `NS_TEXT_WRAP()`
+dnl  This is a quote-safe version of `NS_TEXT_WRAP()`. The `text` argument does
+dnl  not need shell quotes, which will be escaped if found.
 dnl
 dnl  For example, the following code:
 dnl

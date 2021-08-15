@@ -136,7 +136,7 @@ AC_DEFUN([NC_CC_CHECK_SIZEOF], [
 ])
 
 
-dnl  NC_CC_CHECK_CHAR_BIT
+dnl  NC_CC_CHECK_CHAR_BIT()
 dnl  **************************************************************************
 dnl
 dnl  Calculates the size in bits of the `char` data type using compile checks

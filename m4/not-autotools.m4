@@ -174,8 +174,8 @@ dnl
 dnl  Creates a new file amending a model with the content of one or more files
 dnl
 dnl  This macro requires a `output-file` parameter and a `amendable-file`
-dnl  parameter followed by a variable number of amendments containing
-dnl  information about the amendable sections in `amendable-file`.
+dnl  parameter followed by a variadic list of amendments containing information
+dnl  about the amendable sections in `amendable-file`.
 dnl
 dnl  Each amendment is a list composed of one or two members (further members
 dnl  will be ignored), where the first member contains the name of the section

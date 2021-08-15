@@ -28,14 +28,14 @@ dnl  Creates an extended configuration mode for files that rarely need to be
 dnl  re-configured
 dnl
 dnl  A package often contains files that it is convenient to build via
-dnl  `configure`, but that need to be preserved after launching `make
-dnl  distclean` or `make maintainer-clean`, and be re-distributed in their
-dnl  configured version (think of a `package.json` file, for example). As these
-dnl  files are persistent, they also do not need to be re-created every time a
-dnl  user launches `./configure`, but only when the maintainer of the package
-dnl  wants to export some important changes (like a version change, for
-dnl  example); and as their templates are rarely used, it might be a good idea
-dnl  to place these in a separate folder.
+dnl  `configure`, but need to be preserved after launching `make distclean` or
+dnl  `make maintainer-clean`, and be re-distributed in their configured version
+dnl  (think of a `package.json` file, for example). As these files are
+dnl  persistent, they also do not need to be re-created every time a user
+dnl  launches `./configure`, but only when the maintainer of the package wants
+dnl  to export some important changes (like a version change, for example); and
+dnl  as their templates are rarely used, it might be a good idea to place these
+dnl  in a separate folder.
 dnl
 dnl  This macro helps creating the right environment for this purpose. It
 dnl  requires `n4_case_in()` from `not-m4sugar.m4`, so you will need to copy
@@ -78,9 +78,9 @@ dnl  rather than within a space-separated list, and these files are not
 dnl  configured every time a user launches `./configure`, but only when the
 dnl  latter is launched with an `--enable-extended-config` parameter.
 dnl
-dnl  A good point of your `configure.ac` where to place `NC_THREATEN_FILES()`
-dnl  file is immediately after `AC_CONFIG_FILES()`. But you are free to place
-dnl  it anywere between `NC_CONFIG_SHADOW_DIR()` and `AC_OUTPUT`.
+dnl  A good point in your `configure.ac` for placing `NC_THREATEN_FILES()` is
+dnl  immediately after `AC_CONFIG_FILES()`. But you are free to place it
+dnl  anywere between `NC_CONFIG_SHADOW_DIR()` and `AC_OUTPUT`.
 dnl
 dnl      AC_CONFIG_FILES([
 dnl          Makefile
@@ -140,7 +140,7 @@ dnl  the extended configuration subdirectory as a placeholder for other custom
 dnl  files (although you probably shouldn't). Moreover, when
 dnl  `NC_THREATEN_FILES()` or `NC_THREATEN_BLINDLY` are invoked, the
 dnl  "threatened" files are added to `NC_THREATENED_LIST`. The latter is a
-dnl  macro that expands to a comma separated array. You can use `m4_foreach()`
+dnl  macro that expands to a comma separated list. You can use `m4_foreach()`
 dnl  to iterate through it.
 dnl
 dnl  After having configured all the files that you needed to configure and

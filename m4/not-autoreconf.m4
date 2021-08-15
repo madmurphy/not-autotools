@@ -44,7 +44,7 @@ dnl  **************************************************************************
 AC_DEFUN([NR_GET_ENV_VAR], [m4_esyscmd_s([echo ${$1}])])
 
 
-dnl  NR_ENVIRONMENT_KEYS
+dnl  NR_ENVIRONMENT_KEYS()
 dnl  **************************************************************************
 dnl
 dnl  Reads all the environment variables present during the `autoreconf`
@@ -94,7 +94,7 @@ AC_DEFUN([NR_ENVIRONMENT_KEYS],
 		m4_quote(m4_esyscmd([env | sed 's/^\([^=]\+\)=.*$/[\1],/g' | tr '\n' ' ' | sed 's/,\s*$//'])))[]NR_ENVIRONMENT_KEYS])
 
 
-dnl  NR_LOAD_ENVIRONMENT
+dnl  NR_LOAD_ENVIRONMENT()
 dnl  **************************************************************************
 dnl
 dnl  Reads all the environment variables present during the `autoreconf`
@@ -111,7 +111,7 @@ dnl  prints on my computer:
 dnl
 dnl      This package has been distributed by madmurphy.
 dnl
-dnl  All `RENV_*` macros contain literals and (no further system calls)
+dnl  All `RENV_*` macros contain literals (no further system calls)
 dnl
 dnl  Be aware that environment variables can contain unmatched quotes. This
 dnl  macro will load all environment variables in any case, without generating

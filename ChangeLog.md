@@ -2,6 +2,20 @@ Change Log
 ==========
 
 
+0.23.0
+------
+
+Changes:
+
+* New macros `NS_ECHO_IF()`, `NS_ECHO_IF_UNQUOTED()`, `NS_IF()`, `NS_PP_IF()`,
+  `NS_STDOUT()`, `NS_STDOUT_UNQUOTED()`, `NS_STRING_IF()` and
+  `NS_STRING_IF_UNQUOTED()` have been created in `not-autoshell.m4`
+* The complete macro index has been published (see `macro-index.md`)
+* A script for generating automatically the complete macro index has been added
+  to the package tree (see `pkgutils/macro-index-generator.sh`)
+* Documentation review
+
+
 0.22.0
 ------
 
