@@ -187,11 +187,12 @@ dnl
 dnl      NA_AMEND([src/main.c], [models/main.c],
 dnl          [[OFF_T_TYPE],      []],
 dnl          [[I_O_FUNCTIONS],   [posix-io.c]]],
-dnl          [[I_O_FUNCTIONS],   [posix-io.c]])
+dnl          [[LARGE_FILES],     [large-files.c]])
 dnl
 dnl  creates a new file `src/main.c` using `models/main.c` as model, after
 dnl  erasing the replaceable section named `OFF_T_TYPE` and replacing the
-dnl  section named `I_O_FUNCTIONS` with the content of the `posix-io.c` file.
+dnl  sections named `I_O_FUNCTIONS` and `LARGE_FILES` with the content of
+dnl  `posix-io.c` and `large-files.c`.
 dnl
 dnl  Replaceable sections in the model can be either **exceptions** or
 dnl  **entry points**.
@@ -491,7 +492,7 @@ AC_DEFUN([NC_REQ_PROGS],
 		])[]NC_REQ_PROGS(m4_shift2($@))])])
 
 
-dnl  NC_QUERY_PROGS(prog1[, descr1][, prog2[, descr2][, ... progN[, descrN]]])
+dnl  NM_QUERY_PROGS(prog1[, descr1][, prog2[, descr2][, ... progN[, descrN]]])
 dnl  **************************************************************************
 dnl
 dnl  Checks whether one or more programs have been provided by the user or can
@@ -505,7 +506,7 @@ dnl  for the name of each program in uppercase).
 dnl
 dnl  For example:
 dnl
-dnl      NC_QUERY_PROGS(
+dnl      NM_QUERY_PROGS(
 dnl          [find],             [Unix find utility],
 dnl          [xargs],            [Unix xargs utility],
 dnl          [customprogram],    [Some custom program],
@@ -524,14 +525,14 @@ dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
-AC_DEFUN([NC_QUERY_PROGS],
+AC_DEFUN([NM_QUERY_PROGS],
 	[m4_ifnblank([$1],
 		[m4_pushdef([_lit_], m4_quote(m4_toupper(NA_SANITIZE_VARNAME([$1]))))
 		AC_ARG_VAR(_lit_,
 			m4_default_quoted(m4_normalize([$2]), [$1 utility]))
 		AS_IF([test "x@S|@{]_lit_[}" = x], [AC_PATH_PROG(_lit_, [$1])])
 		AM_CONDITIONAL([HAVE_]_lit_,
-			[test "x@S|@{]_lit_[}" != x])[]NC_QUERY_PROGS(m4_shift2($@))])])
+			[test "x@S|@{]_lit_[}" != x])[]NM_QUERY_PROGS(m4_shift2($@))])])
 
 
 dnl  NA_HELP_STRINGS(list1, help1[, list2, help2[, ... listN, helpN]])

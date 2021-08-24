@@ -66,7 +66,7 @@ dnl  `AC_MSG_ERROR()`, possibly with `exit-status`
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -74,7 +74,7 @@ AC_DEFUN([NC_MSG_ERRORBOX],
 	[AC_MSG_ERROR([m4_text_wrap([$1 --------------------------------------------------------------------],
 		[         | ],
 		[-------------------------------------------------------------],
-		[79])]m4_if(m4_eval([$# > 1]), [1], [, $2]))])
+		[79])]m4_if(m4_eval([$# > 1]), [1], [, [$2]]))])
 
 
 dnl  NC_MSG_FAILUREBOX(error-description[, exit-status])
@@ -85,7 +85,7 @@ dnl  `AC_MSG_FAILURE()`, possibly with `exit-status`
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -93,7 +93,7 @@ AC_DEFUN([NC_MSG_FAILUREBOX],
 	[AC_MSG_FAILURE([m4_text_wrap([$1 --------------------------------------------------------------------],
 		[         | ],
 		[-------------------------------------------------------------],
-		[79])]m4_if(m4_eval([$# > 1]), [1], [, $2]))])
+		[79])]m4_if(m4_eval([$# > 1]), [1], [, [$2]]))])
 
 
 

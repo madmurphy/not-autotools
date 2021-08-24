@@ -24,18 +24,18 @@ Relationship with the Autoconf Archive
 This project has many similarities with the [**Autoconf Archive**][3], however
 there are important differences too.
 
-One important difference is that while the **Autoconf Archive** mostly aims at
-solving compiler or dependency problems, **Not Autotools** has a broader focus,
-which includes expanding the M4 language to try and render it as less painful
-as possible in its integration with the shell and the `configure` script.
+One difference is that while the **Autoconf Archive** mostly aims at solving
+compiler or dependency problems, **Not Autotools** has a broader focus, which
+includes expanding the M4 language to try and render it as less painful as
+possible in its integration with the shell and the `configure` script.
 
-One other important difference is represented by the way whereby the macros are
+One other difference is represented by the way whereby the macros are
 distributed. The **Autoconf Archive** expects users to install a package that
-makes some new macros automatically available. The **Not Autotools** project
-instead by design releases macros that need to be manually copied and pasted,
-or included directly in a build directory. This has the advantage of not
-slowing down the project's evolution, and backward-incompatible changes do not
-break existing packages.
+makes some new macros automatically available via `autoreconf`. The **Not
+Autotools** project instead by design releases macros that need to be manually
+copied and pasted, or included directly in a build directory. This has the
+advantage of not slowing down the project's evolution, and backward
+incompatible changes do not break existing packages.
 
 A way to think of the **Not Autotools** project is as “a possible staging
 laboratory for the **Autoconf Archive**”. Here the macros often change

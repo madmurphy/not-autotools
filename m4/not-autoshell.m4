@@ -269,72 +269,6 @@ AC_DEFUN([NS_STDOUT_UNQUOTED],
 	[echo "_AS_QUOTE([$1])"])
 
 
-dnl  NS_ECHO_IF(test1, echo1[, test2, echo2[, testN, echoN]][, echo-if-false])
-dnl  **************************************************************************
-dnl
-dnl  M4 sugar to produce a conditional version of `AS_ECHO()`
-dnl
-dnl  Example:
-dnl
-dnl      NS_ECHO_IF([test "${TESTNUM}" -eq 44],
-dnl              ['Number is 44'],
-dnl          [test "${TESTNUM}" -eq 31],
-dnl              ['Number is 31'],
-dnl              ["Invalid number ${TESTNUM}"])
-dnl
-dnl  Prints:
-dnl
-dnl      Number is 31
-dnl
-dnl  The `echoN` arguments are passed verbatim, without shell quoting. For a
-dnl  version that treats the `echoN` arguments in the same way as
-dnl  `AC_MSG_NOTICE()` does, please see `NS_ECHO_IF_UNQUOTED()`.
-dnl
-dnl  This macro can be invoked before `AC_INIT()`.
-dnl
-dnl  Expansion type: shell code
-dnl  Requires: `NS_PP_IF()`
-dnl  Version: 1.0.0
-dnl  Author: madmurphy
-dnl
-dnl  **************************************************************************
-AC_DEFUN([NS_ECHO_IF],
-	[NS_PP_IF([AS_ECHO], $@)])
-
-
-dnl  NS_ECHO_IF_UNQUOTED(test1, echo1[, testN, echoN][, echo-if-false])
-dnl  **************************************************************************
-dnl
-dnl  M4 sugar to produce a conditional version of `AS_ECHO()` with backquote
-dnl  expansion protection
-dnl
-dnl  This is a quote-safe version of `NS_ECHO_IF()`. The `echoN` arguments do
-dnl  not need shell quotes, which will be escaped if found.
-dnl
-dnl  Example:
-dnl
-dnl      NS_ECHO_IF_UNQUOTED([test "${TESTNUM}" -eq 44],
-dnl              [Number is 44],
-dnl          [test "${TESTNUM}" -eq 31],
-dnl              [Number is 31],
-dnl              [Invalid number ${TESTNUM}])
-dnl
-dnl  Prints:
-dnl
-dnl      Number is 31
-dnl
-dnl  This macro can be invoked before `AC_INIT()`.
-dnl
-dnl  Expansion type: shell code
-dnl  Requires: `NS_PP_IF()`
-dnl  Version: 1.0.0
-dnl  Author: madmurphy
-dnl
-dnl  **************************************************************************
-AC_DEFUN([NS_ECHO_IF_UNQUOTED],
-	[NS_PP_IF([_AS_ECHO], $@)])
-
-
 dnl  NS_STRING_IF(test1, str1[, test2, str2[, testN, strN]][, string-if-false])
 dnl  **************************************************************************
 dnl
@@ -782,7 +716,7 @@ dnl
 dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
-dnl  Requires: nothing
+dnl  Requires: `NS_TEXT_WRAP()`
 dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl

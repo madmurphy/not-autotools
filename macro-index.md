@@ -18,11 +18,6 @@ project.
 * [NC_CONFIG_SHADOW_DIR()](m4/not-extended-config.m4#L24)
 
 
-## `m4/not-multiversion.m4`
-
-* [NR_SET_VERSION_ENVIRONMENT()](m4/not-multiversion.m4#L24)
-
-
 ## `m4/not-autoshell.m4`
 
 * [NS_SETVARS()](m4/not-autoshell.m4#L24)
@@ -35,22 +30,20 @@ project.
 * [NS_PP_IF()](m4/not-autoshell.m4#L194)
 * [NS_STDOUT()](m4/not-autoshell.m4#L229)
 * [NS_STDOUT_UNQUOTED()](m4/not-autoshell.m4#L251)
-* [NS_ECHO_IF()](m4/not-autoshell.m4#L272)
-* [NS_ECHO_IF_UNQUOTED()](m4/not-autoshell.m4#L305)
-* [NS_STRING_IF()](m4/not-autoshell.m4#L338)
-* [NS_STRING_IF_UNQUOTED()](m4/not-autoshell.m4#L374)
-* [NS_FOR()](m4/not-autoshell.m4#L410)
-* [NS_WHILE()](m4/not-autoshell.m4#L439)
-* [NS_UNTIL()](m4/not-autoshell.m4#L456)
-* [NS_BREAK()](m4/not-autoshell.m4#L473)
-* [NS_CONTINUE()](m4/not-autoshell.m4#L487)
-* [NS_TEST_EQ()](m4/not-autoshell.m4#L502)
-* [NS_TEST_NE()](m4/not-autoshell.m4#L544)
-* [NS_TEST_AEQ()](m4/not-autoshell.m4#L588)
-* [NS_TEST_NAE()](m4/not-autoshell.m4#L632)
-* [NS_TEXT_WRAP()](m4/not-autoshell.m4#L676)
-* [NS_TEXT_WRAP_UNQUOTED()](m4/not-autoshell.m4#L751)
-* [NS_TEXT_WRAP_CENTER()](m4/not-autoshell.m4#L796)
+* [NS_STRING_IF()](m4/not-autoshell.m4#L272)
+* [NS_STRING_IF_UNQUOTED()](m4/not-autoshell.m4#L308)
+* [NS_FOR()](m4/not-autoshell.m4#L344)
+* [NS_WHILE()](m4/not-autoshell.m4#L373)
+* [NS_UNTIL()](m4/not-autoshell.m4#L390)
+* [NS_BREAK()](m4/not-autoshell.m4#L407)
+* [NS_CONTINUE()](m4/not-autoshell.m4#L421)
+* [NS_TEST_EQ()](m4/not-autoshell.m4#L436)
+* [NS_TEST_NE()](m4/not-autoshell.m4#L478)
+* [NS_TEST_AEQ()](m4/not-autoshell.m4#L522)
+* [NS_TEST_NAE()](m4/not-autoshell.m4#L566)
+* [NS_TEXT_WRAP()](m4/not-autoshell.m4#L610)
+* [NS_TEXT_WRAP_UNQUOTED()](m4/not-autoshell.m4#L685)
+* [NS_TEXT_WRAP_CENTER()](m4/not-autoshell.m4#L730)
 
 
 ## `m4/not-m4sugar.m4`
@@ -117,15 +110,15 @@ project.
 * [NA_TRIANGLE_BRACKETS_TO_SHELL_VARS()](m4/not-autotools.m4#L119)
 * [NA_AMENDMENTS_SED_EXPR()](m4/not-autotools.m4#L145)
 * [NA_AMEND()](m4/not-autotools.m4#L171)
-* [NC_REQUIRE()](m4/not-autotools.m4#L250)
-* [NC_ARG_MISSING()](m4/not-autotools.m4#L278)
-* [NC_ARG_MISSING_WITHVAL()](m4/not-autotools.m4#L322)
-* [NC_SUBST_NOTMAKE()](m4/not-autotools.m4#L344)
-* [NC_GLOBAL_LITERALS()](m4/not-autotools.m4#L364)
-* [NC_GLOBAL_LITERALS_NOTMAKE()](m4/not-autotools.m4#L400)
-* [NC_GET_PROGS()](m4/not-autotools.m4#L422)
-* [NC_REQ_PROGS()](m4/not-autotools.m4#L451)
-* [NC_QUERY_PROGS()](m4/not-autotools.m4#L494)
-* [NA_HELP_STRINGS()](m4/not-autotools.m4#L537)
-* [NC_MAKETARGET_SUBST()](m4/not-autotools.m4#L591)
+* [NC_REQUIRE()](m4/not-autotools.m4#L251)
+* [NC_ARG_MISSING()](m4/not-autotools.m4#L279)
+* [NC_ARG_MISSING_WITHVAL()](m4/not-autotools.m4#L323)
+* [NC_SUBST_NOTMAKE()](m4/not-autotools.m4#L345)
+* [NC_GLOBAL_LITERALS()](m4/not-autotools.m4#L365)
+* [NC_GLOBAL_LITERALS_NOTMAKE()](m4/not-autotools.m4#L401)
+* [NC_GET_PROGS()](m4/not-autotools.m4#L423)
+* [NC_REQ_PROGS()](m4/not-autotools.m4#L452)
+* [NM_QUERY_PROGS()](m4/not-autotools.m4#L495)
+* [NA_HELP_STRINGS()](m4/not-autotools.m4#L538)
+* [NC_MAKETARGET_SUBST()](m4/not-autotools.m4#L592)
 

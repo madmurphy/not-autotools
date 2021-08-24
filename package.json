@@ -1,6 +1,6 @@
 {
 	"name": "Not Autotools",
-	"version": "0.23.0",
+	"version": "0.24.0",
 	"description": "A collection of awesome and self-documented M4-ish macros for GNU Autotools",
 	"homepage": "https://github.com/madmurphy/not-autotools",
 	"author": "madmurphy333@gmail.com",

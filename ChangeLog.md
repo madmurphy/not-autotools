@@ -2,13 +2,30 @@ Change Log
 ==========
 
 
+0.24.0
+------
+
+Changes:
+
+* Macro † `NC_QUERY_PROGS()` in `not-autotools.m4` has been renamed to
+  `NM_QUERY_PROGS()`
+* File † `not-multiversion.m4`, containing the † `NR_SET_VERSION_ENVIRONMENT()`
+  macro, has been removed
+* Macros † `NS_ECHO_IF()` and † `NS_ECHO_IF_UNQUOTED()` have been removed from
+  `not-autoshell.m4` -- you can use `NS_PP_IF([NS_STDOUT], ...)` and
+  `NS_PP_IF([NS_STDOUT_UNQUOTED], ...)` to obtain the same result
+* Code review (macros `NC_MSG_ERRORBOX()` and `NC_MSG_FAILUREBOX()` in
+  `not-ac-messages.m4`)
+* Documentation review
+
+
 0.23.0
 ------
 
 Changes:
 
-* New macros `NS_ECHO_IF()`, `NS_ECHO_IF_UNQUOTED()`, `NS_IF()`, `NS_PP_IF()`,
-  `NS_STDOUT()`, `NS_STDOUT_UNQUOTED()`, `NS_STRING_IF()` and
+* New macros † `NS_ECHO_IF()`, † `NS_ECHO_IF_UNQUOTED()`, `NS_IF()`,
+  `NS_PP_IF()`, `NS_STDOUT()`, `NS_STDOUT_UNQUOTED()`, `NS_STRING_IF()` and
   `NS_STRING_IF_UNQUOTED()` have been created in `not-autoshell.m4`
 * The complete macro index has been published (see `macro-index.md`)
 * A script for generating automatically the complete macro index has been added
@@ -23,7 +40,7 @@ Changes:
 
 * New macros `n4_joinalln()` and `n4_list_index()` have been created in
   `not-m4sugar.m4`
-* New macro `NC_QUERY_PROGS()` has been created in `not-autotools.m4`
+* New macro † `NC_QUERY_PROGS()` has been created in `not-autotools.m4`
 * The argument order of `n4_list_index()` in `not-m4sugar.m4` has changed
 
 
@@ -178,8 +195,8 @@ Changes:
 * Macros † `NM_GET_AM_VAR()`, † `NM_ENVIRONMENT_KEYS` and
   † `NM_LOAD_ENVIRONMENT` in `not-autoreconf.m4` have been renamed to
   `NR_GET_ENV_VAR()`, `NR_ENVIRONMENT_KEYS` and `NR_LOAD_ENVIRONMENT`
-* Macro † `NM_SET_VERSION_ENVIRONMENT()` in `not-multiversion.m4` has been
-  renamed to `NR_SET_VERSION_ENVIRONMENT()`
+* Macro † `NM_SET_VERSION_ENVIRONMENT()` in † `not-multiversion.m4` has been
+  renamed to † `NR_SET_VERSION_ENVIRONMENT()`
 * New macros `n4_includedir()` and `n4_sincludedir()` have been created in
   `not-m4sugar.m4`
 * New macro `NR_CONFIG_FILES()` has been created in `not-autoreconf.m4`
@@ -222,10 +239,10 @@ Changes:
 Changes:
 
 * New macro `n4_mem()` has been created in `not-m4sugar.m4`
-* Library file † `not-misc.m4` has been renamed to `not-multiversion.m4`
+* Library file † `not-misc.m4` has been renamed to † `not-multiversion.m4`
 * Code review (`NC_CONFIG_SHADOW_DIR()` in `not-extended-config.m4`: removed
   dependency to `n4_lambda()`; † `NM_SET_VERSION_ENVIRONMENT` in
-  `not-multiversion.m4`: added support for a permanent and a temporary
+  † `not-multiversion.m4`: added support for a permanent and a temporary
   multi-version state using the `multiversion.lock` and `multiversion.templock`
   files; `NA_HELP_STRINGS()` in `not-autotools.m4`: harmonized the behavior of
   the passed lists; `NS_UNSET()` in `not-autoshell.m4`: added call to
