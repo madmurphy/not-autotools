@@ -98,7 +98,10 @@ project.
 
 * [NC_CC_CHECK_SIZEOF()](m4/not-cc.m4#L23)
 * [NC_CC_CHECK_CHAR_BIT()](m4/not-cc.m4#L139)
-* [NC_CC_CHECK_POSIX()](m4/not-cc.m4#L203)
+* [NC_CC_CHECK_POSIX()](m4/not-cc.m4#L207)
+* [NC_CPP_IF()](m4/not-cc.m4#L268)
+* [NC_CC_STATIC_ASSERT()](m4/not-cc.m4#L315)
+* [NC_CC_CHECK_UINT_FROM_TO()](m4/not-cc.m4#L361)
 
 
 ## `m4/not-autotools.m4`
@@ -112,13 +115,13 @@ project.
 * [NA_AMEND()](m4/not-autotools.m4#L171)
 * [NC_REQUIRE()](m4/not-autotools.m4#L251)
 * [NC_ARG_MISSING()](m4/not-autotools.m4#L279)
-* [NC_ARG_MISSING_WITHVAL()](m4/not-autotools.m4#L323)
-* [NC_SUBST_NOTMAKE()](m4/not-autotools.m4#L345)
-* [NC_GLOBAL_LITERALS()](m4/not-autotools.m4#L365)
-* [NC_GLOBAL_LITERALS_NOTMAKE()](m4/not-autotools.m4#L401)
-* [NC_GET_PROGS()](m4/not-autotools.m4#L423)
-* [NC_REQ_PROGS()](m4/not-autotools.m4#L452)
-* [NM_QUERY_PROGS()](m4/not-autotools.m4#L495)
-* [NA_HELP_STRINGS()](m4/not-autotools.m4#L538)
-* [NC_MAKETARGET_SUBST()](m4/not-autotools.m4#L592)
+* [NC_ARG_MISSING_WITHVAL()](m4/not-autotools.m4#L326)
+* [NC_SUBST_NOTMAKE()](m4/not-autotools.m4#L352)
+* [NC_GLOBAL_LITERALS()](m4/not-autotools.m4#L372)
+* [NC_GLOBAL_LITERALS_NOTMAKE()](m4/not-autotools.m4#L408)
+* [NC_GET_PROGS()](m4/not-autotools.m4#L430)
+* [NC_REQ_PROGS()](m4/not-autotools.m4#L459)
+* [NM_QUERY_PROGS()](m4/not-autotools.m4#L502)
+* [NA_HELP_STRINGS()](m4/not-autotools.m4#L545)
+* [NC_MAKETARGET_SUBST()](m4/not-autotools.m4#L599)
 

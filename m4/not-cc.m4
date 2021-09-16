@@ -169,6 +169,10 @@ dnl  than the largest value that can be represented by the resulting type. That
 dnl  reduced number, though, has been already used for a `case` label (it is
 dnl  always zero indeed), so at that point the program will fail to compile.
 dnl
+dnl  The computed value will be accessible in the `configure` script through
+dnl  the `ac_cv_char_bit` shell variable, while in the C code it will be
+dnl  possible to access it using the `COMPUTED_CHAR_BIT` preprocessor macro.
+dnl
 dnl  This macro can be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
@@ -258,6 +262,182 @@ AC_DEFUN([NC_CC_CHECK_POSIX], [
 		])
 	])
 	AC_MSG_RESULT([${ac_cv_have_posix]m4_ifnblank([$1], [[_$1]])[_c}])
+])
+
+
+dnl  NC_CPP_IF(expr, if-yes[, if-no[, CFLAGS [, header1[, ... headerN]]]])
+dnl  **************************************************************************
+dnl
+dnl  Run `#if (expr)`, with optional compiler flags and headers
+dnl
+dnl  For example, if you are writing an extension for Nautilus and you want to
+dnl  to know if the copy installed in the user's machine uses the version 3 of
+dnl  the GTK libraries, you can run:
+dnl
+dnl      NC_CPP_IF([GTK_MAJOR_VERSION == 3],
+dnl          [AC_MSG_NOTICE([The version of Nautilus installed uses GTK 3])],
+dnl          [AC_MSG_NOTICE([The version of Nautilus installed does not use GTK 3])],
+dnl          ["$(pkg-config --cflags libnautilus-extension)"],
+dnl          [nautilus-extension.h])
+dnl
+dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NC_CPP_IF], [
+	AS_VAR_COPY([_na_oldcflags_], [CFLAGS])
+	AS_VAR_SET([CFLAGS], [$4])
+	AC_MSG_CHECKING([if `$1`])
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+		]m4_foreach([__ITER__], m4_quote(m4_shiftn(4, $@)),
+			[@%:@include <__ITER__>m4_newline()])[
+		@%:@if ($1)
+		@%:@error "Expression $1 matches"
+		@%:@endif
+	]],)], [
+		AC_MSG_RESULT([no])
+		AS_VAR_COPY([CFLAGS], [_na_oldcflags_])
+		AS_UNSET([_na_oldcflags_])
+		$3
+	], [
+		AC_MSG_RESULT([yes])
+		AS_VAR_COPY([CFLAGS], [_na_oldcflags_])
+		AS_UNSET([_na_oldcflags_])
+		$2
+	])
+])
+
+
+dnl  NC_CC_STATIC_ASSERT(expr, if-yes[, if-no[, CFLAGS [, header1[, ... headerN]]]])
+dnl  **************************************************************************
+dnl
+dnl  Run `_Static_assert(expr)`, with optional compiler flags and headers
+dnl
+dnl  For example, if you are writing an extension for Nautilus and you want to
+dnl  to know if the copy installed in the user's machine uses the version 3 of
+dnl  the GTK libraries, you can run:
+dnl
+dnl      NC_CC_STATIC_ASSERT([GTK_MAJOR_VERSION == 3],
+dnl          [AC_MSG_NOTICE([The version of Nautilus installed uses GTK 3])],
+dnl          [AC_MSG_NOTICE([The version of Nautilus installed does not use GTK 3])],
+dnl          ["$(pkg-config --cflags libnautilus-extension)"],
+dnl          [nautilus-extension.h])
+dnl
+dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NC_CC_STATIC_ASSERT], [
+	AS_VAR_COPY([_na_oldcflags_], [CFLAGS])
+	AS_VAR_SET([CFLAGS], [$4])
+	AC_MSG_CHECKING([if `$1`])
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+		]m4_foreach([__ITER__], m4_quote(m4_shiftn(4, $@)),
+			[@%:@include <__ITER__>m4_newline()])[
+	]], [[
+		_Static_assert($1);
+	]])], [
+		AC_MSG_RESULT([yes])
+		AS_VAR_COPY([CFLAGS], [_na_oldcflags_])
+		AS_UNSET([_na_oldcflags_])
+		$2
+	], [
+		AC_MSG_RESULT([no])
+		AS_VAR_COPY([CFLAGS], [_na_oldcflags_])
+		AS_UNSET([_na_oldcflags_])
+		$3
+	])
+])
+
+
+dnl  NC_CC_CHECK_UINT_FROM_TO(name, min[, max[, CFLAGS [, header1[, ... headerN]]]])
+dnl  **************************************************************************
+dnl
+dnl  Calculates the value of an unsigned integer using compile checks, with
+dnl  optional compiler flags and headers
+dnl
+dnl  This macro can be very expensive, since it will run a test for each
+dnl  number in the range specified. Therefore it is generally used for limited
+dnl  computations, such as determining a small version number.
+dnl
+dnl  The computed value will be accessible in the `configure` script using the
+dnl  `[ac_cv_]lc(name)` shell variable, where `lc(name)` is the `name` argument
+dnl  **in lower case**.
+dnl
+dnl  For example,
+dnl
+dnl      NC_CC_CHECK_UINT_FROM_TO([GTK_MAJOR_VERSION],
+dnl          [0],
+dnl          [],
+dnl          ["$(pkg-config --cflags libnautilus-extension)"],
+dnl          [nautilus-extension.h])
+dnl
+dnl      AC_MSG_NOTICE([The version of Nautilus installed uses GTK ${ac_cv_gtk_major_version}])
+dnl
+dnl  will set a `ac_cv_gtk_major_version` shell variable, containing the major
+dnl  version of the GTK libraries used by the copy of Nautilus currently
+dnl  installed -- useful if you are writing an extension for Nautilus.
+dnl
+dnl  If the `name` is not an integer, or if the value of `name` is outside the
+dnl  range specified, the computed value will be set to `-1`. 
+dnl
+dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NC_CC_CHECK_UINT_FROM_TO], [
+	AS_VAR_COPY([_na_oldcflags_], [CFLAGS])
+	AS_VAR_SET([CFLAGS], [$4])
+	m4_pushdef([_na_tmp_headers_],
+		m4_foreach([__ITER__], m4_quote(m4_shiftn(4, $@)),
+			[[@%:@include <]__ITER__[>m4_newline()]]))
+	m4_pushdef([_na_tmp_uint_varname_], [ac_cv_]m4_tolower([$1]))
+	AC_MSG_CHECKING([value of `$1`])
+	AC_CACHE_VAL(m4_quote(_na_tmp_uint_varname_), [
+		AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+			]m4_quote(_na_tmp_headers_)[
+			@%:@include <assert.h>
+		]], [[
+			_Static_assert($2 <= $1);
+			]m4_ifnblank([$3], [[_Static_assert($3 >= $1);]])[
+		]])],
+			[
+				m4_ifblank([$3],
+					[nc_char_bit=$2; while :; do],
+					[for nc_char_bit in {$2..$3}; do])
+					AC_COMPILE_IFELSE([
+						AC_LANG_PROGRAM([m4_quote(_na_tmp_headers_)], [[
+							switch (0) {
+								case 0: case $1 - ${nc_char_bit}:;
+							}
+						]])
+					],
+					[m4_ifblank([$3],
+						[nc_char_bit=$((nc_char_bit + 1))])],
+					[break])
+				done
+				AS_VAR_COPY(m4_quote(_na_tmp_uint_varname_), [nc_char_bit])
+				AS_UNSET([nc_char_bit])
+			],
+			[AS_VAR_SET(m4_quote(_na_tmp_uint_varname_), [-1])])
+	])
+	AC_MSG_RESULT([${]m4_quote(_na_tmp_uint_varname_)[}])
+	m4_popdef([_na_tmp_uint_varname_])
+	m4_popdef([_na_tmp_headers_])
+	AS_VAR_COPY([CFLAGS], [_na_oldcflags_])
+	AS_UNSET([_na_oldcflags_])
 ])
 
 

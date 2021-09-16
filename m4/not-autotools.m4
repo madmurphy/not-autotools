@@ -283,15 +283,16 @@ dnl  Checks whether `argument` or `argument=*` has **not** been passed to the
 dnl  `configure` script, and triggers `true` or `false` accordingly
 dnl
 dnl  Sometimes it might be relatively hard to know whether a particular
-dnl  variable has been set by the user or not, since the `configure` script
+dnl  variable has been set by the user or not, because the `configure` script
 dnl  will assign some default value to it even if the user has not expressed
 dnl  any wish via command line (think of the `${docdir}` variable for example,
-dnl  set either to the value of the `--docdir=...` argument specified by the
-dnl  user or to the `'${datarootdir}/doc/${PACKAGE_TARNAME}'` default string).
+dnl  which is set either to the value of the `--docdir=...` argument specified
+dnl  by the user or to the `'${datarootdir}/doc/${PACKAGE_TARNAME}'` default
+dnl  string).
 dnl
 dnl  It is always possible to compare the current value with the default value
-dnl  normally assigned by the `configure` script... but what if the latter
-dnl  changes with new releases of GNU Autoconf?
+dnl  normally assigned by the `configure` script... but what if this default
+dnl  value changes with new releases of GNU Autoconf?
 dnl
 dnl  To solve the problem this macro looks directly to the actual arguments
 dnl  passed by the user.
@@ -309,6 +310,8 @@ dnl
 dnl      AS_IF([! NC_ARG_MISSING([--docdir])],
 dnl          [AC_MSG_NOTICE([Option `--docdir` has been specified])],
 dnl          [AC_MSG_NOTICE([Option `--docdir` has not been specified])])
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -331,6 +334,10 @@ dnl  that is present but does not have an equals sign (and possibly a value)
 dnl  following it. Neither the equals sign or the value must be passed to the
 dnl  macro. For example, to know whether `--docdir=*` has been passed to the
 dnl  `configure` script, use `NC_ARG_MISSING_WITHVAL([--docdir])`.
+dnl
+dnl  For further information, see `NC_ARG_MISSING()`.
+dnl
+dnl  This macro can be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing

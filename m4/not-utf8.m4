@@ -38,7 +38,7 @@ dnl  There is no way of capturing or expanding a `NUL` character in M4:
 dnl  `m4_len(m4_format([%c], [0]))` is always 0.
 dnl
 dnl  NOTE:  This macro temporarily changes quotes, then restores them to `[`
-dnl         and `]`. That said, it is able to compute _any_ character,
+dnl         and `]`. Thanks to this it is able to compute any character,
 dnl         including quotes and round brackets.
 dnl
 dnl  Expansion type: literal

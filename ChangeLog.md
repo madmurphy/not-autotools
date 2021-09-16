@@ -2,6 +2,17 @@ Change Log
 ==========
 
 
+1.0.0
+------
+
+Changes:
+
+* The version number of the collection has been set to `1.0.0`
+* New macros `NC_CPP_IF()`, `NC_CC_STATIC_ASSERT()` and
+  `NC_CC_CHECK_UINT_FROM_TO()` have been created in `not-cc.m4`
+* Documentation
+
+
 0.24.0
 ------
 
@@ -16,7 +27,7 @@ Changes:
   `NS_PP_IF([NS_STDOUT_UNQUOTED], ...)` to obtain the same result
 * Code review (macros `NC_MSG_ERRORBOX()` and `NC_MSG_FAILUREBOX()` in
   `not-ac-messages.m4`)
-* Documentation review
+* Documentation
 
 
 0.23.0
@@ -30,7 +41,7 @@ Changes:
 * The complete macro index has been published (see `macro-index.md`)
 * A script for generating automatically the complete macro index has been added
   to the package tree (see `pkgutils/macro-index-generator.sh`)
-* Documentation review
+* Documentation
 
 
 0.22.0
