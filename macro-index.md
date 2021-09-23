@@ -124,4 +124,5 @@ project.
 * [NM_QUERY_PROGS()](m4/not-autotools.m4#L502)
 * [NA_HELP_STRINGS()](m4/not-autotools.m4#L545)
 * [NC_MAKETARGET_SUBST()](m4/not-autotools.m4#L599)
+* [NC_MAKETARGET_SUBST_UNQUOTED()](m4/not-autotools.m4#L746)
 

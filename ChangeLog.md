@@ -2,6 +2,20 @@ Change Log
 ==========
 
 
+1.1.0
+------
+
+Changes:
+
+* New macro `NC_MAKETARGET_SUBST_UNQUOTED()` has been created in
+  `not-autotools.m4`
+* `AC_DEFUN()` has been replaced with `m4_define()` for registering the
+  `NC_GLOBAL_LITERALS()` macro (this fixes `autopoint` bug “error: required
+  file 'build-aux/config.rpath' not found”)
+* Code review (macro `NC_MAKETARGET_SUBST()` in `not-autotools.m4`)
+* Documentation
+
+
 1.0.0
 ------
 

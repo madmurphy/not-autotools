@@ -311,6 +311,15 @@ AC_DEFUN_ONCE([NC_CONFIG_SHADOW_DIR], [
 
 	dnl  NC_SHADOW_AFTER_OUTPUT[(if-merge-cmds[, if-sandbox-cmds])]
 	dnl  **********************************************************************
+	dnl
+	dnl  Example:
+	dnl
+	dnl     NC_SHADOW_AFTER_OUTPUT([
+	dnl        AC_MSG_NOTICE([updating the source code with `${ac_make} all-official-sources`...])
+	dnl        "${ac_make}" all-official-sources
+	dnl     ])
+	dnl
+	dnl  **********************************************************************
 	AC_DEFUN_ONCE([NC_SHADOW_AFTER_OUTPUT],
 		[m4_ifset([NC_THREATENED_LIST],
 			[m4_ifnblank(m4_quote(]m4_dquote(][$][1][$][2][)[),

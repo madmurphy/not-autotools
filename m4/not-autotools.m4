@@ -394,11 +394,11 @@ dnl  This macro can be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()` and `NA_ESC_APOS()`
-dnl  Version: 1.0.1
+dnl  Version: 1.0.2
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
-AC_DEFUN([NC_GLOBAL_LITERALS],
+m4_define([NC_GLOBAL_LITERALS],
 	[m4_pushdef([_lit_], m4_quote(NA_SANITIZE_VARNAME([$1])))[]m4_define([GL_]_lit_,
 		m4_normalize([$2]))
 	AC_SUBST(_lit_, ['NA_ESC_APOS(m4_normalize([$2]))'])[]m4_popdef([_lit_])[]m4_if(m4_eval([$# > 2]), [1],
@@ -596,7 +596,7 @@ AC_DEFUN([NA_HELP_STRINGS],
 		[m4_text_wrap(m4_car($1)[,], [  ])m4_newline()NA_HELP_STRINGS(m4_dquote(m4_shift($1))m4_if([$#], [1], [], [, m4_shift($@)]))])])
 
 
-dnl  NC_MAKETARGET_SUBST(target[, [[prerequisites, ]order-only-pr, ]recipe])
+dnl  NC_MAKETARGET_SUBST(target[[, prereq[, o-only-prereq]], recipe])
 dnl  **************************************************************************
 dnl
 dnl  Creates a `make` substitution containing a target declaration
@@ -622,6 +622,8 @@ dnl              echo 'Hello world' && date;
 dnl
 dnl  Exactly like the second argument of `AC_SUBST()`, all arguments here
 dnl  except the first one support shell expansion and must be properly quoted.
+dnl  For a version of this macro that does not require shell quotes, please
+dnl  refer to `NC_MAKETARGET_SUBST_UNQUOTED()`.
 dnl
 dnl  Example #1: Target name and recipe
 dnl
@@ -691,7 +693,7 @@ dnl  used for the recipe's content. The Make variable is a newly created
 dnl  substitution named exactly like the target – but please notice the
 dnl  different way in which hyphens are treated in the two names. The content
 dnl  of this substitution is left to you, so you will have to make sure
-dnl  yourself that it is a suitable content for a recipe.
+dnl  yourself that its content will be suitable for a recipe.
 dnl
 dnl  configure.ac:
 dnl
@@ -709,9 +711,11 @@ dnl      ...
 dnl      echo-test:
 dnl              $(echo_test)
 dnl
+dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()`
-dnl  Version: 1.0.1
+dnl  Version: 1.0.2
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -725,11 +729,69 @@ AC_DEFUN([NC_MAKETARGET_SUBST], [
 	], [
 		AS_VAR_SET([_na_recipe_], m4_argn([$#], $@))
 		AC_SUBST([na_target_]__tgtname__,
-		['$1:m4_if([$#], [2], ['@S|@'\n'], [$#], [3],
-			[m4_ifblank([$2], ['], [ '$2])@S|@'\n'],
-			[m4_ifblank([$3],
-				[m4_ifblank([$2], ['], [ '$2])],
-				[m4_ifblank([$2], [ | '$3], [ '$2' | '$3])])@S|@'\n'])"@S|@@{:@echo "${_na_recipe_}" | ${SED} s/^/\\t/g@:}@"])
+		['$1:]m4_if([$#], [2],
+				[['@S|@'\n']],
+			[$#], [3],
+				[m4_ifblank([$2], [[']], [[ '$2]])@S|@'\n'],
+				[m4_ifblank([$3],
+					[m4_ifblank([$2], [[']], [[ '$2]])],
+					[m4_ifblank([$2], [[ | '$3]], [[ '$2' | '$3]])])@S|@'\n'])["@S|@@{:@echo "${_na_recipe_}" | ${SED} s/^/\\t/g@:}@"])
+		AS_UNSET([_na_recipe_])
+	])
+	AM_SUBST_NOTMAKE([na_target_]__tgtname__)
+	m4_popdef([__tgtname__])
+])
+
+
+dnl  NC_MAKETARGET_SUBST_UNQUOTED(target[[, prereq[, o-only-prereq]], recipe])
+dnl  **************************************************************************
+dnl
+dnl  Creates a `make` substitution containing a target declaration, with
+dnl  backquote expansion protection
+dnl
+dnl  This is a quote-safe version of `NC_MAKETARGET_SUBST()`. The `prereq`,
+dnl  `ord-only-prereq` and `recipe` arguments do not need shell quotes, which
+dnl  will be escaped if found.
+dnl
+dnl  Example:
+dnl
+dnl      # configure.ac:
+dnl      NC_MAKETARGET_SUBST_UNQUOTED([echo-test],
+dnl          [foo],
+dnl          [bar],
+dnl          [echo foobar])
+dnl
+dnl      # Makefile.am:
+dnl      @na_target_echo_test@
+dnl
+dnl  Usage is identical to `NC_MAKETARGET_SUBST()`. Please refer to that macro
+dnl  for the documentation.
+dnl
+dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: `NA_SANITIZE_VARNAME()`
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NC_MAKETARGET_SUBST_UNQUOTED], [
+	m4_pushdef([__tgtname__],
+		m4_quote(NA_SANITIZE_VARNAME([$1])))
+	AC_REQUIRE([AC_PROG_SED])
+	m4_if([$#], [0], [], [$#], [1], [
+		AC_SUBST(__tgtname__)
+		AC_SUBST([na_target_]__tgtname__, ['$1:'@S|@'\n\t''@S|@@{:@__tgtname__@:}@'])
+	], [
+		AS_VAR_SET([_na_recipe_], ["]_AS_QUOTE(m4_dquote(m4_argn([$#], $@)))["])
+		AC_SUBST([na_target_]__tgtname__,
+		['$1:]m4_if([$#], [2],
+				[['@S|@'\n']],
+			[$#], [3],
+				[m4_ifblank([$2], [[']], [[ '"]_AS_QUOTE([[$2]])["]])@S|@'\n'],
+				[m4_ifblank([$3],
+					[m4_ifblank([$2], [[']], [[ '"]_AS_QUOTE([[$2]])["]])],
+					[m4_ifblank([$2], [[ | '"]_AS_QUOTE([[$3]])["]], [[ '"]_AS_QUOTE([[$2]])["' | '"]_AS_QUOTE([[$3]])["]])])@S|@'\n'])["@S|@@{:@echo "${_na_recipe_}" | ${SED} s/^/\\t/g@:}@"])
 		AS_UNSET([_na_recipe_])
 	])
 	AM_SUBST_NOTMAKE([na_target_]__tgtname__)
@@ -739,9 +801,10 @@ AC_DEFUN([NC_MAKETARGET_SUBST], [
 
 
 dnl  **************************************************************************
-dnl  NOTE:  The `NA_` prefix (which stands for "Not Autotools") and the `NC_`
-dnl         prefix (which stands for "Not autoConf") are used with the purpose
-dnl         of avoiding collisions with the default Autotools prefixes `AC_`,
+dnl  NOTE:  The `NA_` prefix (which stands for "Not Autotools"), the `NC_`
+dnl         prefix (which stands for "Not autoConf") and the `NM_` prefix
+dnl         (which stands for "Not autoMake") are used with the purpose of
+dnl         avoiding collisions with the default Autotools prefixes `AC_`,
 dnl         `AM_`, `AS_`, `AX_`, `LT_`.
 dnl  **************************************************************************
 
