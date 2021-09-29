@@ -7,10 +7,12 @@ A collection of awesome and self-documented m4 macros for GNU Autotools
 Overview
 --------
 
-This collection is still relatively small. The macros are organized by topic
-and each topic has its own file. Most of the macros are independent from each
-other, so you can just copy and paste what you need. The few cases where a
-macro depends on a helper macro are documented.
+This collection has grown steadly and has now more than 100 macros. The macros
+are organized by topic and each topic has its own file. With the exception of
+two stand-alone frameworks (`not-autoversion.m4` and `not-extended-config.m4`),
+most of the macros are independent from each other, so you can just copy and
+paste what you need. The few cases where a macro depends on a helper macro are
+documented.
 
 For the complete list of the macros released by the **Not Autotools** project,
 please see [`macro-index.md`][1].

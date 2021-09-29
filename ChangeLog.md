@@ -2,6 +2,70 @@ Change Log
 ==========
 
 
+2.0.0
+------
+
+Changes:
+
+* New macros `n4_set_counter()`, `n4_has()`, `n4_has_any()`, `n4_nquote()` and
+  `n4_void()`, have been created in `not-m4sugar.m4`
+* New macros `NC_SUBST_VARS()`, `NC_SUBST_PAIRS()`, `NC_SUBST_VARS_NOTMAKE()`
+  and `NC_SUBST_PAIRS_NOTMAKE()` have been created in `not-autotools.m4`
+* New macros `NS_HEREDOC()` and `NS_LITERAL_HEREDOC()` have been created in
+  `not-autoshell.m4`
+* New macro `n4_newlines()` has been created in `not-fancy-texts.m4`
+* New library file `not-autoversion.m4` has been created, containing the
+  following new macros:
+    * `NR_RECORD_HISTORY()`
+    * `NR_PROJECT_VERSION`
+    * `NR_BINARY_VERSION`
+    * `NR_LIBTOOL_VERSION_INFO`
+    * `NR_PROJECT_MAJVER`
+    * `NR_PROJECT_MINVER`
+    * `NR_PROJECT_MICVER`
+    * `NR_BINARY_MAJVER`
+    * `NR_BINARY_MINVER`
+    * `NR_BINARY_MICVER`
+    * `NR_INTERFACE_NUM`
+    * `NR_INTERFACES_SUPPORTED`
+    * `NR_IMPLEMENTATION_NUM`
+    * `NR_SOURCE_AGE`
+    * `NC_AUTOVERSION_SUBSTITUTIONS`
+    * `NR_HISTORY_CURRENT_EVENT_NAME`
+    * `NR_HISTORY_CURRENT_VSTATE`
+    * `NR_HISTORY_ROOT_VSTATE`
+    * `NR_HISTORY_EVENTS`
+    * `NR_HISTORY_GET_EVENT_VSTATE()`
+    * `NR_HISTORY_FOR_EACH_EVENT()`
+    * `NR_VSTATE_GET_PROJECT_VERSION()`
+    * `NR_VSTATE_GET_PROJECT_MAJVER()`
+    * `NR_VSTATE_GET_PROJECT_MINVER()`
+    * `NR_VSTATE_GET_PROJECT_MICVER()`
+    * `NR_VSTATE_GET_BINARY_VERSION()`
+    * `NR_VSTATE_GET_BINARY_MAJVER()`
+    * `NR_VSTATE_GET_BINARY_MINVER()`
+    * `NR_VSTATE_GET_BINARY_MICVER()`
+    * `NR_VSTATE_GET_LIBTOOL_VERSION_INFO()`
+    * `NR_VSTATE_GET_INTERFACE_NUM()`
+    * `NR_VSTATE_GET_INTERFACES_SUPPORTED()`
+    * `NR_VSTATE_GET_IMPLEMENTATION_NUM()`
+    * `NR_VSTATE_GET_SOURCE_AGE()`
+    * `NR_BUMP_VSTATE()`
+    * `NR_GET_EVENT_VSTATE()`
+    * `NR_FOR_EACH_EVENT()`
+* The behavior of `n4_with()`, `n4_let()` and `n4_qlet()` has changed in
+  respect to quoted arguments
+* Code review (macros `n4_list_index()`, `n4_joinalln()`, `n4_arg_index()`,
+  `n4_let()`, `n4_case_in()`, `n4_define_substrings_as()`, `n4_expand_once()`,
+  `n4_expanded_once()` and `n4_repeat()` in `not-m4sugar.m4`; macro
+  `NC_CONFIG_SHADOW_DIR()` in `not-extended-config.m4`; macro `NS_TEXT_WRAP()`
+  in `not-autoshell.m4`)
+* Macro † `NC_THREATEN_BLINDLY()` in `not-extended-config.m4` has been renamed
+  to `NR_THREATEN_BLINDLY()`
+* An `examples` subdirectory has been added to the package tree
+* The † `pkgutils` subdirectory has been renamed to `collection-utils`
+
+
 1.1.0
 ------
 
@@ -54,7 +118,7 @@ Changes:
   `NS_STRING_IF_UNQUOTED()` have been created in `not-autoshell.m4`
 * The complete macro index has been published (see `macro-index.md`)
 * A script for generating automatically the complete macro index has been added
-  to the package tree (see `pkgutils/macro-index-generator.sh`)
+  to the package tree (see † `pkgutils/macro-index-generator.sh`)
 * Documentation
 
 
@@ -304,7 +368,7 @@ Changes:
   `not-utf8.m4` have been created, containing the following new macros:
   `NC_MSG_ERRORBOX()`, `NC_MSG_FAILUREBOX()`, `NC_MSG_NOTICEBOX()` and
   `NC_MSG_WARNBOX()` (`not-ac-messages.m4`); `NC_CONFIG_SHADOW_DIR()`,
-  `NC_SHADOW_MAYBE_OUTPUT`, `NC_THREATEN_BLINDLY` and `NC_THREATEN_FILES()`
+  `NC_SHADOW_MAYBE_OUTPUT`, † `NC_THREATEN_BLINDLY` and `NC_THREATEN_FILES()`
   (`not-extended-config.m4`); `n4_charcode()`, `n4_codeunit_at()`,
   `n4_codepoint_to_ascii()`, `n4_escape_non_ascii()` and
   `n4_escape_everything()` (`not-utf8.m4`);

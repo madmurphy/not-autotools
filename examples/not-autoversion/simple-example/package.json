@@ -1,0 +1,21 @@
+{
+	"name": "libfoobar",
+	"version": "0.1.0",
+	"description": "Lorem ipsum dolor sit amet",
+	"homepage": "https://www.example.com/libfoobar",
+	"author": "John Doe",
+	"license": "GPL-3.0-or-later",
+	"repository": {
+		"type": "git",
+		"url": "https://git.example.com/libfoobar.git"
+	},
+	"src": [
+		"src/libfoobar.c",
+		"src/libfoobar.h"
+	],
+	"bugs": {
+		"url": "https://www.example.com/libfoobar/issues",
+		"email" : "the.author@example.com"
+	}
+}
+

@@ -92,7 +92,7 @@ dnl      NC_CC_CHECK_SIZEOF(ssize_t, ${headers})
 dnl      NC_CC_CHECK_SIZEOF(ptrdiff_t, ${headers})
 dnl      NC_CC_CHECK_SIZEOF(off_t, ${headers})
 dnl
-dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()` from `not-autotools.m4`
@@ -173,7 +173,7 @@ dnl  The computed value will be accessible in the `configure` script through
 dnl  the `ac_cv_char_bit` shell variable, while in the C code it will be
 dnl  possible to access it using the `COMPUTED_CHAR_BIT` preprocessor macro.
 dnl
-dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -230,7 +230,7 @@ dnl  for the version queried. Possible values for `posix-version` are the same
 dnl  values supported by the POSIX standard `_POSIX_C_SOURCE` feature test
 dnl  macro.
 dnl
-dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -280,7 +280,7 @@ dnl          [AC_MSG_NOTICE([The version of Nautilus installed does not use GTK 
 dnl          ["$(pkg-config --cflags libnautilus-extension)"],
 dnl          [nautilus-extension.h])
 dnl
-dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -327,7 +327,7 @@ dnl          [AC_MSG_NOTICE([The version of Nautilus installed does not use GTK 
 dnl          ["$(pkg-config --cflags libnautilus-extension)"],
 dnl          [nautilus-extension.h])
 dnl
-dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -364,7 +364,7 @@ dnl
 dnl  Calculates the value of an unsigned integer using compile checks, with
 dnl  optional compiler flags and headers
 dnl
-dnl  This macro can be very expensive, since it will run a test for each
+dnl  This macro may be very expensive, since it will run a test for each
 dnl  number in the range specified. Therefore it is generally used for limited
 dnl  computations, such as determining a small version number.
 dnl
@@ -389,7 +389,7 @@ dnl
 dnl  If the `name` is not an integer, or if the value of `name` is outside the
 dnl  range specified, the computed value will be set to `-1`. 
 dnl
-dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing

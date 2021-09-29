@@ -26,6 +26,8 @@ dnl  **************************************************************************
 dnl
 dnl  Wraps `message` in a text box, then passes it to `AC_MSG_NOTICE()`
 dnl
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
+dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
 dnl  Version: 1.0.0
@@ -44,6 +46,8 @@ dnl  **************************************************************************
 dnl
 dnl  Wraps `problem-description` in a text box, then passes it to
 dnl  `AC_MSG_WARN()`
+dnl
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -64,6 +68,8 @@ dnl
 dnl  Wraps `error-description` in a text box, then passes it to
 dnl  `AC_MSG_ERROR()`, possibly with `exit-status`
 dnl
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
+dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
 dnl  Version: 1.0.1
@@ -83,6 +89,8 @@ dnl
 dnl  Wraps `error-description` in a text box, then passes it to
 dnl  `AC_MSG_FAILURE()`, possibly with `exit-status`
 dnl
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
+dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
 dnl  Version: 1.0.1
@@ -98,9 +106,9 @@ AC_DEFUN([NC_MSG_FAILUREBOX],
 
 
 dnl  **************************************************************************
-dnl  NOTE:  The `NA_` prefix (which stands for "Not Autotools") is used with the
-dnl         purpose of avoiding collisions with the default Autotools prefixes
-dnl         `AC_`, `AM_`, `AS_`, `AX_`, `LT_`.
+dnl  NOTE:  The `NA_` prefix (which stands for "Not Autotools") is used with
+dnl         the purpose of avoiding collisions with the default Autotools
+dnl         prefixes `AC_`, `AM_`, `AS_`, `AX_`, `LT_`.
 dnl  **************************************************************************
 
 

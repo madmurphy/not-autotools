@@ -38,7 +38,7 @@ dnl
 dnl  If `string` begins with a number, an underscore will be prepended to the
 dnl  latter (e.g.: `NA_SANITIZE_VARNAME([0123FOO])` => `_0123FOO`).
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
@@ -57,7 +57,7 @@ dnl  **************************************************************************
 dnl
 dnl  Escapes all the occurrences of the apostrophe character in `string`
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
@@ -75,7 +75,7 @@ dnl
 dnl  Replaces all the occurrences of the dollar character in `string` with two
 dnl  dollar characters (Makefile escaping)
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
@@ -101,7 +101,7 @@ dnl  expands to
 dnl
 dnl      cp 'some_file' '$(docdir)/$(PACKAGE_TARNAME)'
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
@@ -130,7 +130,7 @@ dnl  expands to
 dnl
 dnl      cp 'some_file' "${docdir}/${PACKAGE_TARNAME}"
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
@@ -154,7 +154,7 @@ dnl  creates a valid `sed` expression without actually ever invoking `sed`
 dnl  (hence no `output-file` or `amendable-file` parameters are used here). For
 dnl  more information, please refer to the documentation of `NA_AMEND()`.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -236,7 +236,7 @@ dnl
 dnl  Because this macro is based on a `sed` expression, amendment names can
 dnl  contain alphanumeric characters only.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_AMENDMENTS_SED_EXPR()`
@@ -311,7 +311,7 @@ dnl      AS_IF([! NC_ARG_MISSING([--docdir])],
 dnl          [AC_MSG_NOTICE([Option `--docdir` has been specified])],
 dnl          [AC_MSG_NOTICE([Option `--docdir` has not been specified])])
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -337,7 +337,7 @@ dnl  `configure` script, use `NC_ARG_MISSING_WITHVAL([--docdir])`.
 dnl
 dnl  For further information, see `NC_ARG_MISSING()`.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -355,7 +355,7 @@ dnl
 dnl  Calls `AC_SUBST(var[, value])` immediately followed by
 dnl  `AM_SUBST_NOTMAKE(var)`
 dnl
-dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -390,7 +390,7 @@ dnl  Each argument can safely contain any arbitrary character, however all the
 dnl  `nameN` arguments will be processed by `NA_SANITIZE_VARNAME()`, and all
 dnl  the `valN` arguments will be processed by `m4_normalize()`.
 dnl
-dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()` and `NA_ESC_APOS()`
@@ -411,7 +411,7 @@ dnl
 dnl  Exactly like `NC_GLOBAL_LITERALS`, but does not create `Makefile`
 dnl  variables
 dnl
-dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()` and `NA_ESC_APOS()`
@@ -425,6 +425,118 @@ AC_DEFUN([NC_GLOBAL_LITERALS_NOTMAKE],
 	AC_SUBST(_lit_, ['NA_ESC_APOS(m4_normalize([$2]))'])
 	AM_SUBST_NOTMAKE(_lit_)[]m4_popdef([_lit_])[]m4_if(m4_eval([$# > 2]), [1],
 		[NC_GLOBAL_LITERALS_NOTMAKE(m4_shift2($@))])])
+
+
+dnl  NC_SUBST_VARS(name1[, name2[, name3[, ...  nameN]]])
+dnl  **************************************************************************
+dnl
+dnl  Creates configure substitutions for all the shell variable names passed as
+dnl  arguments (variadic version of `AC_SUBST()` with one argument)
+dnl
+dnl  Example:
+dnl
+dnl      AS_VAR_SET([FOO], ['bar'])
+dnl      AS_VAR_SET([HELLO], ['world'])
+dnl      AS_VAR_SET([COPYLEFT], ['Free Software Foundation'])
+dnl      AS_VAR_SET([YEAR], ['2021'])
+dnl
+dnl      NC_SUBST_VARS([FOO], [HELLO], [COPYLEFT], [YEAR])
+dnl
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([NC_SUBST_VARS],
+	[m4_if([$#], [0], [],
+		[AC_SUBST([$1])[]m4_if([$#], [1], [],
+			[[]m4_newline()NC_SUBST_VARS(m4_shift($@))])])])
+
+
+dnl  NC_SUBST_PAIRS(name1, [val1][, name2, [val2][, ... nameN, [valN]]])
+dnl  **************************************************************************
+dnl
+dnl  Creates configure substitutions for all the name-value pairs passed as
+dnl  arguments (variadic version of `AC_SUBST()` with two arguments)
+dnl
+dnl  For example:
+dnl
+dnl      NC_SUBST_PAIRS([FOO],      ['bar'],
+dnl                     [HELLO],    ['world'],
+dnl                     [COPYLEFT], ['Free Software Foundation'],
+dnl                     [YEAR],     ['2021'])
+dnl
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([NC_SUBST_PAIRS],
+	[m4_if([$#], [0], [], [$#], [1], [],
+		[AC_SUBST([$1], [$2])[]m4_if([$#], [2], [], [$#], [3], [],
+			[[]m4_newline()NC_SUBST_PAIRS(m4_shift2($@))])])])
+
+
+dnl  NC_SUBST_VARS_NOTMAKE(name1[, name2[, name3[, ...  nameN]]])
+dnl  **************************************************************************
+dnl
+dnl  Creates configure substitutions for all the shell variable names passed as
+dnl  arguments and calls `AM_SUBST_NOTMAKE()` for each of them
+dnl
+dnl  For example:
+dnl
+dnl      AS_VAR_SET([FOO], ['bar'])
+dnl      AS_VAR_SET([HELLO], ['world'])
+dnl      AS_VAR_SET([COPYLEFT], ['Free Software Foundation'])
+dnl      AS_VAR_SET([YEAR], ['2021'])
+dnl
+dnl      NC_SUBST_VARS_NOTMAKE([FOO], [HELLO], [COPYLEFT], [YEAR])
+dnl
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([NC_SUBST_VARS_NOTMAKE],
+	[m4_if([$#], [0], [],
+		[AC_SUBST([$1])[]m4_newline()[]AM_SUBST_NOTMAKE([$1])[]m4_if([$#], [1], [],
+			[[]m4_newline()NC_SUBST_VARS_NOTMAKE(m4_shift($@))])])])
+
+
+dnl  NC_SUBST_PAIRS_NOTMAKE(name1, [val1][, name2, [val2][, ... nameN, [valN]]])
+dnl  **************************************************************************
+dnl
+dnl  Creates configure substitutions for all the name-value pairs passed as
+dnl  arguments and calls `AM_SUBST_NOTMAKE()` for each of them
+dnl
+dnl  Example:
+dnl
+dnl      NC_SUBST_PAIRS_NOTMAKE([FOO],      ['bar'],
+dnl                             [HELLO],    ['world'],
+dnl                             [COPYLEFT], ['Free Software Foundation'],
+dnl                             [YEAR],     ['2021'])
+dnl
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([NC_SUBST_PAIRS_NOTMAKE],
+	[m4_if([$#], [0], [], [$#], [1], [],
+		[AC_SUBST([$1], [$2])[]m4_newline()[]AM_SUBST_NOTMAKE([$1])[]m4_if([$#], [2], [], [$#], [3], [],
+			[[]m4_newline()NC_SUBST_PAIRS_NOTMAKE(m4_shift2($@))])])])
 
 
 dnl  NC_GET_PROGS(prog1[, prog2, [prog3[, ... progN ]]])
@@ -443,7 +555,7 @@ dnl  Non-alphanumeric characters in the program name will be replaced with an
 dnl  underscore in the upper-case shell variable. For example, searching for
 dnl  the program `xdg-mime` will set a shell variable named `XDG_MIME`.
 dnl
-dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()`
@@ -479,7 +591,7 @@ dnl          [customprogram],    [Some custom program],
 dnl          [etcetera],         [Et cetera]
 dnl      )
 dnl
-dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()`
@@ -508,8 +620,8 @@ dnl  program
 dnl
 dnl  This macro is identical to `NC_REQ_PROGS()`, but instead of generating an
 dnl  error if a program is not found it simply creates Automake conditionals
-dnl  for each program given, each named `HAVE_[PROGN]` (where `[PROGN]` stands
-dnl  for the name of each program in uppercase).
+dnl  for each program given, each named `[HAVE_]U(progN)` (where `U(progN)`
+dnl  stands for the name of each program in uppercase).
 dnl
 dnl  For example:
 dnl
@@ -524,7 +636,7 @@ dnl      AM_COND_IF([HAVE_CUSTOMPROGRAM],
 dnl          [AC_MSG_NOTICE([Some custom program found or given by the user])],
 dnl          [AC_MSG_NOTICE([Some custom program not found])])
 dnl
-dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()`
@@ -580,7 +692,7 @@ dnl        --enable-foo=check,
 dnl        [omitted]               decide automatically whether it is opportune to
 dnl                                enable the `foo` feature on this machine or not
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
@@ -711,7 +823,7 @@ dnl      ...
 dnl      echo-test:
 dnl              $(echo_test)
 dnl
-dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()`
@@ -767,7 +879,7 @@ dnl
 dnl  Usage is identical to `NC_MAKETARGET_SUBST()`. Please refer to that macro
 dnl  for the documentation.
 dnl
-dnl  This macro can be invoked only after having invoked `AC_INIT()`.
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()`

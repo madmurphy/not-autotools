@@ -33,7 +33,7 @@ dnl
 dnl  Note that `autoreconf` runs at a different time (and often even on a
 dnl  different computer) than the `configure` script.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
@@ -81,7 +81,7 @@ dnl
 dnl      m4_popdef([NR_ENVIRONMENT_KEYS])
 dnl      NR_ENVIRONMENT_KEYS
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
@@ -135,11 +135,11 @@ dnl      m4_changequote
 dnl      RENV_LESS_TERMCAP_mb
 dnl      m4_changequote([, ])
 dnl
-dnl  This macro can be invoked only once. Note that `autoreconf` runs at a
+dnl  This macro may be invoked only once. Note that `autoreconf` runs at a
 dnl  different time (and often even on a different computer) than the
 dnl  `configure` script.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal (void)
 dnl  Requires: nothing
@@ -156,7 +156,7 @@ dnl  **************************************************************************
 dnl
 dnl  Creates a new file with a custom content when `autoreconf` is run
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.  
+dnl  This macro may be invoked before `AC_INIT()`.  
 dnl
 dnl  Expansion type: literal (void)
 dnl  Requires: nothing
@@ -212,7 +212,7 @@ dnl          printf("Hello world!\n");
 dnl          return 0;
 dnl      }
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal (void)
 dnl  Requires: nothing
@@ -245,7 +245,7 @@ dnl  `autoconf`, use:
 dnl
 dnl      n4_expand_once([MY_AC_VERSION], [NR_PROG_VERSION], [autoconf])
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing

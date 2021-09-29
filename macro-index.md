@@ -1,21 +1,22 @@
 _Not Autotools_ Macro Index
 ===========================
 
-This is the complete list of all the macros released by the **Not Autotools**
-project.
+This is the complete list of macros released by the **Not Autotools** project.
 
 
 ## `m4/not-ac-messages.m4`
 
 * [NC_MSG_NOTICEBOX()](m4/not-ac-messages.m4#L24)
-* [NC_MSG_WARNBOX()](m4/not-ac-messages.m4#L42)
-* [NC_MSG_ERRORBOX()](m4/not-ac-messages.m4#L61)
-* [NC_MSG_FAILUREBOX()](m4/not-ac-messages.m4#L80)
+* [NC_MSG_WARNBOX()](m4/not-ac-messages.m4#L44)
+* [NC_MSG_ERRORBOX()](m4/not-ac-messages.m4#L65)
+* [NC_MSG_FAILUREBOX()](m4/not-ac-messages.m4#L86)
 
 
 ## `m4/not-extended-config.m4`
 
 * [NC_CONFIG_SHADOW_DIR()](m4/not-extended-config.m4#L24)
+* [NC_THREATEN_FILES()](m4/not-extended-config.m4#L283)
+* [NR_THREATEN_BLINDLY](m4/not-extended-config.m4#L307)
 
 
 ## `m4/not-autoshell.m4`
@@ -35,8 +36,8 @@ project.
 * [NS_FOR()](m4/not-autoshell.m4#L344)
 * [NS_WHILE()](m4/not-autoshell.m4#L373)
 * [NS_UNTIL()](m4/not-autoshell.m4#L390)
-* [NS_BREAK()](m4/not-autoshell.m4#L407)
-* [NS_CONTINUE()](m4/not-autoshell.m4#L421)
+* [NS_BREAK](m4/not-autoshell.m4#L407)
+* [NS_CONTINUE](m4/not-autoshell.m4#L421)
 * [NS_TEST_EQ()](m4/not-autoshell.m4#L436)
 * [NS_TEST_NE()](m4/not-autoshell.m4#L478)
 * [NS_TEST_AEQ()](m4/not-autoshell.m4#L522)
@@ -44,36 +45,84 @@ project.
 * [NS_TEXT_WRAP()](m4/not-autoshell.m4#L610)
 * [NS_TEXT_WRAP_UNQUOTED()](m4/not-autoshell.m4#L685)
 * [NS_TEXT_WRAP_CENTER()](m4/not-autoshell.m4#L730)
+* [NS_LITERAL_HEREDOC()](m4/not-autoshell.m4#L773)
+* [NS_HEREDOC()](m4/not-autoshell.m4#L801)
 
 
 ## `m4/not-m4sugar.m4`
 
 * [n4_lambda()](m4/not-m4sugar.m4#L24)
 * [n4_with()](m4/not-m4sugar.m4#L134)
-* [n4_let()](m4/not-m4sugar.m4#L223)
-* [n4_qlet()](m4/not-m4sugar.m4#L276)
-* [n4_case_in()](m4/not-m4sugar.m4#L304)
-* [n4_list_index()](m4/not-m4sugar.m4#L361)
-* [n4_arg_index()](m4/not-m4sugar.m4#L409)
-* [n4_joinalln()](m4/not-m4sugar.m4#L434)
-* [n4_mem()](m4/not-m4sugar.m4#L487)
-* [n4_expanded_once()](m4/not-m4sugar.m4#L531)
-* [n4_expand_once()](m4/not-m4sugar.m4#L568)
-* [n4_define_substrings_as()](m4/not-m4sugar.m4#L616)
-* [n4_repeat()](m4/not-m4sugar.m4#L661)
-* [n4_redepth()](m4/not-m4sugar.m4#L689)
-* [n4_for_each_match()](m4/not-m4sugar.m4#L716)
-* [n4_get_replacements()](m4/not-m4sugar.m4#L747)
-* [n4_burn_out()](m4/not-m4sugar.m4#L778)
-* [n4_includedir()](m4/not-m4sugar.m4#L821)
-* [n4_sincludedir()](m4/not-m4sugar.m4#L843)
+* [n4_let()](m4/not-m4sugar.m4#L199)
+* [n4_qlet()](m4/not-m4sugar.m4#L252)
+* [n4_has()](m4/not-m4sugar.m4#L280)
+* [n4_has_any()](m4/not-m4sugar.m4#L317)
+* [n4_case_in()](m4/not-m4sugar.m4#L372)
+* [n4_list_index()](m4/not-m4sugar.m4#L429)
+* [n4_arg_index()](m4/not-m4sugar.m4#L480)
+* [n4_set_counter()](m4/not-m4sugar.m4#L505)
+* [n4_joinalln()](m4/not-m4sugar.m4#L594)
+* [n4_mem()](m4/not-m4sugar.m4#L649)
+* [n4_nquote()](m4/not-m4sugar.m4#L693)
+* [n4_expanded_once()](m4/not-m4sugar.m4#L759)
+* [n4_expand_once()](m4/not-m4sugar.m4#L800)
+* [n4_void()](m4/not-m4sugar.m4#L853)
+* [n4_define_substrings_as()](m4/not-m4sugar.m4#L880)
+* [n4_repeat()](m4/not-m4sugar.m4#L926)
+* [n4_redepth()](m4/not-m4sugar.m4#L954)
+* [n4_for_each_match()](m4/not-m4sugar.m4#L981)
+* [n4_get_replacements()](m4/not-m4sugar.m4#L1012)
+* [n4_burn_out()](m4/not-m4sugar.m4#L1043)
+* [n4_includedir()](m4/not-m4sugar.m4#L1086)
+* [n4_sincludedir()](m4/not-m4sugar.m4#L1108)
+
+
+## `m4/not-autoversion.m4`
+
+* [NR_RECORD_HISTORY()](m4/not-autoversion.m4#L24)
+* [NR_HISTORY_ROOT_VSTATE()](m4/not-autoversion.m4#L378)
+* [NR_HISTORY_EVENTS](m4/not-autoversion.m4#L392)
+* [NR_HISTORY_GET_EVENT_VSTATE()](m4/not-autoversion.m4#L399)
+* [NR_HISTORY_CURRENT_EVENT_NAME](m4/not-autoversion.m4#L433)
+* [NR_HISTORY_CURRENT_VSTATE](m4/not-autoversion.m4#L440)
+* [NR_PROJECT_MAJVER](m4/not-autoversion.m4#L447)
+* [NR_PROJECT_MINVER](m4/not-autoversion.m4#L454)
+* [NR_PROJECT_MICVER](m4/not-autoversion.m4#L461)
+* [NR_PROJECT_VERSION](m4/not-autoversion.m4#L468)
+* [NR_BINARY_MAJVER](m4/not-autoversion.m4#L475)
+* [NR_BINARY_MINVER](m4/not-autoversion.m4#L483)
+* [NR_BINARY_MICVER](m4/not-autoversion.m4#L490)
+* [NR_BINARY_VERSION](m4/not-autoversion.m4#L497)
+* [NR_INTERFACE_NUM](m4/not-autoversion.m4#L504)
+* [NR_INTERFACES_SUPPORTED](m4/not-autoversion.m4#L511)
+* [NR_IMPLEMENTATION_NUM](m4/not-autoversion.m4#L518)
+* [NR_LIBTOOL_VERSION_INFO](m4/not-autoversion.m4#L525)
+* [NR_SOURCE_AGE](m4/not-autoversion.m4#L532)
+* [NR_BUMP_VSTATE()](m4/not-autoversion.m4#L541)
+* [NR_GET_EVENT_VSTATE()](m4/not-autoversion.m4#L604)
+* [NR_FOR_EACH_EVENT()](m4/not-autoversion.m4#L655)
+* [NR_HISTORY_FOR_EACH_EVENT()](m4/not-autoversion.m4#L773)
+* [NR_VSTATE_GET_PROJECT_VERSION()](m4/not-autoversion.m4#L881)
+* [NR_VSTATE_GET_PROJECT_MAJVER()](m4/not-autoversion.m4#L903)
+* [NR_VSTATE_GET_PROJECT_MINVER()](m4/not-autoversion.m4#L925)
+* [NR_VSTATE_GET_PROJECT_MICVER()](m4/not-autoversion.m4#L947)
+* [NR_VSTATE_GET_BINARY_VERSION()](m4/not-autoversion.m4#L969)
+* [NR_VSTATE_GET_BINARY_MAJVER()](m4/not-autoversion.m4#L989)
+* [NR_VSTATE_GET_BINARY_MINVER()](m4/not-autoversion.m4#L1013)
+* [NR_VSTATE_GET_BINARY_MICVER()](m4/not-autoversion.m4#L1035)
+* [NR_VSTATE_GET_LIBTOOL_VERSION_INFO()](m4/not-autoversion.m4#L1057)
+* [NR_VSTATE_GET_INTERFACE_NUM()](m4/not-autoversion.m4#L1078)
+* [NR_VSTATE_GET_INTERFACES_SUPPORTED()](m4/not-autoversion.m4#L1101)
+* [NR_VSTATE_GET_IMPLEMENTATION_NUM()](m4/not-autoversion.m4#L1126)
+* [NR_VSTATE_GET_SOURCE_AGE()](m4/not-autoversion.m4#L1150)
+* [NC_AUTOVERSION_SUBSTITUTIONS](m4/not-autoversion.m4#L1172)
 
 
 ## `m4/not-autoreconf.m4`
 
 * [NR_GET_ENV_VAR()](m4/not-autoreconf.m4#L24)
-* [NR_ENVIRONMENT_KEYS()](m4/not-autoreconf.m4#L47)
-* [NR_LOAD_ENVIRONMENT()](m4/not-autoreconf.m4#L97)
+* [NR_ENVIRONMENT_KEYS](m4/not-autoreconf.m4#L47)
+* [NR_LOAD_ENVIRONMENT](m4/not-autoreconf.m4#L97)
 * [NR_NEWFILE()](m4/not-autoreconf.m4#L154)
 * [NR_CONFIG_FILES()](m4/not-autoreconf.m4#L173)
 * [NR_PROG_VERSION()](m4/not-autoreconf.m4#L227)
@@ -82,22 +131,23 @@ project.
 ## `m4/not-fancy-texts.m4`
 
 * [n4_sp()](m4/not-fancy-texts.m4#L24)
-* [n4_text_center()](m4/not-fancy-texts.m4#L40)
+* [n4_newlines()](m4/not-fancy-texts.m4#L40)
+* [n4_text_center()](m4/not-fancy-texts.m4#L74)
 
 
 ## `m4/not-utf8.m4`
 
 * [n4_charcode()](m4/not-utf8.m4#L24)
-* [n4_codeunit_at()](m4/not-utf8.m4#L54)
-* [n4_codepoint_to_ascii()](m4/not-utf8.m4#L81)
-* [n4_escape_non_ascii()](m4/not-utf8.m4#L117)
-* [n4_escape_everything()](m4/not-utf8.m4#L161)
+* [n4_codeunit_at()](m4/not-utf8.m4#L56)
+* [n4_codepoint_to_ascii()](m4/not-utf8.m4#L85)
+* [n4_escape_non_ascii()](m4/not-utf8.m4#L123)
+* [n4_escape_everything()](m4/not-utf8.m4#L169)
 
 
 ## `m4/not-cc.m4`
 
 * [NC_CC_CHECK_SIZEOF()](m4/not-cc.m4#L23)
-* [NC_CC_CHECK_CHAR_BIT()](m4/not-cc.m4#L139)
+* [NC_CC_CHECK_CHAR_BIT](m4/not-cc.m4#L139)
 * [NC_CC_CHECK_POSIX()](m4/not-cc.m4#L207)
 * [NC_CPP_IF()](m4/not-cc.m4#L268)
 * [NC_CC_STATIC_ASSERT()](m4/not-cc.m4#L315)
@@ -119,10 +169,14 @@ project.
 * [NC_SUBST_NOTMAKE()](m4/not-autotools.m4#L352)
 * [NC_GLOBAL_LITERALS()](m4/not-autotools.m4#L372)
 * [NC_GLOBAL_LITERALS_NOTMAKE()](m4/not-autotools.m4#L408)
-* [NC_GET_PROGS()](m4/not-autotools.m4#L430)
-* [NC_REQ_PROGS()](m4/not-autotools.m4#L459)
-* [NM_QUERY_PROGS()](m4/not-autotools.m4#L502)
-* [NA_HELP_STRINGS()](m4/not-autotools.m4#L545)
-* [NC_MAKETARGET_SUBST()](m4/not-autotools.m4#L599)
-* [NC_MAKETARGET_SUBST_UNQUOTED()](m4/not-autotools.m4#L746)
+* [NC_SUBST_VARS()](m4/not-autotools.m4#L430)
+* [NC_SUBST_PAIRS()](m4/not-autotools.m4#L459)
+* [NC_SUBST_VARS_NOTMAKE()](m4/not-autotools.m4#L486)
+* [NC_SUBST_PAIRS_NOTMAKE()](m4/not-autotools.m4#L515)
+* [NC_GET_PROGS()](m4/not-autotools.m4#L542)
+* [NC_REQ_PROGS()](m4/not-autotools.m4#L571)
+* [NM_QUERY_PROGS()](m4/not-autotools.m4#L614)
+* [NA_HELP_STRINGS()](m4/not-autotools.m4#L657)
+* [NC_MAKETARGET_SUBST()](m4/not-autotools.m4#L711)
+* [NC_MAKETARGET_SUBST_UNQUOTED()](m4/not-autotools.m4#L858)
 

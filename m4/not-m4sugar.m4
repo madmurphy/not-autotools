@@ -77,7 +77,7 @@ dnl
 dnl      Hi there! Here it's Rose! And here it's Rose!
 dnl
 dnl  This is because `$1` gets replaced with `Rose` before the nested macro's
-dnl  arguments can expand. The only way to prevent this is to delay the
+dnl  arguments can expand. The only way to prevent this is by delaying the
 dnl  composition of `$` and `1`, so that the expansion of the argument happens
 dnl  at a later time. Hence,
 dnl
@@ -102,8 +102,8 @@ dnl
 dnl      L([
 dnl          This is $1 L([
 dnl              This is ][$][1][ L([
-dnl                  {][$][1][}m4_if(m4_eval(][$][#][ > 1), [1],
-dnl                      [n4_anon(m4_shift(]m4_quote(][$][@][)[))])
+dnl                  {][$][1][}m4_if(m4_eval(][$][#][[ > 1]), [1],
+dnl                      [n4_anon(m4_shift(]]m4_dquote([$][@])[[))])
 dnl                  ])([internal-1], [internal-2], [internal-3], [internal-4])
 dnl              ])([central])
 dnl      ])([external])
@@ -118,7 +118,7 @@ dnl              {internal-2}
 dnl              {internal-3}
 dnl              {internal-4}
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
@@ -131,16 +131,14 @@ m4_define([n4_lambda],
 	[m4_pushdef([n4_anon], [$1])[]m4_pushdef([n4_anon], [m4_popdef([n4_anon])[]$1[]m4_popdef([n4_anon])])[]n4_anon])
 
 
-dnl  n4_with(expand-val, expression)
+dnl  n4_with(val, expression)
 dnl  **************************************************************************
 dnl
-dnl  Expands every occurrence of `n4_this` in `expression` with the computed
-dnl  expansion of `expand-val`, ensuring that the latter is computed only once
-dnl  regardless of the number of internal calls
+dnl  Expands every occurrence of `n4_this` in `expression` with `val`
 dnl
 dnl  For example:
 dnl
-dnl      n4_with([m4_eval(10 ** 3)],
+dnl      n4_with(m4_eval(10 ** 3),
 dnl          [n4_this... n4_this...])
 dnl
 dnl          => 1000... 1000...
@@ -148,23 +146,10 @@ dnl
 dnl  The `n4_this` keyword is fully reentrant and allows nested invocations of
 dnl  `n4_with()`
 dnl
-dnl      n4_with([m4_eval(10 ** 3)],
-dnl          [n4_this... n4_with([m4_eval(9 ** 3)], [n4_this... n4_this])... n4_this...])
+dnl      n4_with(m4_eval(10 ** 3),
+dnl          [n4_this... n4_with(m4_eval(9 ** 3), [n4_this... n4_this])... n4_this...])
 dnl
 dnl          => 1000... 729... 729... 1000...
-dnl
-dnl  From a quotation perspective, doing
-dnl
-dnl     n4_with([some text here],
-dnl         [n4_this... n4_this...])
-dnl
-dnl  is exactly the same thing as doing
-dnl
-dnl     m4_unquote(m4_expand([some text here]))... m4_unquote(m4_expand([some text here]))...
-dnl
-dnl  The only difference is that the first example will be more efficient,
-dnl  because `m4_unquote(m4_expand([some text here]))` is invoked only once and
-dnl  stored in `n4_this` as a literal.
 dnl
 dnl  This macro is useful for expensive operations that would need otherwise to
 dnl  be invoked repeatedly.
@@ -175,56 +160,46 @@ dnl
 dnl      n4_with([text $1], [n4_this([a])... n4_this([b])...])
 dnl          => text a... text b...
 dnl
-dnl  However, as these are expanded at a later stage, they cannot be used for
-dnl  the purpose of creating a fully computed literal.
+dnl  The following examples illustrate the different behavior of `n4_with()`
+dnl  depending on the presence of quotes or not in the first argument.
 dnl
-dnl      n4_with([m4_eval($1 + 5)], [n4_this(3)])
-dnl          => m4:test.m4: bad expression in eval: $1 + 5
-dnl
-dnl  If, as a workaround, you tried to double quote `m4_eval()` in the example
-dnl  above, the code _would_ work, but it would be computed on every invocation
-dnl  of `n4_this`, loosing the efficiency advantage provided by this macro. The
-dnl  following examples illustrate the different behavior of single and double
-dnl  quotes in `n4_with()`.
-dnl
-dnl  Single quoting:
+dnl  No quoting:
 dnl
 dnl      m4_define([counter], [0])
 dnl
-dnl      n4_with([m4_define([counter], m4_incr(counter))Hi!],
-dnl          [n4_this n4_this n4_this n4_this n4_this n4_this])... counter
+dnl      n4_with(counter m4_define([counter], m4_incr(counter)),
+dnl          [n4_this n4_this n4_this n4_this n4_this n4_this...])
 dnl
-dnl          => Hi! Hi! Hi! Hi! Hi! Hi!... 1
+dnl          => 0  0  0  0  0  0 ...
 dnl
-dnl  Double quoting:
+dnl  Quoting:
 dnl
 dnl      m4_define([counter], [0])
 dnl
-dnl      n4_with([[m4_define([counter], m4_incr(counter))Hi!]],
-dnl          [n4_this n4_this n4_this n4_this n4_this n4_this])... counter
+dnl      n4_with([counter m4_define([counter], m4_incr(counter))],
+dnl          [n4_this n4_this n4_this n4_this n4_this n4_this...])
 dnl
-dnl          => Hi! Hi! Hi! Hi! Hi! Hi!... 6
+dnl          => 0  1  2  3  4  5 ...
 dnl
 dnl  If you need to store more than one value at a time, use `n4_let()` or
 dnl  `n4_qlet()` instead of `n4_with()`
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 2.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 m4_define([n4_with],
-	[m4_pushdef([n4_this], m4_expand([$1]))$2[]m4_popdef([n4_this])])
+	[m4_pushdef([n4_this], [$1])$2[]m4_popdef([n4_this])])
 
 
-dnl  n4_let(macro-name1, expand-val1[, ... macro-nameN, expand-valN], expression)
+dnl  n4_let(macro-name1, val1[, ... macro-nameN, valN], expression)
 dnl  **************************************************************************
 dnl
-dnl  Exactly like `n4_with()`, but allows to use infinite computed expansions
-dnl  and name them
+dnl  Exactly like `n4_with()`, but allows to use infinite aliases
 dnl
 dnl  This macro in fact creates a complete M4 scoping mechanism. See the
 dnl  documentation of `n4_with()` for more information.
@@ -232,7 +207,7 @@ dnl
 dnl  For example,
 dnl
 dnl      n4_let([AUTHOR],    [madmurphy],
-dnl             [DATE],      [m4_esyscmd_s([date +%d/%m/%Y])],
+dnl             [DATE],      m4_esyscmd_s([date +%d/%m/%Y]),
 dnl          [This text has been created by AUTHOR on DATE.])
 dnl
 dnl  will print:
@@ -245,7 +220,7 @@ dnl
 dnl  As with `n4_with()`, scope nesting is fully supported. For example,
 dnl
 dnl      n4_let([AUTHOR],    [madmurphy],
-dnl             [DATE],      [m4_esyscmd_s([date +%d/%m/%Y])],
+dnl             [DATE],      m4_esyscmd_s([date +%d/%m/%Y]),
 dnl          [This text has been created by AUTHOR on DATE.
 dnl
 dnl          n4_let([AUTHOR],    [charlie],
@@ -261,44 +236,137 @@ dnl          ...Don't forget to write an email to the real author, charlie!
 dnl
 dnl              The real author is madmurphy.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 2.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 m4_define([n4_let],
-	[m4_if([$#], [1], [$1], [m4_pushdef([$1], m4_expand([$2]))n4_let(m4_shift2($@))[]m4_popdef([$1])])])
+	[m4_if([$#], [0], [], [$#], [1], [$1],
+		[m4_pushdef([$1], [$2])[]n4_let(m4_shift2($@))[]m4_popdef([$1])])])
 
 
 dnl  n4_qlet([name-val-pair1][, ... [name-val-pairN]], expression)
 dnl  **************************************************************************
 dnl
-dnl  Exactly like `n4_let()`, but optionally tolerates each `name-valN` pair to
-dnl  be surrounded by quotes (this macro is only for clarity)
+dnl  Exactly like `n4_let()`, but requires each name-value pair to be
+dnl  surrounded by quotes (this macro is only for clarity)
 dnl
 dnl  For example,
 dnl
 dnl      n4_qlet([[AUTHOR],  [madmurphy]],
-dnl              [[DATE],    [m4_esyscmd_s([date +%d/%m/%Y])]],
+dnl              [[DATE],    m4_esyscmd_s([date +%d/%m/%Y])],
 dnl          [This text has been created by AUTHOR on DATE.])
 dnl
 dnl  will print:
 dnl
 dnl      This text has been created by madmurphy on 25/09/2019.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: `n4_let()`
-dnl  Version: 1.0.0
+dnl  Version: 2.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 m4_define([n4_qlet],
-	[n4_let(m4_reverse(m4_shift(m4_reverse($*))), m4_argn($#, $@))])
+	[n4_let(m4_reverse(m4_shift(m4_reverse($*))), m4_argn([$#], $@))])
+
+
+dnl  n4_has(list, check1, if-found1[, ... checkN, if-foundN[, if-not-found]])
+dnl  **************************************************************************
+dnl
+dnl  Check if a list contains one or more elements
+dnl
+dnl  Example:
+dnl
+dnl      m4_define([MY_LIST],
+dnl          [[AUTUMN], [WINTER], [SUMMER]])
+dnl
+dnl      n4_has(m4_dquote(MY_LIST),
+dnl          [SPRING],
+dnl              [SPRING found],
+dnl          [SUMMER],
+dnl              [SUMMER found],
+dnl              [Neither SPRING nor SUMMER can be found])
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: Nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_has],
+	[m4_if([$#], [0], [], [$#], [1], [], [$#], [2], [],
+		[m4_if(m4_argn(1, $1), [$2], [$3], [$#], [3], [], [$#], [4],
+			[m4_if(m4_count($1), [1],
+				[$4],
+				[n4_has(m4_dquote(m4_shift($1)), m4_shift($@))])],
+			[m4_if(m4_count($1), [1],
+				[n4_has([$1], m4_shift3($@))],
+				[n4_has(m4_dquote(m4_shift($1)), [$2], [$3],
+					[n4_has([$1], m4_shift3($@))])])])])])
+
+
+dnl  n4_has_any(list, check-list1, if-found1[, ... check-listN, if-foundN[,
+dnl             if-not-found]])
+dnl  **************************************************************************
+dnl
+dnl  Check if a list contains one or more elements grouped in further lists
+dnl
+dnl  This macro is very similar to `n4_has()`, but allows to group more than
+dnl  one element under the same conditional.
+dnl
+dnl  For example,
+dnl
+dnl      m4_define([MY_LIST],
+dnl          [[August], [September], [October]])
+dnl
+dnl      n4_has_any(m4_dquote(MY_LIST),
+dnl          [[February]],
+dnl              [The shortest month in your list has 28 days],
+dnl          [[April], [June], [September], [November2]],
+dnl              [The shortest month in your list has 30 days],
+dnl          [[January], [March], [May], [July], [August], [October], [December]],
+dnl              [The shortest month in your list has 31 days],
+dnl              [Are you sure you wrote the month names correctly?])
+dnl
+dnl  expands to
+dnl
+dnl      The shortest month in your list has 30 days
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: Nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_has_any],
+	[m4_if([$#], [0], [], [$#], [1], [], [$#], [2], [],
+		[m4_if(m4_argn(1, $1), m4_argn(1, $2), [$3], [$#], [3], [], [$#], [4],
+			[m4_if(m4_count($1), [1],
+				[$4],
+				[m4_if(m4_count($2), [1],
+					[n4_has_any(m4_dquote(m4_shift($1)), m4_shift($@))],
+					[n4_has_any(m4_dquote(m4_shift($1)), [$2], [$3],
+						[n4_has_any([$1], m4_dquote(m4_shift($2)), m4_shift2($@))])])])],
+			[m4_if(m4_count($1), [1],
+				[m4_if(m4_count($2), [1],
+					[n4_has_any([$1], m4_shift3($@))],
+					[n4_has_any([$1], m4_dquote(m4_shift($2)), [$3],
+						[n4_has_any([$1], m4_shift3($@))])])],
+				[n4_has_any(m4_dquote(m4_shift($1)), [$2], [$3],
+					m4_if(m4_count($2), [1],
+						[[n4_has_any([$1], m4_shift3($@))]],
+						[[n4_has_any([$1], m4_dquote(m4_shift($2)), m4_shift2($@))]]))])])])])
 
 
 dnl  n4_case_in(text, list1, if-found1[, ... listN, if-foundN], [if-not-found])
@@ -336,29 +404,29 @@ dnl
 dnl  `n4_case_in()` has been designed to behave like `m4_case()` when a simple
 dnl  string is passed instead of a list.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
-dnl  Requires: Autoconf >= 2.62: for the `m4_cond()` macro -- see:
-dnl  https://www.gnu.org/software/autoconf/manual/autoconf-2.62/html_node/Conditional-constructs.html
-dnl  Version: 1.0.0
+dnl  Requires: Nothing
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl  Further reading: https://www.gnu.org/software/autoconf/manual/autoconf-2.69/html_node/Conditional-constructs.html#index-m4_005fcase-1363
 dnl
 dnl  **************************************************************************
 m4_define([n4_case_in],
-	[m4_cond([m4_eval([$# < 2])], [1],
-			[],
-		[m4_argn([1], $2)], [$1],
+	[m4_if([$#], [0], [], [$#], [1], [], [$#], [2], [],
+		[m4_if(m4_argn([1], $2), [$1],
 			[$3],
-		[m4_eval(m4_count($2)[ > 1])], [1],
-			[n4_case_in([$1], m4_dquote(m4_shift($2)), m4_shift2($@))],
-		[m4_eval([$# > 4])], [1],
-			[n4_case_in([$1], m4_shift3($@))],
-			[$4])])
+			[m4_if(m4_count($2), [1],
+				[m4_if([$#], [3], [], [$#], [4],
+					[$4],
+					[n4_case_in([$1], m4_shift3($@))])],
+				[n4_case_in([$1],
+					m4_dquote(m4_shift($2)),
+					m4_shift2($@))])])])])
 
 
-dnl  n4_list_index(target, list, [add-to-return-value], [if-not-found])
+dnl  n4_list_index(target, list[, [add-to-return-value][, if-not-found]])
 dnl  **************************************************************************
 dnl
 dnl  Searches for the first occurrence of `target` in the comma-separated list
@@ -380,30 +448,33 @@ dnl  If the `if-not-found` argument is expressed, it will be returned every
 dnl  time `target` is not found. This argument accepts both numerical and
 dnl  non-numerical values.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
-dnl  Requires: Autoconf >= 2.62: for the `m4_cond()` macro -- see:
-dnl  https://www.gnu.org/software/autoconf/manual/autoconf-2.62/html_node/Conditional-constructs.html
-dnl  Version: 2.0.0
+dnl  Requires: Nothing
+dnl  Version: 2.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 m4_define([n4_list_index],
-	[m4_cond([m4_eval([$# < 2])], [1],
-			[-1],
-		[m4_argn([1], $2)], [$1],
-			[m4_eval([$3 + 0])],
-		[m4_eval(m4_count($2)[ > 1])], [1],
-			[n4_list_index([$1],
-				m4_dquote(m4_shift($2)),
-				m4_eval([$3 + 1]),
-				m4_if(m4_eval([$# > 3]), [1],
-					[$4],
-					[m4_eval([$3 - 1])]))],
-		[m4_eval([$# > 3])], [1],
-			[$4],
-			[m4_eval([$3 - 1])])])
+	[m4_if([$#], [0], [-1],
+		[$#], [1], [-1],
+		[m4_if(m4_argn([1], $2), [$1],
+			[m4_default_nblank_quoted([$3], [0])],
+			[m4_if(m4_count($2), [1],
+				[m4_default_nblank_quoted([$4],
+					[m4_ifblank([$3],
+						[-1],
+						[m4_decr([$3])])])],
+				[n4_list_index([$1],
+					m4_dquote(m4_shift($2)),
+					m4_ifblank([$3],
+						[1],
+						[m4_incr([$3])]),
+					m4_default_nblank_quoted([$4],
+						[m4_ifblank([$3],
+							[-1],
+							[m4_decr([$3])])]))])])])])
 
 
 dnl  n4_arg_index(target, arg1[, arg2[, arg3[, ... argN]]])
@@ -419,16 +490,105 @@ dnl          [foo], [bar], [hello])
 dnl
 dnl  expands to `1`.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: `n4_list_index()`
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 m4_define([n4_arg_index],
-	[n4_list_index([$1], m4_quote(m4_shift($@)))])
+	[n4_list_index([$1], m4_dquote(m4_shift($@)))])
+
+
+dnl  n4_set_counter(counter-name[, initial-value = 0[, default-increase = 1]])
+dnl  **************************************************************************
+dnl
+dnl  Creates self-updating counters
+dnl
+dnl  The counters created optionally support an `increase` argument for
+dnl  overriding their default increase.
+dnl
+dnl  Example #1:
+dnl
+dnl      n4_set_counter([my_counter])
+dnl
+dnl      my_counter
+dnl      my_counter
+dnl      my_counter(7)
+dnl      my_counter
+dnl      my_counter(-121)
+dnl      my_counter
+dnl
+dnl  expands to
+dnl
+dnl      0
+dnl      1
+dnl      2
+dnl      9
+dnl      10
+dnl      -111
+dnl
+dnl  Example #2:
+dnl
+dnl      n4_set_counter([my_counter], [1000])
+dnl
+dnl      my_counter
+dnl      my_counter
+dnl
+dnl  expands to
+dnl
+dnl      1000
+dnl      1001
+dnl
+dnl  Example #3:
+dnl
+dnl      n4_set_counter([my_counter], , [-10])
+dnl
+dnl      my_counter
+dnl      my_counter
+dnl      my_counter
+dnl      my_counter(0)
+dnl      my_counter(0)
+dnl      my_counter(0)
+dnl
+dnl  expands to
+dnl
+dnl      0
+dnl      -10
+dnl      -20
+dnl      -30
+dnl      -30
+dnl      -30
+dnl
+dnl  Negative numbers are allowed everywhere. If `counter-name` is an already
+dnl  existing counter, or a generic macro, it will be overwritten. Use
+dnl  `m4_undefine()` when you want to unset a counter.
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal (void)
+dnl  Requires: Nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_set_counter],
+	[m4_if([$#], [0], [],
+		[m4_define([$1],
+			m4_if([$#], [1],
+				[[0[]m4_ifblank(]m4_dquote([$][1])[,
+					[n4_set_counter([$1], 1)],
+					[n4_set_counter([$1], ]]m4_dquote(m4_dquote([$][1]))[[)])]],
+				[m4_default_nblank_quoted([$2], [0])[[]m4_ifblank(]m4_dquote([$][1])[,
+					]m4_if([$#], [2],
+							[[[n4_set_counter([$1], ]]m4_incr([$2])[[)]]],
+						[$3], [0], [],
+							[[[n4_set_counter([$1], ]]m4_eval([$2 + $3])[[, [$3])]]])[,
+					[m4_if(]]m4_dquote(m4_dquote([$][1]))[[, [0], [],
+						[n4_set_counter([$1],
+							m4_eval(]]]m4_dquote(m4_dquote(m4_dquote(m4_default_nblank_quoted([$2], [0]))))[[[[ + ]]]]m4_dquote(m4_dquote(m4_dquote([$][1])))[[[)]]]m4_if([$#], [2], [], [[[[, [$3]]]]])[[[)])])]]))])])
 
 
 dnl  n4_joinalln(separator-list, tree1[, tree2[, ... tree2]])
@@ -442,7 +602,20 @@ dnl  will be used for the first nesting, and so on.
 dnl
 dnl  For example,
 dnl
+dnl      n4_joinalln([m4_newline, [ = ]],
+dnl
+dnl          [[foo],        [bar]],
+dnl          [[hello],      [world]])
+dnl
+dnl  expands to
+dnl
+dnl      foo = bar
+dnl      hello = world
+dnl
+dnl  Or, for example,
+dnl
 dnl      n4_joinalln([[  =>  ], [ = ], [ + ]],
+dnl
 dnl          [[[a], [b]],
 dnl              [[c], [d]]],
 dnl          [[[e]],
@@ -452,34 +625,23 @@ dnl  expands to
 dnl
 dnl      a + b = c + d  =>  e = f + g + h + i
 dnl
-dnl  Or, for example,
-dnl
-dnl      n4_joinalln([m4_newline(), [ = ]],
-dnl          [[foo],        [bar]],
-dnl          [[hello],      [world]])
-dnl
-dnl  expands to
-dnl
-dnl      foo = bar
-dnl      hello = world
-dnl
 dnl  If the length of `separator-list` exceeds the maximum nesting present, the
 dnl  separators in excess will be ignored. If instead any of the lists
 dnl  possesses a deeper nesting than the number of separators passed, the
 dnl  innermost nested lists will be returned verbatim.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 m4_define([n4_joinalln],
 	[m4_if(m4_count($1), [1],
 		[m4_joinall($1, m4_shift($@))],
-		[m4_map_args_sep([n4_joinalln(m4_quote(m4_shift(m4_dquote_elt($1))), m4_unquote(],
+		[m4_map_args_sep([n4_joinalln(m4_dquote(m4_shift($1)), m4_unquote(],
 			[))],
 			[]m4_dquote(m4_argn([1], $1))[], m4_shift($@))])])
 
@@ -514,7 +676,7 @@ dnl  `PROJECT_MAJVER`, `PROJECT_MINVER` and `PROJECT_REVVER` for later uses.
 dnl
 dnl  To delete the stored macros you must use `m4_undefine()`.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
@@ -526,6 +688,72 @@ m4_define([n4_mem],
 	[m4_if([$#], [0], [],
 		[$#], [1], [$1],
 		[m4_define([$1], [$2])n4_mem(m4_shift($@))])])
+
+
+dnl  n4_nquote(n, arg1[, arg2[, arg3[, ... arg4]]]])
+dnl  **************************************************************************
+dnl
+dnl  Adds/removes `n` layers of quotes
+dnl
+dnl  This macro supports both positive and negative numbers for the `n`
+dnl  argument. Using positive numbers will correspond to invoking repeatedly
+dnl  `m4_quote()` or `m4_dquote()`; using negative numbers will correspond to
+dnl  invoking repeatedly `m4_unquote()`.
+dnl
+dnl  In particular, writing
+dnl
+dnl      n4_nquote(1, [one], [two], [three])
+dnl
+dnl  corresponds to writing,
+dnl
+dnl      m4_quote([one], [two], [three])
+dnl
+dnl  writing
+dnl
+dnl      n4_nquote(2, [one], [two], [three])
+dnl
+dnl  corresponds to writing,
+dnl
+dnl      m4_dquote([one], [two], [three])
+dnl
+dnl  writing
+dnl
+dnl      n4_nquote(0, [one], [two], [three])
+dnl
+dnl  corresponds to writing,
+dnl
+dnl      [one], [two], [three]
+dnl
+dnl  writing
+dnl
+dnl      n4_nquote(-1, [one], [two], [three])
+dnl
+dnl  corresponds to writing,
+dnl
+dnl      m4_unquote([one], [two], [three])
+dnl
+dnl  and so on.
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: Nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_nquote],
+	[m4_if([$1], [-1],
+			[m4_unquote(m4_shift($@))],
+		[$1], [0],
+			[m4_shift($@)],
+		[$1], [1],
+			[m4_quote(m4_shift($@))],
+		[$1], [2],
+			[m4_dquote(m4_shift($@))],
+			[m4_if(m4_eval([$1 < 0]), [1],
+				[m4_unquote(n4_nquote(m4_incr([$1]), m4_shift($@)))],
+				[m4_dquote(n4_nquote(m4_decr([$1]), m4_shift($@)))])])])
 
 
 dnl  n4_expanded_once(placeholder, macro[, arg1[, arg2[, ... argN ]]])
@@ -553,16 +781,20 @@ dnl      configure: autoconf version: 2.69
 dnl      configure: libtool version: 2.4.6.42-b88ce
 dnl      configure: aclocal version: 1.16.1
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal (void)
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 m4_define([n4_expanded_once],
-	[m4_define([$1], $2(m4_shift2($@)))])
+	[m4_if([$#], [0], [], [$#], [1], [],
+		[m4_define([$1],
+			m4_dquote(m4_if([$#], [2],
+				[$2],
+				[$2(m4_shift2($@))])))])])
 
 
 dnl  n4_expand_once(placeholder, macro[, arg1[, arg2[, ... argN ]]])
@@ -572,8 +804,9 @@ dnl  Creates a new macro named `placeholder` that when invoked redefines itself
 dnl  once and for all as the expansion of `macro[(arg1[, arg2[, ... argN ]])]`
 dnl
 dnl  This macro is very similar to `n4_expanded_once()`, except that it waits
-dnl  for the first invocation of `placeholder` to expand `macro`. This allows
-dnl  expensive operations (such as system calls) to be skipped if not used.
+dnl  before expanding `macro` until `placeholder` is actually invoked. This
+dnl  allows expensive operations (such as system calls) to be skipped if not
+dnl  used.
 dnl
 dnl  For example,
 dnl
@@ -600,7 +833,40 @@ dnl
 dnl  otherwise no system call will be made -- for the `NR_PROG_VERSION()` macro
 dnl  please see `not-autoreconf.m4`.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal (void)
+dnl  Requires: nothing
+dnl  Version: 1.0.1
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_expand_once],
+	[m4_if([$#], [0], [], [$#], [1], [],
+		[m4_define([$1],
+			[m4_define([$1],
+				m4_dquote(m4_if([$#], [2],
+					[$2],
+					[$2(m4_shift2($@))])))$1])])])
+
+
+dnl  n4_void(string1[, string2[, ... stringN]])
+dnl  **************************************************************************
+dnl
+dnl  Suppresses the output
+dnl
+dnl  The strings passed as arguments will be discarded, but their macro
+dnl  invocations will still be performed.
+dnl
+dnl  For example,
+dnl
+dnl      n4_void([Bla bla bla... m4_define([foo], [bar])... Bla bla bla])::foo
+dnl
+dnl  expands to
+dnl
+dnl      ::bar
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal (void)
 dnl  Requires: nothing
@@ -608,9 +874,7 @@ dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
-m4_define([n4_expand_once],
-	[m4_define([$1],
-		[m4_define([$1], $2(m4_shift2($@)))])])
+m4_define([n4_void], [m4_divert(-1)$*[]m4_divert()])
 
 
 dnl  n4_define_substrings_as(string, regexp, macro0[, macro1[, ... macroN ]])
@@ -641,21 +905,22 @@ dnl
 dnl  Due to limitations of M4's native implementation of regular expressions
 dnl  it is not possible to define more than 10 macros at a time.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal (void)
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 m4_define([n4_define_substrings_as],
-	[m4_bregexp([$1], [$2],
-		m4_ifnblank([$3],
-			[[m4_define(m4_normalize([$3]), [m4_quote(\&)])]])[]m4_if(m4_eval([$# > 3]), [1],
-			[m4_for([_idx_], [4], [$#], [1],
-				[m4_ifnblank(m4_quote(m4_argn(_idx_, $@)),
-					[[m4_define(m4_normalize(m4_argn(]_idx_[, $@)), m4_quote(\]m4_eval(_idx_[ - 3])[))]])])]))])
+	[m4_if([$#], [0], [], [$#], [1], [], [$#], [2], [],
+		[m4_bregexp([$1], [$2],
+			m4_ifnblank([$3],
+				[[m4_define(m4_normalize([$3]), [m4_quote(\&)])]])[]m4_if([$#], [3], [],
+					[m4_for([_idx_], [4], [$#], [1],
+						[m4_ifnblank(m4_quote(m4_argn(_idx_, $@)),
+							[[m4_define(m4_normalize(m4_argn(]_idx_[, $@)), m4_quote(\]m4_eval(_idx_[ - 3])[))]])])]))])])
 
 
 dnl  n4_repeat(n_times, text)
@@ -673,7 +938,7 @@ dnl      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 dnl
 dnl  For complex cases please use `m4_for()`.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
@@ -683,7 +948,7 @@ dnl
 dnl  **************************************************************************
 m4_define([n4_repeat],
 	[m4_if(m4_eval([$1 > 0]), [1],
-		[$2[]n4_repeat(m4_eval([$1 - 1]), [$2])])])
+		[$2[]n4_repeat(m4_decr([$1]), [$2])])])
 
 
 dnl  n4_redepth(regexp)
@@ -701,7 +966,7 @@ dnl      n4_redepth([\([0-9]+\)\.\([0-9]+\)\.\([0-9]+\)])
 dnl
 dnl  expands to `3`.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
@@ -731,7 +996,7 @@ dnl  will print:
 dnl
 dnl      ...foo bla|bl|l|a bar...foo bla|bl|l|a bar...foo bla|bl|l|a bar
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: `n4_redepth()`
@@ -762,7 +1027,7 @@ dnl  will print:
 dnl
 dnl      heXXo you XXorld!!
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: `n4_redepth()`
@@ -806,7 +1071,7 @@ dnl
 dnl      m4_count(m4_unquote(n4_burn_out([Hi, how [[[[are]]]] [[you]]?])))
 dnl          => 2
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
@@ -827,7 +1092,7 @@ dnl  Example:
 dnl
 dnl      n4_includedir([not-autotools/m4])
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
@@ -845,7 +1110,7 @@ dnl  **************************************************************************
 dnl
 dnl  Like `n4_includedir()`, but silently fails if the directory is unreachable
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing

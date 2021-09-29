@@ -1,0 +1,22 @@
+{
+	"name": "@PACKAGE_TARNAME@",
+	"version": "@PACKAGE_VERSION@",
+	"description": "Lorem ipsum dolor sit amet",
+	"homepage": "@PACKAGE_URL@",
+	"author": "John Doe",
+	"license": "GPL-3.0-or-later",
+	"binaryVersion": "@BINARY_VERSION@",
+	"repository": {
+		"type": "git",
+		"url": "https://git.example.com/libfoobar.git"
+	},
+	"src": [
+		"src/libfoobar.c",
+		"src/libfoobar.h"
+	],
+	"bugs": {
+		"url": "@PACKAGE_URL@/issues",
+		"email": "@PACKAGE_BUGREPORT@"
+	}
+}
+

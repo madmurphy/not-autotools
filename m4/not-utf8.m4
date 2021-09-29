@@ -41,6 +41,8 @@ dnl  NOTE:  This macro temporarily changes quotes, then restores them to `[`
 dnl         and `]`. Thanks to this it is able to compute any character,
 dnl         including quotes and round brackets.
 dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
 dnl  Expansion type: literal
 dnl  Requires: `n4_lambda()` from `not-m4sugar.m4`
 dnl  Version: 1.0.0
@@ -63,6 +65,8 @@ dnl      n4_codeunit_at([ABCDEFG], [2])
 dnl          => 67
 dnl
 dnl  If `index` is omitted, the first code unit of the string will be computed.
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: `n4_charcode()`
@@ -103,6 +107,8 @@ dnl
 dnl      # Decimal HTML entity
 dnl      n4_codepoint_to_ascii([8230], [&#%d;])
 dnl          => &#8230;
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
@@ -145,6 +151,8 @@ dnl          => Le déjeuner sur l'herbe
 dnl
 dnl  NOTE:  Unfortunately this macro cannot deal with square and round
 dnl         brackets.
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: `n4_codeunit_at()` and `n4_codepoint_to_ascii()`
@@ -189,6 +197,8 @@ dnl          => \x53\x65\x63\x74\x69\x6f\x6e\x20\xc2\xa7\x20\x32
 dnl
 dnl  NOTE:  Unfortunately this macro cannot deal with square and round
 dnl         brackets.
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: `n4_codeunit_at()`

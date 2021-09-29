@@ -37,6 +37,40 @@ m4_define([n4_sp],
 		[n4_sp(m4_eval([$1 - 1]))[ ]])])
 
 
+dnl  n4_newlines(text1[, text2[, text3[, ... textN]]])
+dnl  **************************************************************************
+dnl
+dnl  Calls `m4_normalize()` for each argument, then returns all the results
+dnl  separated by a new line.
+dnl
+dnl  For example,
+dnl
+dnl      n4_newlines([Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+dnl          Ut porttitor,],
+dnl      [arcu euismod vehicula luctus, nisl turpis ornare diam, non
+dnl          fermentum],
+dnl      [sem dolor ac tortor. Sed eleifend placerat mi id faucibus.])
+dnl
+dnl  expands to:
+dnl
+dnl      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut porttitor,
+dnl      arcu euismod vehicula luctus, nisl turpis ornare diam, non fermentum
+dnl      sem dolor ac tortor. Sed eleifend placerat mi id faucibus.
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_newlines],
+	[m4_if([$#], [0], [], [$#], [1],
+		[m4_normalize([$1])],
+		[m4_normalize([$1])[]m4_newline()n4_newlines(m4_shift($@))])])
+
+
 dnl  n4_text_center(text[, prefix[, max-width = screen-width - m4_len(prefix)[, screen-width = 79]]])
 dnl  **************************************************************************
 dnl
@@ -80,7 +114,7 @@ dnl      \*/
 dnl
 dnl  This macro supports Autoconf quadrigraphs.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: `n4_sp()`

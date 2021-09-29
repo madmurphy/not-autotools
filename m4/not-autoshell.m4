@@ -28,7 +28,7 @@ dnl  M4 sugar to set the value of many shell variables altogether
 dnl
 dnl  Same as `var1=val1 var2=val2 ... varN=valN`.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -53,7 +53,7 @@ dnl
 dnl      NS_SETVARS([MY_MESSAGE], ['This is a test'])
 dnl      AC_MSG_NOTICE([My message --> NS_GETVAR([MY_MESSAGE])])
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -80,7 +80,7 @@ dnl
 dnl      AC_MSG_NOTICE([Today is NS_GETOUT([date])])
 dnl      AC_MSG_NOTICE([NS_GETOUT([echo 'This is a test'])])
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -104,7 +104,7 @@ dnl          [THIRD_VAR], ['third value'])
 dnl
 dnl      NS_UNSET([FIRST_VAR], [SECOND_VAR], [THIRD_VAR])
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -122,7 +122,7 @@ dnl
 dnl  Copies the value of `source` into the shell variable `destination`, then
 dnl  unsets `source` if this is set
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -141,7 +141,7 @@ dnl  If `source` is set, copies the value of `source` into the shell variable
 dnl  `destination` then unsets `source`; if `source` is not set but
 dnl  `destination` is set, unsets `destination`
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -163,7 +163,7 @@ dnl  safely used by the `NS_PP_IF()` macro families. It has been designed as M4
 dnl  sugar to be used internally by the **Not Autotools** project, but can be
 dnl  safely invoked by the final user. Usage is identical to `AS_IF()`.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -211,7 +211,7 @@ dnl  Prints:
 dnl
 dnl      configure: Number is 31
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NS_IF()`
@@ -236,7 +236,7 @@ dnl  As in `AS_ECHO()` the `text` argument is passed verbatim, without shell
 dnl  quoting. For a version that treats the `text` argument in the same way as
 dnl  `AC_MSG_NOTICE()` does, please see `NS_STDOUT_UNQUOTED()`.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -257,7 +257,7 @@ dnl
 dnl  This is a quote-safe version of `NS_STDOUT()`. The `text` argument does
 dnl  not need shell quotes, which will be escaped if found.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
@@ -293,7 +293,7 @@ dnl  The `strN` arguments are passed verbatim, without shell quoting. For a
 dnl  version that treats the `strN` arguments in the same way as
 dnl  `AC_MSG_NOTICE()` does, please see `NS_STRING_IF_UNQUOTED()`.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NS_PP_IF()` and `NS_STDOUT()`
@@ -329,7 +329,7 @@ dnl  Prints:
 dnl
 dnl      configure: Status is "mostly valid"
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NS_PP_IF()` and `NS_STDOUT_UNQUOTED()`
@@ -657,11 +657,11 @@ dnl  `AS_ECHO(['m4_text_wrap(m4_quote(m4_bpatsubst([TEXT GOES HERE], ['], ['\\''
 dnl  instead of `NS_TEXT_WRAP()`, so that the `configure` script receives a
 dnl  literal instead of a `sed` substitution to perform each time it is run.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -671,7 +671,7 @@ AC_DEFUN([NS_TEXT_WRAP], [{
 	while :; do
 		_oldtxt_="${_newtxt_}"
 		_newtxt_="$(echo -n "${_oldtxt_}" | ${SED} '
-			s/^..\{'m4_default_nblank([$2], ['79'])'\}/&\x00/;
+			s/^..\{'m4_default_nblank_quoted([$2], ['79'])'\}/&\x00/;
 			s/^\(\S\+\)\x00\(\S*\)\s\|\(^\|\s\)\(\S*\)\x00/\1\2\x00\4/;
 			s/^\x00//;
 			s/\x00/\n/;
@@ -713,7 +713,7 @@ dnl      pharetra fringilla non accumsan nulla.
 dnl      Fusce sem dolor,facilisis ac vestibulum
 dnl      a,lacinia sed arcu.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NS_TEXT_WRAP()`
@@ -757,7 +757,7 @@ dnl                      pharetra fringilla non accumsan nulla.
 dnl                     Fusce sem dolor, facilisis ac vestibulum
 dnl                               a, lacinia sed arcu.
 dnl
-dnl  This macro can be invoked before `AC_INIT()`.
+dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NS_TEXT_WRAP()`
@@ -768,6 +768,62 @@ dnl  **************************************************************************
 AC_DEFUN([NS_TEXT_WRAP_CENTER],
 	[{ NS_TEXT_WRAP([$1], m4_ifblank([$2], [['60']], [[$2]])) | while read _line_; do test "${@%:@_line_}" -ge m4_ifblank([$3], ['79'], [$3]) && echo "${_line_}" || echo "$(printf "%$(expr '(' m4_ifblank([$3], ['79'], [$3]) '-' "${@%:@_line_}" ')' '/' 2)s")${_line_}"
 done; }])
+
+
+dnl  NS_LITERAL_HEREDOC(content[, end-keyword])
+dnl  **************************************************************************
+dnl
+dnl  M4 sugar to launch `cat << 'END_HEREDOC' ...`
+dnl
+dnl  Example
+dnl
+dnl      NS_LITERAL_HEREDOC([
+dnl      Welcome to the build system of Foo package.
+dnl
+dnl      If you need help, please type ./configure --help
+dnl      ])
+dnl
+dnl  By default, the end keyword chosen is `NS_END_HEREDOC`. You can use a
+dnl  different keyword by using the optional `end-keyword` argument.
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NS_LITERAL_HEREDOC],
+	[{ cat << 'm4_default_nblank_quoted([$2], [NS_END_HEREDOC])'m4_newline()$1[]m4_newline()m4_default_nblank_quoted([$2], [NS_END_HEREDOC])[]m4_newline() }])
+
+
+dnl  NS_HEREDOC(content[, end-keyword])
+dnl  **************************************************************************
+dnl
+dnl  M4 sugar to launch `cat << END_HEREDOC ...`
+dnl
+dnl  Example
+dnl
+dnl      NS_HEREDOC([
+dnl      Welcome to the build system of Foo package.
+dnl      
+dnl      If you need help, please type ${0} --help
+dnl      ])
+dnl
+dnl  By default, the end keyword chosen is `NS_END_HEREDOC`. You can use a
+dnl  different keyword by using the optional `end-keyword` argument.
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NS_HEREDOC],
+	[{ cat << m4_default_nblank_quoted([$2], [NS_END_HEREDOC])[]m4_newline()$1[]m4_newline()m4_default_nblank_quoted([$2], [NS_END_HEREDOC])[]m4_newline() }])
 
 
 
