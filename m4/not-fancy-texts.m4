@@ -28,19 +28,19 @@ dnl  Prints an arbitrary number of white spaces
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 m4_define([n4_sp],
 	[m4_if(m4_eval([$1 > 0]), [1],
-		[n4_sp(m4_eval([$1 - 1]))[ ]])])
+		[n4_sp(m4_decr([$1]))[ ]])])
 
 
 dnl  n4_newlines(text1[, text2[, text3[, ... textN]]])
 dnl  **************************************************************************
 dnl
-dnl  Calls `m4_normalize()` for each argument, then returns all the results
+dnl  Calls `m4_normalize()` for each argument, then returns the results
 dnl  separated by a new line.
 dnl
 dnl  For example,

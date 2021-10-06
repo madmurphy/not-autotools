@@ -975,7 +975,11 @@ dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 m4_define([n4_redepth],
-	[m4_len(m4_bpatsubst(m4_bpatsubst([$1], [\(\\\|)\|\([^\\]\|^\)\(\\\\\)*(\)\|\(\\\)(\|,], [\4]), [[^\\]], []))])
+	[m4_len(m4_bpatsubst(m4_bpatsubst([$1],
+			[\(\\\|)\|\([^\\]\|^\)\(\\\\\)*(\)\|\(\\\)(\|,],
+			[\4]),
+		[[^\\]],
+		[]))])
 
 
 dnl  n4_for_each_match(string, regexp, macro)
@@ -1053,7 +1057,7 @@ dnl
 dnl      m4_define([WTF], [a test])
 dnl      n4_burn_out([[[[[This is [[[WTF]]]. Bye!]]]]])
 dnl
-dnl  expands to:
+dnl  expands to
 dnl
 dnl      This is a test. Bye!
 dnl
@@ -1071,16 +1075,87 @@ dnl
 dnl      m4_count(m4_unquote(n4_burn_out([Hi, how [[[[are]]]] [[you]]?])))
 dnl          => 2
 dnl
+dnl  Each expansion happens once. It is thus possible to pass macros that
+dnl  re-define themselves each time they are invoked without generating
+dnl  infinite recursions.
+dnl
+dnl  For example,
+dnl
+dnl      n4_set_counter([my_counter])
+dnl      m4_define([test_macro], [another counter: my_counter...])
+dnl
+dnl      my_counter
+dnl      n4_burn_out([my_counter... [[[my_counter]... [[[[my_counter... [[test_macro]]]]]]]]],
+dnl          [my_counter],
+dnl          my_counter[, ]my_counter)
+dnl      my_counter
+dnl
+dnl  expands to
+dnl
+dnl      0
+dnl      3... 5... 6... another counter: 7...,4,1, 2
+dnl      8
+dnl
+dnl
 dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Version: 1.0.1
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_burn_out],
+	[m4_pushdef([_tmp_], m4_dquote(m4_expand([$*])))[]m4_if([$@], m4_dquote(_tmp_),
+		[_tmp_],
+		[n4_burn_out(_tmp_)])[]m4_popdef([_tmp_])])
+
+
+dnl  n4_bind(original-macro, new-macro, arg1[, arg2[, arg3[,  ... argN]]])
+dnl  **************************************************************************
+dnl
+dnl  Creates a new macro that invokes `original-macro` with `arg1`, `arg2` ...
+dnl  `argN` as initial arguments
+dnl
+dnl  This macro is the m4 version of ECMAScript `Function.prototype.bind()`.
+dnl
+dnl  For example,
+dnl
+dnl      m4_define([MY_UNBOUND_MACRO], [
+dnl          First argument is: `$1`
+dnl          Second argument is: `$2`
+dnl          Third argument is: `$3`
+dnl          Fourth argument is: `$4`])
+dnl
+dnl      n4_bind([MY_UNBOUND_MACRO],
+dnl          [MY_BOUND_MACRO], [foo], [bar])
+dnl
+dnl      MY_UNBOUND_MACRO([hello], [world])
+dnl      MY_BOUND_MACRO([hello], [world])
+dnl
+dnl  expands to
+dnl
+dnl      First argument is: `hello`
+dnl      Second argument is: `world`
+dnl      Third argument is: ``
+dnl      Fourth argument is: ``
+dnl
+dnl      First argument is: `foo`
+dnl      Second argument is: `bar`
+dnl      Third argument is: `hello`
+dnl      Fourth argument is: `world`
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal (void)
 dnl  Requires: nothing
 dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
-m4_define([n4_burn_out],
-	[m4_pushdef([_tmp_], m4_dquote(m4_expand(m4_expand([$*]))))[]m4_if(($*), (_tmp_), [_tmp_[]m4_popdef([_tmp_])], [n4_burn_out(_tmp_[]m4_popdef([_tmp_]))])])
+m4_define([n4_bind],
+	[m4_define([$2],
+		[$1(]m4_dquote(m4_shift2($@))[m4_if(]m4_dquote([$][#])[, [0], [], ]m4_dquote([, $][@])[))])])
 
 
 dnl  n4_includedir(directory)

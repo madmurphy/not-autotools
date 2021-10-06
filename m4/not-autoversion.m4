@@ -263,6 +263,21 @@ dnl  the latest release event (typically `CURRENT`), while
 dnl  `NR_HISTORY_CURRENT_VSTATE` and `NR_HISTORY_ROOT_VSTATE`
 dnl  contain the earliest and the latest version states available.
 dnl
+dnl  NOTE:  If your package installs different independent libraries, using the
+dnl         `NR_LIBTOOL_VERSION_INFO` literal might become problematic. You
+dnl         will have to choose whether using the same version info for all
+dnl         your libraries (in this case you can use `NR_LIBTOOL_VERSION_INFO`
+dnl         for it), or versioning each module differently by hand (and in this
+dnl         case you will have to either ignore `NR_LIBTOOL_VERSION_INFO`, or
+dnl         use it only for a module that you consider to be the main module of
+dnl         the package). The `NR_BINARY_VERSION` literal instead will never be
+dnl         affected by the presence of independent modules, as this literal
+dnl         always refers collectively to all the binaries shipped by your
+dnl         package (i.e. it is never the version of one single module, but of
+dnl         the entire set of binaries that your package generates altogether).
+dnl         The changes that you write in your history must in any case refer
+dnl         to the entire package as a whole.
+dnl
 dnl  If used in conjunction with `NC_CONFIG_SHADOW_DIR()` (see
 dnl  `m4/not-extended-config.m4`), this framework literally makes it possible
 dnl  continuously to publish releases _without ever having to write a single
@@ -539,7 +554,7 @@ dnl
 
 
 dnl  NR_BUMP_VSTATE(project-major, project-minor, project-micro, current,
-dnl                 revision, age, source-age, change1, change2, ... changeN)
+dnl                 revision, age, source-age, change-list)
 dnl  **************************************************************************
 dnl
 dnl  Applies one or more changes to a version state
@@ -547,6 +562,9 @@ dnl
 dnl  This macro is mainly intended to be used internally by
 dnl  `NR_RECORD_HISTORY()`; you will hardly ever need it. For the definition of
 dnl  a `change`, please refer to `NR_RECORD_HISTORY()`.
+dnl
+dnl  The `change-list` argument corresponds to an `event` without its first
+dnl  member (i.e. without the event's name).
 dnl
 dnl  This macro may be invoked before `AC_INIT()`.
 dnl

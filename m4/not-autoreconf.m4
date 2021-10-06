@@ -216,12 +216,12 @@ dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal (void)
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NR_CONFIG_FILES],
-	[m4_ifnblank([$1], [m4_pushdef([_sep_idx_], m4_quote(m4_bregexp([$1], [:])))m4_syscmd([cat << 'NA_END_OF_FILE' > ']m4_if(_sep_idx_, [-1], m4_normalize([[$1]]), [m4_normalize(m4_quote(m4_substr([$1], [0], _sep_idx_)))])[']m4_newline()m4_quote(m4_include(m4_if(_sep_idx_, [-1], m4_normalize([[$1.m4]]), [m4_normalize(m4_quote(m4_substr([$1], m4_eval(_sep_idx_[ + 1]))))])))[NA_END_OF_FILE])m4_popdef([_sep_idx_])])m4_if([$#], [1], [], [NR_CONFIG_FILES(m4_shift($@))])])
+	[m4_ifnblank([$1], [m4_pushdef([_sep_idx_], m4_quote(m4_bregexp([$1], [:])))m4_syscmd([cat << 'NA_END_OF_FILE' > ']m4_if(_sep_idx_, [-1], m4_normalize([[$1]]), [m4_normalize(m4_quote(m4_substr([$1], [0], _sep_idx_)))])[']m4_newline()m4_quote(m4_include(m4_if(_sep_idx_, [-1], m4_normalize([[$1.m4]]), [m4_normalize(m4_quote(m4_substr([$1], m4_incr(_sep_idx_))))])))[NA_END_OF_FILE])m4_popdef([_sep_idx_])])m4_if([$#], [1], [], [NR_CONFIG_FILES(m4_shift($@))])])
 
 
 dnl  NR_PROG_VERSION(program)

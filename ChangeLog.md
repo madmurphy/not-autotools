@@ -2,8 +2,20 @@ Change Log
 ==========
 
 
+2.1.0
+-----
+
+Changes:
+
+* New macro `n4_bind()`, has been created in `not-m4sugar.m4`
+* Code review (macro `n4_burn_out()` in `not-m4sugar.m4`; macro `n4_sp()` in
+  `not-fancy-texts.m4`; macro `NR_CONFIG_FILES()` in `not-autoreconf.m4`;
+  macros `NC_MSG_ERRORBOX()` and `NC_MSG_FAILUREBOX()` in `not-ac-messages.m4`)
+* Documentation
+
+
 2.0.0
-------
+-----
 
 Changes:
 
@@ -67,7 +79,7 @@ Changes:
 
 
 1.1.0
-------
+-----
 
 Changes:
 
@@ -81,7 +93,7 @@ Changes:
 
 
 1.0.0
-------
+-----
 
 Changes:
 

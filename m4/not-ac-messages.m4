@@ -72,15 +72,16 @@ dnl  This macro may be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
-dnl  Version: 1.0.1
+dnl  Version: 1.0.2
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NC_MSG_ERRORBOX],
-	[AC_MSG_ERROR([m4_text_wrap([$1 --------------------------------------------------------------------],
-		[         | ],
-		[-------------------------------------------------------------],
-		[79])]m4_if(m4_eval([$# > 1]), [1], [, [$2]]))])
+	[m4_if([$#], [0], [],
+		[AC_MSG_ERROR([m4_text_wrap([$1 --------------------------------------------------------------------],
+			[         | ],
+			[-------------------------------------------------------------],
+			[79])]m4_if([$#], [1], [], [, [$2]]))])])
 
 
 dnl  NC_MSG_FAILUREBOX(error-description[, exit-status])
@@ -93,15 +94,16 @@ dnl  This macro may be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
-dnl  Version: 1.0.1
+dnl  Version: 1.0.2
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NC_MSG_FAILUREBOX],
-	[AC_MSG_FAILURE([m4_text_wrap([$1 --------------------------------------------------------------------],
-		[         | ],
-		[-------------------------------------------------------------],
-		[79])]m4_if(m4_eval([$# > 1]), [1], [, [$2]]))])
+	[m4_if([$#], [0], [],
+		[AC_MSG_FAILURE([m4_text_wrap([$1 --------------------------------------------------------------------],
+			[         | ],
+			[-------------------------------------------------------------],
+			[79])]m4_if([$#], [1], [], [, [$2]]))])])
 
 
 
