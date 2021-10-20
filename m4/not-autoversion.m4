@@ -196,7 +196,7 @@ dnl      # `Hello world!` and `GUITAR` will be ignored
 dnl      [[a94d2aa],
 dnl          [IMPLEMENTATION],
 dnl          [Hello world!],
-dnl          [MISCELLANEA],
+dnl          [MILESTONE],
 dnl          [GUITAR]]
 dnl
 dnl  The advantage of this approach is that you won't have to worry about
@@ -235,9 +235,9 @@ dnl  * `NR_HISTORY_CURRENT_EVENT_NAME`
 dnl  * `NR_HISTORY_CURRENT_VSTATE`
 dnl  * `NR_HISTORY_ROOT_VSTATE`
 dnl
-dnl  A project's documentation is not versioned by this framework (hence why
-dnl  the generic `MISCELLANEA` token must be used for referring to it), as
-dnl  there are no known mechanical rules for versioning a documentation.
+dnl  The documentation will not be versioned by this framework (hence why the
+dnl  generic `MISCELLANEA` token must be used for referring to it), as there
+dnl  are no known mechanical rules for versioning a documentation.
 dnl
 dnl  The first ten macros expand to positive integers. In particular,
 dnl
@@ -299,7 +299,7 @@ dnl      NC_AUTOVERSION_SUBSTITUTIONS
 dnl      ...
 dnl      AC_OUTPUT
 dnl
-dnl  The substitutions will have names identical to their M4 counterparts, but
+dnl  The substitutions will have names identical to their m4 counterparts, but
 dnl  will not have the `NR_` prefix -- more or less like the `AC_PACKAGE_NAME`
 dnl  literal produces a `PACKAGE_NAME` `configure` substitution, without the
 dnl  `AC_` prefix. For example, `NR_PROJECT_MAJVER`'s substitution will be
@@ -307,7 +307,7 @@ dnl  named `PROJECT_MAJVER`.
 dnl
 dnl  If you don't need the whole group of literals, you can manually pick up
 dnl  only the literals that you need instead of invoking
-dnl  `NC_AUTOVERSION_SUBSTITUTIONS`, thus creating a smaller set of targeted
+dnl  `NC_AUTOVERSION_SUBSTITUTIONS`, and create a smaller set of targeted
 dnl  substitutions:
 dnl
 dnl

@@ -4,7 +4,7 @@ _Not Autotools_ Macro Index
 This is the complete list of macros released by the **Not Autotools** project.
 
 
-## `m4/not-ac-messages.m4`
+## [`m4/not-ac-messages.m4`](m4/not-ac-messages.m4)
 
 * [`NC_MSG_NOTICEBOX()`](m4/not-ac-messages.m4#L24)
 * [`NC_MSG_WARNBOX()`](m4/not-ac-messages.m4#L44)
@@ -12,14 +12,14 @@ This is the complete list of macros released by the **Not Autotools** project.
 * [`NC_MSG_FAILUREBOX()`](m4/not-ac-messages.m4#L87)
 
 
-## `m4/not-extended-config.m4`
+## [`m4/not-extended-config.m4`](m4/not-extended-config.m4)
 
 * [`NC_CONFIG_SHADOW_DIR()`](m4/not-extended-config.m4#L24)
 * [`NC_THREATEN_FILES()`](m4/not-extended-config.m4#L283)
 * [`NR_THREATEN_BLINDLY`](m4/not-extended-config.m4#L307)
 
 
-## `m4/not-autoshell.m4`
+## [`m4/not-autoshell.m4`](m4/not-autoshell.m4)
 
 * [`NS_SETVARS()`](m4/not-autoshell.m4#L24)
 * [`NS_GETVAR()`](m4/not-autoshell.m4#L44)
@@ -49,7 +49,7 @@ This is the complete list of macros released by the **Not Autotools** project.
 * [`NS_HEREDOC()`](m4/not-autoshell.m4#L801)
 
 
-## `m4/not-m4sugar.m4`
+## [`m4/not-m4sugar.m4`](m4/not-m4sugar.m4)
 
 * [`n4_lambda()`](m4/not-m4sugar.m4#L24)
 * [`n4_with()`](m4/not-m4sugar.m4#L134)
@@ -60,25 +60,28 @@ This is the complete list of macros released by the **Not Autotools** project.
 * [`n4_case_in()`](m4/not-m4sugar.m4#L372)
 * [`n4_list_index()`](m4/not-m4sugar.m4#L429)
 * [`n4_arg_index()`](m4/not-m4sugar.m4#L480)
-* [`n4_set_counter()`](m4/not-m4sugar.m4#L505)
-* [`n4_joinalln()`](m4/not-m4sugar.m4#L594)
-* [`n4_mem()`](m4/not-m4sugar.m4#L649)
-* [`n4_nquote()`](m4/not-m4sugar.m4#L693)
-* [`n4_expanded_once()`](m4/not-m4sugar.m4#L759)
-* [`n4_expand_once()`](m4/not-m4sugar.m4#L800)
-* [`n4_void()`](m4/not-m4sugar.m4#L853)
-* [`n4_define_substrings_as()`](m4/not-m4sugar.m4#L880)
-* [`n4_repeat()`](m4/not-m4sugar.m4#L926)
-* [`n4_redepth()`](m4/not-m4sugar.m4#L954)
-* [`n4_for_each_match()`](m4/not-m4sugar.m4#L985)
-* [`n4_get_replacements()`](m4/not-m4sugar.m4#L1016)
-* [`n4_burn_out()`](m4/not-m4sugar.m4#L1047)
-* [`n4_bind()`](m4/not-m4sugar.m4#L1114)
-* [`n4_includedir()`](m4/not-m4sugar.m4#L1161)
-* [`n4_sincludedir()`](m4/not-m4sugar.m4#L1183)
+* [`n4_rshift()`](m4/not-m4sugar.m4#L505)
+* [`n4_rshift2()`](m4/not-m4sugar.m4#L532)
+* [`n4_rshift3()`](m4/not-m4sugar.m4#L558)
+* [`n4_set_counter()`](m4/not-m4sugar.m4#L587)
+* [`n4_joinalln()`](m4/not-m4sugar.m4#L676)
+* [`n4_mem()`](m4/not-m4sugar.m4#L731)
+* [`n4_nquote()`](m4/not-m4sugar.m4#L775)
+* [`n4_bind()`](m4/not-m4sugar.m4#L841)
+* [`n4_expanded_once()`](m4/not-m4sugar.m4#L888)
+* [`n4_expand_once()`](m4/not-m4sugar.m4#L929)
+* [`n4_void()`](m4/not-m4sugar.m4#L982)
+* [`n4_define_substrings_as()`](m4/not-m4sugar.m4#L1009)
+* [`n4_repeat()`](m4/not-m4sugar.m4#L1055)
+* [`n4_redepth()`](m4/not-m4sugar.m4#L1083)
+* [`n4_for_each_match()`](m4/not-m4sugar.m4#L1114)
+* [`n4_get_replacements()`](m4/not-m4sugar.m4#L1145)
+* [`n4_burn_out()`](m4/not-m4sugar.m4#L1176)
+* [`n4_includedir()`](m4/not-m4sugar.m4#L1243)
+* [`n4_sincludedir()`](m4/not-m4sugar.m4#L1265)
 
 
-## `m4/not-autoversion.m4`
+## [`m4/not-autoversion.m4`](m4/not-autoversion.m4)
 
 * [`NR_RECORD_HISTORY()`](m4/not-autoversion.m4#L24)
 * [`NR_HISTORY_ROOT_VSTATE()`](m4/not-autoversion.m4#L393)
@@ -119,7 +122,7 @@ This is the complete list of macros released by the **Not Autotools** project.
 * [`NC_AUTOVERSION_SUBSTITUTIONS`](m4/not-autoversion.m4#L1190)
 
 
-## `m4/not-autoreconf.m4`
+## [`m4/not-autoreconf.m4`](m4/not-autoreconf.m4)
 
 * [`NR_GET_ENV_VAR()`](m4/not-autoreconf.m4#L24)
 * [`NR_ENVIRONMENT_KEYS`](m4/not-autoreconf.m4#L47)
@@ -129,14 +132,14 @@ This is the complete list of macros released by the **Not Autotools** project.
 * [`NR_PROG_VERSION()`](m4/not-autoreconf.m4#L227)
 
 
-## `m4/not-fancy-texts.m4`
+## [`m4/not-fancy-texts.m4`](m4/not-fancy-texts.m4)
 
 * [`n4_sp()`](m4/not-fancy-texts.m4#L24)
 * [`n4_newlines()`](m4/not-fancy-texts.m4#L40)
 * [`n4_text_center()`](m4/not-fancy-texts.m4#L74)
 
 
-## `m4/not-utf8.m4`
+## [`m4/not-utf8.m4`](m4/not-utf8.m4)
 
 * [`n4_charcode()`](m4/not-utf8.m4#L24)
 * [`n4_codeunit_at()`](m4/not-utf8.m4#L56)
@@ -145,7 +148,7 @@ This is the complete list of macros released by the **Not Autotools** project.
 * [`n4_escape_everything()`](m4/not-utf8.m4#L169)
 
 
-## `m4/not-cc.m4`
+## [`m4/not-cc.m4`](m4/not-cc.m4)
 
 * [`NC_CC_CHECK_SIZEOF()`](m4/not-cc.m4#L23)
 * [`NC_CC_CHECK_CHAR_BIT`](m4/not-cc.m4#L139)
@@ -155,7 +158,7 @@ This is the complete list of macros released by the **Not Autotools** project.
 * [`NC_CC_CHECK_UINT_FROM_TO()`](m4/not-cc.m4#L361)
 
 
-## `m4/not-autotools.m4`
+## [`m4/not-autotools.m4`](m4/not-autotools.m4)
 
 * [`NA_SANITIZE_VARNAME()`](m4/not-autotools.m4#L24)
 * [`NA_ESC_APOS()`](m4/not-autotools.m4#L55)

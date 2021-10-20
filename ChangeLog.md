@@ -2,6 +2,18 @@ Change Log
 ==========
 
 
+2.2.0
+-----
+
+Changes:
+
+* New macros `n4_rshift()`, `n4_rshift2()` and `n4_rshift3()` have been created
+  in `not-m4sugar.m4`
+* Code review (macro `NA_HELP_STRINGS()` in `not-autotools.m4`; macros
+  `NS_TEST_AEQ()` and `NS_TEST_NAE()` in `not-autoshell.m4`)
+* Documentation
+
+
 2.1.0
 -----
 

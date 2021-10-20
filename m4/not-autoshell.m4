@@ -554,13 +554,13 @@ dnl      test "?two?three?four" != "?one?one?one"
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
-dnl  Version: 1.0.1
+dnl  Version: 1.0.2
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NS_TEST_AEQ],
 	[m4_if([$#], [0], [:], [$#], [1], [:],
-		[test "_AS_QUOTE(m4_dquote(?[]m4_joinall(?, m4_shift($@))))" = "_AS_QUOTE(m4_dquote(m4_for([], [2], [$#], [1], [[?$1]])))"])])
+		[test "_AS_QUOTE(m4_dquote([?]m4_joinall([?], m4_shift($@))))" = "_AS_QUOTE(m4_dquote(m4_for([], [2], [$#], [1], [[?$1]])))"])])
 
 
 dnl  NS_TEST_NAE(string1, string2[, string3[, ... stringN]])
@@ -598,13 +598,13 @@ dnl      test "?two?three?four" != "?one?one?one"
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
-dnl  Version: 1.0.1
+dnl  Version: 1.0.2
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NS_TEST_NAE],
 	[m4_if([$#], [0], [:], [$#], [1], [:],
-		[test "_AS_QUOTE(m4_dquote(?[]m4_joinall(?, m4_shift($@))))" != "_AS_QUOTE(m4_dquote(m4_for([], [2], [$#], [1], [[?$1]])))"])])
+		[test "_AS_QUOTE(m4_dquote([?]m4_joinall([?], m4_shift($@))))" != "_AS_QUOTE(m4_dquote(m4_for([], [2], [$#], [1], [[?$1]])))"])])
 
 
 dnl  NS_TEXT_WRAP(text[, max-width=79])

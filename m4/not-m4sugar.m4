@@ -502,6 +502,88 @@ m4_define([n4_arg_index],
 	[n4_list_index([$1], m4_dquote(m4_shift($@)))])
 
 
+dnl  n4_rshift(arg1[, arg2[, arg3[, ... argN]]])
+dnl  **************************************************************************
+dnl
+dnl  Reversed shift -- like `m4_reverse(m4_shift(m4_reverse(arg1, ... argN)))`,
+dnl  but more efficient
+dnl
+dnl  For example,
+dnl
+dnl      n4_rshift([one], [two], [three], [four], [five])
+dnl
+dnl  expands to
+dnl
+dnl      one, two, three, four
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_rshift],
+	[m4_if([$#], [0], [], [$#], [1], [], [$#], [2], [[$1]],
+		[[$1], n4_rshift(m4_shift($@))])])
+
+
+dnl  n4_rshift2(arg1[, arg2[, arg3[, ... argN]]])
+dnl  **************************************************************************
+dnl
+dnl  Like `n4_rshift()`, but trimming two arguments instead of one
+dnl
+dnl  For example,
+dnl
+dnl      n4_rshift2([one], [two], [three], [four], [five])
+dnl
+dnl  expands to
+dnl
+dnl      one, two, three
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_rshift2],
+	[m4_if([$#], [0], [], [$#], [1], [], [$#], [2], [], [$#], [3], [[$1]],
+		[[$1], n4_rshift2(m4_shift($@))])])
+
+
+dnl  n4_rshift3(arg1[, arg2[, arg3[, ... argN]]])
+dnl  **************************************************************************
+dnl
+dnl  Like `n4_rshift()`, but trimming three arguments instead of one
+dnl
+dnl  For example,
+dnl
+dnl      n4_rshift3([one], [two], [three], [four], [five])
+dnl
+dnl  expands to
+dnl
+dnl      one, two
+dnl
+dnl  For wider shifts please use `m4_shiftn()` + `m4_reverse()` -- i.e.
+dnl  `m4_reverse(m4_shiftn(num, m4_reverse(arg1, arg2, arg3, ... argN)))`.
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_rshift3],
+	[m4_if([$#], [0], [], [$#], [1], [], [$#], [2], [], [$#], [3], [], [$#], [4], [[$1]],
+		[[$1], n4_rshift3(m4_shift($@))])])
+
+
 dnl  n4_set_counter(counter-name[, initial-value = 0[, default-increase = 1]])
 dnl  **************************************************************************
 dnl
@@ -754,6 +836,53 @@ m4_define([n4_nquote],
 			[m4_if(m4_eval([$1 < 0]), [1],
 				[m4_unquote(n4_nquote(m4_incr([$1]), m4_shift($@)))],
 				[m4_dquote(n4_nquote(m4_decr([$1]), m4_shift($@)))])])])
+
+
+dnl  n4_bind(original-macro, new-macro, arg1[, arg2[, arg3[,  ... argN]]])
+dnl  **************************************************************************
+dnl
+dnl  Creates a new macro that invokes `original-macro` with `arg1`, `arg2` ...
+dnl  `argN` as initial arguments
+dnl
+dnl  This macro is the m4 version of ECMAScript `Function.prototype.bind()`.
+dnl
+dnl  For example,
+dnl
+dnl      m4_define([MY_UNBOUND_MACRO], [
+dnl          First argument is: `$1`
+dnl          Second argument is: `$2`
+dnl          Third argument is: `$3`
+dnl          Fourth argument is: `$4`])
+dnl
+dnl      n4_bind([MY_UNBOUND_MACRO],
+dnl          [MY_BOUND_MACRO], [foo], [bar])
+dnl
+dnl      MY_UNBOUND_MACRO([hello], [world])
+dnl      MY_BOUND_MACRO([hello], [world])
+dnl
+dnl  expands to
+dnl
+dnl      First argument is: `hello`
+dnl      Second argument is: `world`
+dnl      Third argument is: ``
+dnl      Fourth argument is: ``
+dnl
+dnl      First argument is: `foo`
+dnl      Second argument is: `bar`
+dnl      Third argument is: `hello`
+dnl      Fourth argument is: `world`
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal (void)
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_bind],
+	[m4_define([$2],
+		[$1(]m4_dquote(m4_shift2($@))[m4_if(]m4_dquote([$][#])[, [0], [], ]m4_dquote([, $][@])[))])])
 
 
 dnl  n4_expanded_once(placeholder, macro[, arg1[, arg2[, ... argN ]]])
@@ -1109,53 +1238,6 @@ m4_define([n4_burn_out],
 	[m4_pushdef([_tmp_], m4_dquote(m4_expand([$*])))[]m4_if([$@], m4_dquote(_tmp_),
 		[_tmp_],
 		[n4_burn_out(_tmp_)])[]m4_popdef([_tmp_])])
-
-
-dnl  n4_bind(original-macro, new-macro, arg1[, arg2[, arg3[,  ... argN]]])
-dnl  **************************************************************************
-dnl
-dnl  Creates a new macro that invokes `original-macro` with `arg1`, `arg2` ...
-dnl  `argN` as initial arguments
-dnl
-dnl  This macro is the m4 version of ECMAScript `Function.prototype.bind()`.
-dnl
-dnl  For example,
-dnl
-dnl      m4_define([MY_UNBOUND_MACRO], [
-dnl          First argument is: `$1`
-dnl          Second argument is: `$2`
-dnl          Third argument is: `$3`
-dnl          Fourth argument is: `$4`])
-dnl
-dnl      n4_bind([MY_UNBOUND_MACRO],
-dnl          [MY_BOUND_MACRO], [foo], [bar])
-dnl
-dnl      MY_UNBOUND_MACRO([hello], [world])
-dnl      MY_BOUND_MACRO([hello], [world])
-dnl
-dnl  expands to
-dnl
-dnl      First argument is: `hello`
-dnl      Second argument is: `world`
-dnl      Third argument is: ``
-dnl      Fourth argument is: ``
-dnl
-dnl      First argument is: `foo`
-dnl      Second argument is: `bar`
-dnl      Third argument is: `hello`
-dnl      Fourth argument is: `world`
-dnl
-dnl  This macro may be invoked before `AC_INIT()`.
-dnl
-dnl  Expansion type: literal (void)
-dnl  Requires: nothing
-dnl  Version: 1.0.0
-dnl  Author: madmurphy
-dnl
-dnl  **************************************************************************
-m4_define([n4_bind],
-	[m4_define([$2],
-		[$1(]m4_dquote(m4_shift2($@))[m4_if(]m4_dquote([$][#])[, [0], [], ]m4_dquote([, $][@])[))])])
 
 
 dnl  n4_includedir(directory)

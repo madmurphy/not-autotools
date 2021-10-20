@@ -14,8 +14,14 @@ most of the macros are independent from each other, so you can just copy and
 paste what you need. The few cases where a macro depends on a helper macro are
 documented.
 
+Each macro is versioned. If you copy and paste one or more macros, please do
+come back once in a while and check if newer versions are available. The
+version strings express semantic versioning, thus if a major version number has
+changed the newer macro will likely require some manual intervention in the
+caller's code. Minor changes and bug fixes instead will work out of the box.
+
 For the complete list of the macros released by the **Not Autotools** project,
-please see [`macro-index.md`][1].
+please refer to [`macro-index.md`][1].
 
 Feel free to contribute. For any questions, [drop a message][2].
 

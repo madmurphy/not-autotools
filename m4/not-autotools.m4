@@ -696,13 +696,13 @@ dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NA_HELP_STRINGS],
-	[m4_if(m4_count($1), [1],
-		[m4_if([$#], [0], [], [$#], [1],
+	[m4_if([$#], [0], [], m4_count($1), [1],
+		[m4_if([$#], [1],
 			[m4_text_wrap($1, [  ])],
 			[AS_HELP_STRING(m4_normalize($1), [$2])m4_if([$#], [2], [], [m4_newline()NA_HELP_STRINGS(m4_shift2($@))])])],
 		[m4_text_wrap(m4_car($1)[,], [  ])m4_newline()NA_HELP_STRINGS(m4_dquote(m4_shift($1))m4_if([$#], [1], [], [, m4_shift($@)]))])])
