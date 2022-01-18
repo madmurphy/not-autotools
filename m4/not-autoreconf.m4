@@ -181,7 +181,7 @@ dnl  differences:
 dnl
 dnl  1. The output is not created at `configure` time, but at `autoreconf`
 dnl     time
-dnl  2. Each file must be listed as a separate argument, and not within a
+dnl  2. Each file must be listed as a separate argument, and not as a
 dnl     space-separated list
 dnl  3. The input files are not expected to have a `.in` file extension, but a
 dnl     `.m4` file extension instead (although, as with `AC_CONFIG_FILES()`, it

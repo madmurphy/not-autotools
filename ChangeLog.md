@@ -2,6 +2,16 @@ Change Log
 ==========
 
 
+2.2.1
+-----
+
+Changes:
+
+* Code review (macro `NC_GLOBAL_LITERALS()` in `not-autotools.m4`)
+* Documentation
+* New examples have been created (`examples/NA_AMEND`)
+
+
 2.2.0
 -----
 

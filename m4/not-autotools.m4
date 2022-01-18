@@ -174,15 +174,13 @@ dnl
 dnl  Creates a new file amending a model with the content of one or more files
 dnl
 dnl  This macro requires a `output-file` parameter and a `amendable-file`
-dnl  parameter followed by a variadic list of amendments containing information
-dnl  about the amendable sections in `amendable-file`.
+dnl  parameter followed by a variadic list of amendments.
 dnl
-dnl  Each amendment is a list composed of one or two members (further members
-dnl  will be ignored), where the first member contains the name of the section
-dnl  to replace, and the second member, if present, the path of the file that
-dnl  provides a replacement. If the second member is absent or empty the
-dnl  exception referred to by the first member is simply erased. For example,
-dnl  the following code,
+dnl  Each amendment is a list composed of **one** or **two** members (further
+dnl  members will be ignored), where the first member contains the amendment's
+dnl  identifier, and the second member, if present, the path of the file that
+dnl  provides the amendment's content. If the second member is absent or empty
+dnl  the emendment expresses a deletion. For example, the following code,
 dnl
 dnl      NA_AMEND([src/main.c], [models/main.c],
 dnl          [[OFF_T_TYPE],      []],
@@ -233,8 +231,10 @@ dnl      This text will be lost.
 dnl
 dnl      /*@@@@@@@@@@@@@@@@@@@@@@@@@ !END_OMISSION! @@@@@@@@@@@@@@@@@@@@@@@@@*/
 dnl
-dnl  Because this macro is based on a `sed` expression, amendment names can
-dnl  contain alphanumeric characters only.
+dnl  To see this macro in action, please have a look at `examples/NA_AMEND`.
+dnl
+dnl  NOTE:  As this macro relies on a `sed` expression, amendment names can
+dnl         contain alphanumeric characters only.
 dnl
 dnl  This macro may be invoked before `AC_INIT()`.
 dnl
@@ -282,7 +282,7 @@ dnl
 dnl  Checks whether `argument` or `argument=*` has **not** been passed to the
 dnl  `configure` script, and triggers `true` or `false` accordingly
 dnl
-dnl  Sometimes it might be relatively hard to know whether a particular
+dnl  Sometimes it can be relatively hard to know whether a particular shell
 dnl  variable has been set by the user or not, because the `configure` script
 dnl  will assign some default value to it even if the user has not expressed
 dnl  any wish via command line (think of the `${docdir}` variable for example,
@@ -290,11 +290,11 @@ dnl  which is set either to the value of the `--docdir=...` argument specified
 dnl  by the user or to the `'${datarootdir}/doc/${PACKAGE_TARNAME}'` default
 dnl  string).
 dnl
-dnl  It is always possible to compare the current value with the default value
-dnl  normally assigned by the `configure` script... but what if this default
-dnl  value changes with new releases of GNU Autoconf?
+dnl  Theoretically, it is always possible to compare the current value with
+dnl  the default value normally assigned by the `configure` script... but what
+dnl  if this default value changes with new releases of GNU Autoconf?
 dnl
-dnl  To solve the problem this macro looks directly to the actual arguments
+dnl  To solve the problem this macro looks directly at the actual arguments
 dnl  passed by the user.
 dnl
 dnl  For example:
@@ -394,15 +394,16 @@ dnl  This macro may be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `NA_SANITIZE_VARNAME()` and `NA_ESC_APOS()`
-dnl  Version: 1.0.2
+dnl  Version: 1.0.3
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
-m4_define([NC_GLOBAL_LITERALS],
-	[m4_pushdef([_lit_], m4_quote(NA_SANITIZE_VARNAME([$1])))[]m4_define([GL_]_lit_,
-		m4_normalize([$2]))
-	AC_SUBST(_lit_, ['NA_ESC_APOS(m4_normalize([$2]))'])[]m4_popdef([_lit_])[]m4_if(m4_eval([$# > 2]), [1],
-		[NC_GLOBAL_LITERALS(m4_shift2($@))])])
+AC_DEFUN([NC_GLOBAL_LITERALS],
+	[m4_if([$#], [0], [], [$#], [1], [],
+		[m4_pushdef([_lit_], m4_quote(NA_SANITIZE_VARNAME([$1])))[]m4_define([GL_]m4_quote(_lit_),
+			m4_normalize([$2]))[]m4_newline()[]AC_SUBST(_lit_,
+			[']NA_ESC_APOS(m4_normalize([$2]))['])[]m4_popdef([_lit_])[]m4_if([$#], [2], [],
+			[NC_GLOBAL_LITERALS(m4_shift2($@))])])])
 
 
 dnl  NC_GLOBAL_LITERALS_NOTMAKE(name1, [val1][, ... nameN, [valN]]])
