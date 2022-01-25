@@ -383,7 +383,7 @@ dnl         shell expansions here, you must use only literals.
 dnl
 dnl  Expansion type: literal (void)
 dnl  Requires: `NR_BUMP_VSTATE()`, `NR_GET_EVENT_VSTATE()`
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -396,7 +396,10 @@ dnl  The initial version state expanded from the `root` argument passed to
 dnl  `NR_RECORD_HISTORY()`
 m4_define([NR_HISTORY_ROOT_VSTATE],
 	m4_dquote(m4_default_nblank_quoted(m4_argn([1], $1), [0]),
-		m4_default_nblank_quoted(m4_argn([2], $1), [0]),
+		m4_default_nblank(m4_quote(m4_argn([2], $1)),
+			[m4_if(m4_eval(m4_argn([1], $1)[ + 0 > 0]), [1],
+				[0],
+				[1])]),
 		m4_default_nblank_quoted(m4_argn([3], $1), [0]),
 		m4_default_nblank_quoted(m4_argn([4], $1), [0]),
 		m4_default_nblank_quoted(m4_argn([5], $1), [0]),
@@ -570,7 +573,7 @@ dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: `n4_has()` from `not-m4sugar.m4`
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
@@ -580,7 +583,7 @@ m4_define([NR_BUMP_VSTATE],
 			[n4_has([$8],
 				[LAUNCH],
 					[1, 0, 0, 0, 0, 0, 0],
-					[0, 0, 0, 0, 0, 0, 0])],
+					[0, 1, 0, 0, 0, 0, 0])],
 			[m4_if(m4_eval([$1 > 0]), [1],
 				[n4_has([$8],
 					[DEPARTURE],

@@ -2,6 +2,16 @@ Change Log
 ==========
 
 
+2.2.2
+-----
+
+Changes:
+
+* Code review (macros `NR_HISTORY_ROOT_VSTATE()` and  `NR_BUMP_VSTATE()` in
+  `not-autoversion.m4` – made sure that the default `NR_PROJECT_MINVER` is set
+  to `1` when `NR_PROJECT_MAJVER` is `0`)
+
+
 2.2.1
 -----
 
@@ -135,7 +145,7 @@ Changes:
 * File † `not-multiversion.m4`, containing the † `NR_SET_VERSION_ENVIRONMENT()`
   macro, has been removed
 * Macros † `NS_ECHO_IF()` and † `NS_ECHO_IF_UNQUOTED()` have been removed from
-  `not-autoshell.m4` -- you can use `NS_PP_IF([NS_STDOUT], ...)` and
+  `not-autoshell.m4` – you can use `NS_PP_IF([NS_STDOUT], ...)` and
   `NS_PP_IF([NS_STDOUT_UNQUOTED], ...)` to obtain the same result
 * Code review (macros `NC_MSG_ERRORBOX()` and `NC_MSG_FAILUREBOX()` in
   `not-ac-messages.m4`)
@@ -209,7 +219,7 @@ Changes:
   feature this macro was adding to the native `AC_CHECK_HEADERS()` was the
   possibility to give custom names to the shell variables created for each
   header)
-* Macro `n4_repeat()` has been simplified -- for complex cases please use
+* Macro `n4_repeat()` has been simplified – for complex cases please use
   `m4_for()`
 * Code review (macro `NC_CONFIG_SHADOW_DIR()` in `not-extended-config.m4`;
   macros `NS_TEXT_WRAP()` in `not-autoshell.m4`; macros `NC_GET_PROGS()` and
@@ -414,8 +424,8 @@ Changes:
   been renamed to `NC_REQ_PROGS()` and `NC_GET_PROGS()`
 * Code review (macros † `NM_ENVIRONMENT_KEYS` and † `NM_LOAD_ENVIRONMENT` in
   † `not-automake.m4`; macro † `NM_SET_VERSION_ENVIRONMENT()` in
-  † `not-misc.m4` -- the new version of the latter is incompatible with
-  previous versions)
+  † `not-misc.m4` – the new version of the latter is incompatible with previous
+  versions)
 * Documentation
 
 
@@ -469,8 +479,8 @@ Changes:
 
 Changes:
 
-* Macro † `nm4_unlambda` has been removed from `not-m4sugar.m4` -- lambda
-  macros are now safely created without polluting the global scope
+* Macro † `nm4_unlambda` has been removed from `not-m4sugar.m4` – lambda macros
+  are now safely created without polluting the global scope
 * M4sugar clones † `nm4_switch()` and † `nm4_case()` have been removed from
   `not-m4sugar.m4` (they were clones of `m4_case()` and `m4_bmatch()`
   respectively)
