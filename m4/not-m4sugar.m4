@@ -410,7 +410,7 @@ dnl  Expansion type: literal
 dnl  Requires: Nothing
 dnl  Version: 1.0.1
 dnl  Author: madmurphy
-dnl  Further reading: https://www.gnu.org/software/autoconf/manual/autoconf-2.69/html_node/Conditional-constructs.html#index-m4_005fcase-1363
+dnl  Further reading: https://www.gnu.org/software/autoconf/manual/autoconf-2.71/html_node/Conditional-constructs.html#index-m4_005fcase-1
 dnl
 dnl  **************************************************************************
 m4_define([n4_case_in],

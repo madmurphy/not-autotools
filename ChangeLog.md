@@ -2,6 +2,19 @@ Change Log
 ==========
 
 
+2.3.0
+-----
+
+Changes:
+
+* New library file `not-parallel-configure.m4` has been created, containing the
+  new macros `NC_THREAD_NEW()` and `NC_JOIN_THREADS()`
+* New macros `NC_AUTO_REQ_PROGS()` and `NM_AUTO_QUERY_PROGS()` have been
+  created in `not-autotools.m4`
+* Documentation
+* New examples have been created (`examples/not-parallel-configure`)
+
+
 2.2.2
 -----
 
@@ -19,7 +32,7 @@ Changes:
 
 * Code review (macro `NC_GLOBAL_LITERALS()` in `not-autotools.m4`)
 * Documentation
-* New examples have been created (`examples/NA_AMEND`)
+* New examples have been created (`examples/na_amend`)
 
 
 2.2.0
@@ -357,7 +370,7 @@ Changes:
 
 Changes:
 
-* New library file `not-fancy-texts.m4` has been created containing the
+* New library file `not-fancy-texts.m4` has been created, containing the
   new macros `n4_sp()` and `n4_text_center()`
 * New macros `NS_FOR()`, `NS_WHILE()`, `NS_MOVEVAR()` and `NS_REPLACEVAR()`
   have been created in `not-autoshell.m4`

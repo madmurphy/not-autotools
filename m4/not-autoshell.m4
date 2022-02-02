@@ -276,6 +276,8 @@ dnl  A ternary-operator-like macro for shell strings
 dnl
 dnl  Example:
 dnl
+dnl      AS_VAR_SET([TESTNUM], ['31'])
+dnl
 dnl      AS_VAR_SET([NUMSTATUS],
 dnl          NS_STRING_IF([test "${TESTNUM}" -eq 44],
 dnl                  ['valid'],

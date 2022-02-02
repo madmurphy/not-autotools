@@ -1,9 +1,9 @@
 dnl  Process this file with autoconf to produce a configure script.
 
 
-AC_PREREQ([2.69])
+m4_include([autostuff/m4/index.m4])
 
-m4_include([autostuff/m4/not-autotools.m4])
+AC_PREREQ([2.69])
 
 m4_include([HISTORY.m4])
 

@@ -322,7 +322,7 @@ dnl      # etc.
 dnl      ...
 dnl      AC_OUTPUT
 dnl
-dnl  To bootstrap the history from an initial state different than 0.0.0
+dnl  To bootstrap the history from an initial state different than 0.1.0
 dnl  (0:0:0) #0 ("SEMVER (LIBTOOL) #SOURCE_AGE") you can pass a comma-separated
 dnl  list of (up to) seven positive numbers as the `root` argument. The
 dnl  expected fields are: project-major[, project-minor[, project-micro[,
@@ -336,6 +336,9 @@ dnl          [[2018-10-21],
 dnl              [HEADERS],
 dnl              [MILESTONE]],
 dnl          [...])
+dnl
+dnl  If you want to start the development version from 0.0.0 instead of the
+dnl  default 0.1.0, use `NR_RECORD_HISTORY([[0], [0]], event1, ..., eventN)`.
 dnl
 dnl  To obtain the version state of a past event knowing its name the
 dnl  `NR_HISTORY_GET_EVENT_VSTATE()` macro is made available. This macro
