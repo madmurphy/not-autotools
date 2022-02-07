@@ -364,7 +364,7 @@ dnl
 dnl  Calculates the value of an unsigned integer using compile checks, with
 dnl  optional compiler flags and headers
 dnl
-dnl  This macro may be very expensive, since it will run a test for each
+dnl  This macro can be very expensive, since it will run a test for each
 dnl  number in the range specified. Therefore it is generally used for limited
 dnl  computations, such as determining a small version number.
 dnl
@@ -438,6 +438,60 @@ AC_DEFUN([NC_CC_CHECK_UINT_FROM_TO], [
 	m4_popdef([_na_tmp_headers_])
 	AS_VAR_COPY([CFLAGS], [_na_oldcflags_])
 	AS_UNSET([_na_oldcflags_])
+])
+
+
+dnl  NC_CPP_EXPAND(store-result, preprocessor-expression, [CPPFLAGS],
+dnl                header1[, header2[, header3[, ... headerN]]])
+dnl  **************************************************************************
+dnl
+dnl  Expand the value assigned to a preprocessor macro
+dnl
+dnl  The expanded value will be accessible in the `configure` script using the
+dnl  `[ac_cv_]lc(store-result)` shell variable, where `lc(store-result)` is the
+dnl  `store-result` argument **in lower case**.
+dnl
+dnl  For example, if you are writing an extension for Nautilus and you want to
+dnl  to know the value assigned to the `GTK_MAJOR_VERSION` preprocessor macro,
+dnl  you can run:
+dnl
+dnl      NC_CPP_EXPAND([gtk_maj_ver],
+dnl          [GTK_MAJOR_VERSION],
+dnl          ["$(pkg-config --cflags libnautilus-extension)"],
+dnl          [nautilus-extension.h])
+dnl
+dnl      AC_MSG_NOTICE([The version of Nautilus installed uses GTK ${ac_cv_gtk_maj_ver}])
+dnl
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NC_CPP_EXPAND], [
+	AC_LANG_PREPROC_REQUIRE()
+	AC_REQUIRE([AC_PROG_SED])
+	m4_pushdef([_na_tmp_varname_], [ac_cv_]m4_tolower([$1]))
+	AS_VAR_COPY([_na_oldcppflags_], [CPPFLAGS])
+	AS_VAR_SET([CPPFLAGS], [$3])
+	AC_MSG_CHECKING([for the `$2` preprocessor macro])
+	AC_CACHE_VAL(_na_tmp_varname_, [
+		AC_LANG_CONFTEST([AC_LANG_SOURCE([[
+			]m4_foreach([__iter__], m4_quote(m4_shift3($@)),
+				[[@%:@include <]__iter__[>]m4_newline()])[
+			@@HMCE64EGP2ZTI0G2HHR47@@$2@@CYJ7RQ8O1XK990R21LYM5@@
+		]])])
+		AS_VAR_SET(_na_tmp_varname_,
+			["$((eval "${ac_cpp} conftest.${ac_ext}") 2>&AS_MESSAGE_LOG_FD | \
+			${SED} -z 's/^.*@@HMCE64EGP2ZTI0G2HHR47@@\(.*\)@@CYJ7RQ8O1XK990R21LYM5@@.*$/\1/')"])
+	])
+	AC_MSG_RESULT([done])
+	AS_VAR_COPY([CPPFLAGS], [_na_oldcppflags_])
+	AS_UNSET([_na_oldcppflags_])
+	rm -rf conftest*
+	m4_popdef([_na_tmp_varname_])
 ])
 
 

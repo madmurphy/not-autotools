@@ -109,7 +109,8 @@ dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NC_THREAD_NEW],
-[m4_define([__NC_THNUM__], m4_ifdef([__NC_THNUM__], [m4_incr(__NC_THNUM__)], [1])) {
+[m4_define([__NC_THNUM__], m4_ifdef([__NC_THNUM__], [m4_incr(__NC_THNUM__)], [1]))
+{
 	echo
 	(set -o posix ; set) > 'threadenv.__NC_THNUM__.tmp'
 	m4_default_nblank([$2], [$1])
@@ -149,7 +150,8 @@ dnl
 dnl  **************************************************************************
 AC_DEFUN([NC_JOIN_THREADS],
 	[m4_ifblank([$1],
-		[m4_ifdef([__NC_THNUM__], [wait[]m4_for([__IDX__], [1], __NC_THNUM__, [1], [
+		[m4_ifdef([__NC_THNUM__], [
+			wait[]m4_for([__IDX__], [1], __NC_THNUM__, [1], [
 			if test -f 'confthread.__IDX__.source'; then
 				source './confthread.__IDX__.source' && \
 				rm 'confthread.__IDX__.source';

@@ -2,6 +2,41 @@ Change Log
 ==========
 
 
+2.4.0
+-----
+
+Changes:
+
+* New library file `not-increments.m4` has been created, containing the
+  following new macros:
+    * `n4_pp_amount()`
+    * `n4_ppn_amount()`
+    * `n4_amount_pp()`
+    * `n4_amount_ppn()`
+    * `n4_amount_incr()`
+    * `n4_amount_add()`
+    * `n4_amounts_incr()`
+    * `n4_amounts_add()`
+    * `n4_mm_amount()`
+    * `n4_mmn_amount()`
+    * `n4_amount_mm()`
+    * `n4_amount_mmn()`
+    * `n4_amount_decr()`
+    * `n4_amount_subtract()`
+    * `n4_amounts_decr()`
+    * `n4_amounts_subtract()`
+* New macro `n4_retrieve()` has been created in `not-m4sugar.m4`
+* New macro `NS_CATCH()` has been created in `not-autoshell.m4`
+* New macro `NC_CPP_EXPAND()` has been created in `not-cc.m4`
+* New macros `NR_RECORD_HISTORY_RC()`, `NR_GET_EVENT_VSTATE_RC()` and
+  `NR_FOR_EACH_EVENT_RC()` have been created in `not-autoversion.m4`
+* Code review (macro `NC_AUTOVERSION_SUBSTITUTIONS()` in `not-autoversion.m4`;
+  macros `NS_SETVARS()`, `NS_GETVAR()`, `NS_UNSET()`, `NS_MOVEVAR()` and
+  `NS_REPLACEVAR()` in `not-autoshell.m4`)
+* File `macro-index.md` has been sorted alphabetically
+* Documentation
+
+
 2.3.0
 -----
 

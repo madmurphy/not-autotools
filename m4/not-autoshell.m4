@@ -32,13 +32,14 @@ dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NS_SETVARS],
-	[AS_VAR_SET([$1], [$2]); m4_if(m4_eval([$# > 2]), [1],
-		[NS_SETVARS(m4_shift2($@))])])
+	[m4_if([$#], [0], [],
+		[AS_VAR_SET([$1], [$2])[]m4_if([$#], [1], [], [$#], [2], [],
+			[m4_newline()NS_SETVARS(m4_shift2($@))])])])
 
 
 dnl  NS_GETVAR(var)
@@ -57,11 +58,12 @@ dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.1.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
-AC_DEFUN([NS_GETVAR], [@S|@{$1}])
+AC_DEFUN([NS_GETVAR],
+	[AS_LITERAL_WORD_IF([$1], [${$1}], [$(eval echo "\${$1}")])])
 
 
 dnl  NS_GETOUT(command)
@@ -73,7 +75,7 @@ dnl  Same as `$(command)`. This macro works exactly like `m4_esyscmd()`, but
 dnl  instead of executing a command during the `autoreconf` process, it
 dnl  executes it during the `configure` process, when all M4 macros have been
 dnl  already expanded. The returned value cannot therefore be stored in another
-dnl  macro, but must be stored in a shell variable instead.
+dnl  macro, but must be stored in a shell variable.
 dnl
 dnl  Example:
 dnl
@@ -94,7 +96,7 @@ AC_DEFUN([NS_GETOUT], [@S|@@{:@$1@:}@])
 dnl  NS_UNSET(var1[, var2[, var3[, ... varN]]])
 dnl  **************************************************************************
 dnl
-dnl  Like `AS_UNSET()`, but it allows to unset many variables altogether
+dnl  Like `AS_UNSET()`, but allows to unset many variables altogether
 dnl
 dnl  For example:
 dnl
@@ -108,12 +110,14 @@ dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NS_UNSET],
-	[m4_ifnblank([$1], [AS_UNSET(m4_quote(m4_normalize([$1])));])m4_if([$#], [1], [], [NS_UNSET(m4_shift($@))])])
+	[m4_if([$#], [0], [],
+		[AS_UNSET(m4_normalize([$1]))])[]m4_if([$#], [1], [],
+			[m4_newline()[]NS_UNSET(m4_shift($@))])])
 
 
 dnl  NS_MOVEVAR(destination, source)
@@ -126,12 +130,12 @@ dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NS_MOVEVAR],
-	[{ AS_VAR_COPY([$1], [$2]); AS_UNSET([$2]); }])
+	[AS_VAR_COPY([$1], [$2])[]m4_newline()[]AS_UNSET([$2])])
 
 
 dnl  NS_REPLACEVAR(destination, source)
@@ -145,12 +149,14 @@ dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: nothing
-dnl  Version: 1.0.0
+dnl  Version: 1.1.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN([NS_REPLACEVAR],
-	[{ @S|@{$2+:} false && { AS_VAR_COPY([$1], [$2]); AS_UNSET([$2]); } || AS_UNSET([$1]) }])
+	[AS_VAR_SET_IF([$2],
+		[AS_VAR_COPY([$1], [$2])[]m4_newline()[]AS_UNSET([$2])],
+		[AS_UNSET([$1])])])
 
 
 dnl  NS_IF(test1, run1[, test2, run2[, testN, runN]][, run-if-false])
@@ -828,11 +834,121 @@ AC_DEFUN([NS_HEREDOC],
 	[{ cat << m4_default_nblank_quoted([$2], [NS_END_HEREDOC])[]m4_newline()$1[]m4_newline()m4_default_nblank_quoted([$2], [NS_END_HEREDOC])[]m4_newline() }])
 
 
+dnl  NS_CATCH(shell-code[, stdout-var-name[, stderr-var-name]])
+dnl  **************************************************************************
+dnl
+dnl  Execute custom shell code and save `stdout` and `stderr` into shell
+dnl  variables
+dnl
+dnl  Both `stdout-var-name` and `stderr-var-name` can be left empty, and in
+dnl  that case the respective file descriptor will be normally flushed.
+dnl  Alternatively, they can be set to a hyphen (`-`), and in that case the
+dnl  respective file descriptor will be redirected to `/dev/null`.
+dnl
+dnl  A few examples:
+dnl
+dnl      # Save both `stdout` and `stderr` into two variables
+dnl      NS_CATCH([
+dnl          echo 'This is stderr' 1>&2
+dnl          echo 'This is stdout'
+dnl      ], [MY_STDOUT], [MY_STDERR])
+dnl
+dnl      # Save `stdout` into a variable and silence `stderr`
+dnl      NS_CATCH([
+dnl          echo 'This is stderr' 1>&2
+dnl          echo 'This is stdout'
+dnl      ], [MY_STDOUT], [-])
+dnl
+dnl      # Save `stdout` into a variable and print `stderr` normally
+dnl      NS_CATCH([
+dnl          echo 'This is stderr' 1>&2
+dnl          echo 'This is stdout'
+dnl      ], [MY_STDOUT])
+dnl
+dnl      # Save `stderr` into a variable and silence `stdout`
+dnl      NS_CATCH([
+dnl          echo 'This is stderr' 1>&2
+dnl          echo 'This is stdout'
+dnl      ], [-], [MY_STDERR])
+dnl
+dnl      # Save `stderr` into a variable and print `stdout` normally
+dnl      NS_CATCH([
+dnl          echo 'This is stderr' 1>&2
+dnl          echo 'This is stdout'
+dnl      ], [], [MY_STDERR])
+dnl
+dnl      # Silence both `stdout` and `stderr`
+dnl      NS_CATCH([
+dnl          echo 'This is stderr' 1>&2
+dnl          echo 'This is stdout'
+dnl      ], [-], [-])
+dnl
+dnl      # Silence `stderr`, print only `stdout`
+dnl      NS_CATCH([
+dnl          echo 'This is stderr' 1>&2
+dnl          echo 'This is stdout'
+dnl      ], [], [-])
+dnl
+dnl      # Silence `stdout`, print only `stderr`
+dnl      NS_CATCH([
+dnl          echo 'This is stderr' 1>&2
+dnl          echo 'This is stdout'
+dnl      ], [-])
+dnl
+dnl      # Print both `stdout` and `stderr` normally
+dnl      NS_CATCH([
+dnl          echo 'This is stderr' 1>&2
+dnl          echo 'This is stdout'
+dnl      ])
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  NOTE:  `NS_CATCH()` incorporates an answer of mine on stackoverflow
+dnl         (https://stackoverflow.com/a/59592881, "10. The POSIX-compliant
+dnl         version #2").
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+AC_DEFUN([NS_CATCH],
+	[m4_if([$2$3], [],
+			[{m4_newline()[]$1[]m4_newline()}],			
+		[$2$3], [--],
+			[{m4_newline(){m4_newline()[]$1[]m4_newline()} 1> /dev/null 2>&1[]m4_newline()}],
+		[$2], [],
+			[m4_if([$3], [-],
+				[{m4_newline(){m4_newline()[]$1[]m4_newline()} 2> /dev/null[]m4_newline()}],
+				[{m4_newline()[]AS_VAR_SET([$3], ["$({]m4_newline()[$1]m4_newline()[} 3>&2 2>&1 1>&3 3>&-)"])[]m4_newline()} 2>&1])],
+		[$2], [-],
+			[m4_if([$3], [],
+				[{m4_newline(){m4_newline()[]$1[]m4_newline()} 1> /dev/null[]m4_newline()}],
+				[{m4_newline()[]AS_VAR_SET([$3], ["$({]m4_newline()[$1]m4_newline()[} 3>&2 2>&1 1>&3 3>&-)"])[]m4_newline()} 2> /dev/null])],
+		[$3], [],
+			[AS_VAR_SET([$2], ["$({]m4_newline()[$1]m4_newline()[})"])],
+		[$3], [-],
+			[AS_VAR_SET([$2], ["$({]m4_newline()[$1]m4_newline()[} 2> /dev/null)"])],
+			[# See https://stackoverflow.com/a/59592881
+__sep__=$'\cZ'
+{
+
+	IFS=$'\n'"${__sep__}" read -r -d "${__sep__}" "$2";
+	IFS=$'\n'"${__sep__}" read -r -d "${__sep__}" "$3";
+	(IFS=$'\n'"${__sep__}" read -r -d "${__sep__}" __errno__; exit ${__errno__});
+} <<__NA_EOF__
+$((printf "${__sep__}%s${__sep__}%d${__sep__}" "$(((({ {m4_newline()[]$1[]m4_newline()}m4_newline()[]echo "${?}" 1>&3-; } | cut -z -d"${__sep__}" -f1 | tr -d '\0' 1>&4-) 4>&2- 2>&1- | cut -z -d"${__sep__}" -f1 | tr -d '\0' 1>&4-) 3>&1- | exit "$(cat)") 4>&1-)" "${?}" 1>&2) 2>&1)
+__NA_EOF__
+AS_UNSET([__sep__])
+])])
+
+
 
 dnl  **************************************************************************
-dnl  NOTE:  The `NS_` prefix (which stands for "Not autoShell") is used with the
-dnl         purpose of avoiding collisions with the default Autotools prefixes
-dnl         `AC_`, `AM_`, `AS_`, `AX_`, `LT_`.
+dnl  NOTE:  The `NS_` prefix (which stands for "Not autoShell") is used with
+dnl         the purpose of avoiding collisions with the default Autotools
+dnl         prefixes `AC_`, `AM_`, `AS_`, `AX_`, `LT_`.
 dnl  **************************************************************************
 
 

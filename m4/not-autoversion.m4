@@ -21,7 +21,7 @@ dnl  **************************************************************************
 
 
 
-dnl  NR_RECORD_HISTORY([root], event1[, event2[, ... eventN]])
+dnl  NR_RECORD_HISTORY([root], event1[, event2[, ... last-event]])
 dnl  **************************************************************************
 dnl
 dnl  Automatically assigns version numbers to all the releases of an
@@ -122,6 +122,9 @@ dnl
 dnl  The arguments passed to  `NR_RECORD_HISTORY()` are the `root` version
 dnl  (simply `[[1]]` in the example above) -- this parameter will be described
 dnl  later in this manual -- and a series of events.
+dnl
+dnl  If you prefer to write the events in reverse chronological order, please
+dnl  see `NR_RECORD_HISTORY_RC()`.
 dnl
 dnl  An `event` is itself a list, composed of a unique custom name followed by
 dnl  one or more changes.
@@ -412,7 +415,8 @@ dnl
 dnl
 dnl  NR_HISTORY_EVENTS()
 dnl  **************************************************************************
-dnl  The entire history, without information about the root version
+dnl  The entire history in chronological order, without information about the
+dnl  root version
 m4_define([NR_HISTORY_EVENTS],
 	[m4_shift($@)])dnl
 dnl
@@ -559,6 +563,73 @@ dnl
 ])
 
 
+dnl  NR_RECORD_HISTORY_RC([root], last-event1[, last-event2[, ...
+dnl                       first-event]])
+dnl  **************************************************************************
+dnl
+dnl  Identical to `NR_RECORD_HISTORY()`, but events must be listed in reverse
+dnl  chronological order (most recent first)
+dnl
+dnl  For example:
+dnl
+dnl      NR_RECORD_HISTORY_RC([[1]],
+dnl
+dnl          dnl  *************** 1.7.0 (3:2:3) #1 ***************
+dnl          [[2019-08-02],
+dnl              [IMPLEMENTATION],
+dnl              [HEADERS],
+dnl              [MISCELLANEA]],
+dnl
+dnl          dnl  *************** 1.6.0 (3:1:3) #0 ***************
+dnl          [[2019-06-10],
+dnl              [IMPLEMENTATION],
+dnl              [MILESTONE]],
+dnl
+dnl          dnl  *************** 1.5.0 (3:0:3) #0 ***************
+dnl          [[2019-05-07],
+dnl              [INTERFACE],
+dnl              [IMPLEMENTATION],
+dnl              [MISCELLANEA]],
+dnl
+dnl          dnl  *************** 1.4.0 (2:0:2) #0 ***************
+dnl          [[2019-03-22],
+dnl              [INTERFACE]],
+dnl
+dnl          dnl  *************** 1.3.0 (1:0:1) #0 ***************
+dnl          [[2019-02-14],
+dnl              [INTERFACE],
+dnl              [IMPLEMENTATION],
+dnl              [MISCELLANEA]],
+dnl
+dnl          dnl  *************** 1.2.0 (0:2:0) #2 ***************
+dnl          [[2018-12-03],
+dnl              [IMPLEMENTATION],
+dnl              [HEADERS]],
+dnl
+dnl          dnl  *************** 1.1.2 (0:1:0) #1 ***************
+dnl          [[2018-11-12],
+dnl              [IMPLEMENTATION],
+dnl              [MISCELLANEA]],
+dnl
+dnl          dnl  *************** 1.1.1 (0:0:0) #1 ***************
+dnl          [[2018-10-29],
+dnl              [MISCELLANEA]],
+dnl
+dnl          dnl  *************** 1.1.0 (0:0:0) #1 ***************
+dnl          [[2018-10-21],
+dnl              [HEADERS],
+dnl              [MILESTONE]])
+dnl
+dnl  Expansion type: literal
+dnl  Requires: `NR_RECORD_HISTORY()`
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([NR_RECORD_HISTORY_RC],
+	[NR_RECORD_HISTORY([$1], m4_reverse(m4_shift($@)))])
+
+
 dnl  NR_BUMP_VSTATE(project-major, project-minor, project-micro, current,
 dnl                 revision, age, source-age, change-list)
 dnl  **************************************************************************
@@ -630,7 +701,8 @@ dnl                      eventN]])
 dnl  **************************************************************************
 dnl
 dnl  Similar to `NR_HISTORY_GET_EVENT_VSTATE()`, but not bound to any
-dnl  particular history (the desired history must be passed explicitly)
+dnl  particular history (the desired history must be passed explicitly, in
+dnl  chronological order)
 dnl
 dnl  This macro is mainly intended to be used internally by
 dnl  `NR_RECORD_HISTORY()`; you will hardly ever need it.
@@ -657,6 +729,21 @@ dnl
 dnl  The difference between `root-vstate` and `NR_RECORD_HISTORY()`'s `root`
 dnl  argument is that the former must always contain exactly seven integers.
 dnl
+dnl  If you want
+dnl
+dnl      NR_GET_EVENT_VSTATE([1989-04-28],
+dnl
+dnl          [[0], [0], [0], [0], [0], [0], [0]],
+dnl
+dnl          m4_reverse([[1991-08-13],
+dnl              [INTERFACE],
+dnl              [IMPLEMENTATION],
+dnl              [MISCELLANEA]],
+dnl          [[1989-04-28],
+dnl              [IMPLEMENTATION]],
+dnl          [[1987-11-02],
+dnl              [MISCELLANEA]]))
+dnl
 dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
@@ -676,11 +763,46 @@ m4_define([NR_GET_EVENT_VSTATE],
 					m4_shift3($@))])])])
 
 
+dnl  NR_GET_EVENT_VSTATE_RC(event-name, root-vstate, last-event1[,
+dnl                         last-event2[, ... first-event]])
+dnl  **************************************************************************
+dnl
+dnl  Identical to `NR_GET_EVENT_VSTATE()`, but events must be listed in reverse
+dnl  chronological order (most recent first)
+dnl
+dnl  For example:
+dnl
+dnl      NR_GET_EVENT_VSTATE([1989-04-28],
+dnl
+dnl          [[0], [0], [0], [0], [0], [0], [0]],
+dnl
+dnl          m4_reverse([[1991-08-13],
+dnl              [INTERFACE],
+dnl              [IMPLEMENTATION],
+dnl              [MISCELLANEA]],
+dnl          [[1989-04-28],
+dnl              [IMPLEMENTATION]],
+dnl          [[1987-11-02],
+dnl              [MISCELLANEA]]))
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: `NR_BUMP_VSTATE()`
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([NR_GET_EVENT_VSTATE_RC],
+	[NR_GET_EVENT_VSTATE([$1], [$2], m4_reverse(m4_shift2($@)))])
+
+
 dnl  NR_FOR_EACH_EVENT(macro-name, root-vstate, event1[, event2[, ... eventN]])
 dnl  **************************************************************************
 dnl
 dnl  Similar to `NR_HISTORY_FOR_EACH_EVENT()`, but not bound to any particular
-dnl  history (the desired history must be passed explicitly)
+dnl  history (the desired history must be passed explicitly, in chronological
+dnl  order)
 dnl
 dnl  This macro is mainly intended to be used internally by
 dnl  `NR_HISTORY_FOR_EACH_EVENT()`; you will hardly ever need it.
@@ -792,6 +914,28 @@ AC_DEFUN([NR_FOR_EACH_EVENT],
 				m4_dquote(NR_BUMP_VSTATE($2,
 					m4_dquote(m4_shift($3)))),
 				m4_shift3($@))])])])
+
+
+dnl  NR_FOR_EACH_EVENT_RC(macro-name, root-vstate, last-event1[, last-event2[,
+dnl                       ... first-event]])
+dnl  **************************************************************************
+dnl
+dnl  Identical to `NR_FOR_EACH_EVENT()`, but events must be listed in reverse
+dnl  chronological order (most recent first)
+dnl
+dnl  Despite the events are passed in reverse chronological order, the macro
+dnl  always iterates through them in chronological order.
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: `NR_BUMP_VSTATE()`
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([NR_FOR_EACH_EVENT_RC],
+	[NR_FOR_EACH_EVENT([$1], [$2], m4_reverse(m4_shift2($@)))])
 
 
 dnl  NR_HISTORY_FOR_EACH_EVENT(macro-name)
@@ -1203,25 +1347,26 @@ dnl  `NR_RECORD_HISTORY()`.
 dnl
 dnl  Expansion type: literal
 dnl  Requires: `NR_RECORD_HISTORY()`
-dnl  Version: 1.0.0
+dnl  Version: 1.0.1
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 AC_DEFUN_ONCE([NC_AUTOVERSION_SUBSTITUTIONS], [
-	AC_SUBST([PROJECT_VERSION], NR_PROJECT_VERSION)
-	AC_SUBST([PROJECT_MAJVER], NR_PROJECT_MAJVER)
-	AC_SUBST([PROJECT_MINVER], NR_PROJECT_MINVER)
-	AC_SUBST([PROJECT_MICVER], NR_PROJECT_MICVER)
-	AC_SUBST([BINARY_VERSION], NR_BINARY_VERSION)
-	AC_SUBST([BINARY_MAJVER], NR_BINARY_MAJVER)
-	AC_SUBST([BINARY_MINVER], NR_BINARY_MINVER)
-	AC_SUBST([BINARY_MICVER], NR_BINARY_MICVER)
-	AC_SUBST([LIBTOOL_VERSION_INFO], NR_LIBTOOL_VERSION_INFO)
-	AC_SUBST([INTERFACE_NUM], NR_INTERFACE_NUM)
-	AC_SUBST([INTERFACES_SUPPORTED], NR_INTERFACES_SUPPORTED)
-	AC_SUBST([IMPLEMENTATION_NUM], NR_IMPLEMENTATION_NUM)
-	AC_SUBST([SOURCE_AGE], NR_SOURCE_AGE)
-	AC_SUBST([HISTORY_CURRENT_EVENT_NAME], NR_HISTORY_CURRENT_EVENT_NAME)
+	AC_SUBST([PROJECT_VERSION], [']NR_PROJECT_VERSION['])
+	AC_SUBST([PROJECT_MAJVER], [']NR_PROJECT_MAJVER['])
+	AC_SUBST([PROJECT_MINVER], [']NR_PROJECT_MINVER['])
+	AC_SUBST([PROJECT_MICVER], [']NR_PROJECT_MICVER['])
+	AC_SUBST([BINARY_VERSION], [']NR_BINARY_VERSION['])
+	AC_SUBST([BINARY_MAJVER], [']NR_BINARY_MAJVER['])
+	AC_SUBST([BINARY_MINVER], [']NR_BINARY_MINVER['])
+	AC_SUBST([BINARY_MICVER], [']NR_BINARY_MICVER['])
+	AC_SUBST([LIBTOOL_VERSION_INFO], [']NR_LIBTOOL_VERSION_INFO['])
+	AC_SUBST([INTERFACE_NUM], [']NR_INTERFACE_NUM['])
+	AC_SUBST([INTERFACES_SUPPORTED], [']NR_INTERFACES_SUPPORTED['])
+	AC_SUBST([IMPLEMENTATION_NUM], [']NR_IMPLEMENTATION_NUM['])
+	AC_SUBST([SOURCE_AGE], [']NR_SOURCE_AGE['])
+	AC_SUBST([HISTORY_CURRENT_EVENT_NAME],
+		[']NR_HISTORY_CURRENT_EVENT_NAME['])
 ])
 
 

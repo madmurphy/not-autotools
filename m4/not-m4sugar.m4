@@ -1240,6 +1240,34 @@ m4_define([n4_burn_out],
 		[n4_burn_out(_tmp_)])[]m4_popdef([_tmp_])])
 
 
+dnl  n4_retrieve(path-or-uri-1[, path-or-uri-2[, ... path-or-uri-N]])
+dnl  **************************************************************************
+dnl
+dnl  Variadic version of `m4_include()`, with optional support for URIs
+dnl
+dnl  For example,
+dnl
+dnl      n4_retrieve([https://raw.githubusercontent.com/madmurphy/not-autotools/master/m4/not-m4sugar.m4])
+dnl
+dnl  will include this document.
+dnl
+dnl  If used with regular paths this macro behaves like `m4_include()`
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: the `curl` utility
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_retrieve],
+	[m4_if([$#], [0], [],
+		[m4_if(m4_bregexp([$1], [^\(https?\|s?ftp\|file\)://]), [0],
+			[m4_esyscmd([curl --silent ']m4_quote(m4_bpatsubst([$1], ['], ['\\'']))['])],
+			[m4_inc][lude([$1])])[]m4_if([$#], [1], [], [n4_retrieve(m4_shift($@))])])])
+
+
 dnl  n4_includedir(directory)
 dnl  **************************************************************************
 dnl
