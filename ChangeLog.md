@@ -2,6 +2,21 @@ Change Log
 ==========
 
 
+2.5.0
+-----
+
+Changes:
+
+* Three renamings in `not-autoversion.m4` (macro † `NR_RECORD_HISTORY_RC()` has
+  been renamed to `NR_RECORD_HISTORY_RCO()`, macro † `NR_GET_EVENT_VSTATE_RC()`
+  has been renamed to `NR_GET_EVENT_VSTATE_RCO()`, macro
+  † `NR_FOR_EACH_EVENT_RC()` has been renamed to `NR_FOR_EACH_EVENT_RCO()`)
+* The `introspect` directory has been added to the repository (for aiding
+  debug)
+* A new example has been added to the repository
+  (`examples/not-autoversion/reverse-chronological-order`)
+
+
 2.4.0
 -----
 
@@ -28,8 +43,8 @@ Changes:
 * New macro `n4_retrieve()` has been created in `not-m4sugar.m4`
 * New macro `NS_CATCH()` has been created in `not-autoshell.m4`
 * New macro `NC_CPP_EXPAND()` has been created in `not-cc.m4`
-* New macros `NR_RECORD_HISTORY_RC()`, `NR_GET_EVENT_VSTATE_RC()` and
-  `NR_FOR_EACH_EVENT_RC()` have been created in `not-autoversion.m4`
+* New macros † `NR_RECORD_HISTORY_RC()`, † `NR_GET_EVENT_VSTATE_RC()` and
+  † `NR_FOR_EACH_EVENT_RC()` have been created in `not-autoversion.m4`
 * Code review (macro `NC_AUTOVERSION_SUBSTITUTIONS()` in `not-autoversion.m4`;
   macros `NS_SETVARS()`, `NS_GETVAR()`, `NS_UNSET()`, `NS_MOVEVAR()` and
   `NS_REPLACEVAR()` in `not-autoshell.m4`)

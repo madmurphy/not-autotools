@@ -124,7 +124,7 @@ dnl  (simply `[[1]]` in the example above) -- this parameter will be described
 dnl  later in this manual -- and a series of events.
 dnl
 dnl  If you prefer to write the events in reverse chronological order, please
-dnl  see `NR_RECORD_HISTORY_RC()`.
+dnl  see `NR_RECORD_HISTORY_RCO()`.
 dnl
 dnl  An `event` is itself a list, composed of a unique custom name followed by
 dnl  one or more changes.
@@ -432,7 +432,7 @@ dnl  The returned text is a comma-separated list of numbers, representing
 dnl  respecively major, minor, micro, current, revision, age, source-age.
 dnl
 dnl  To extract a particular value from it, you can pass the returned list as
-dnl  as arguments to any of the following macros:
+dnl  arguments to any of the following macros:
 dnl
 dnl  * `NR_VSTATE_GET_PROJECT_VERSION()`
 dnl  * `NR_VSTATE_GET_PROJECT_MAJVER()`
@@ -563,7 +563,7 @@ dnl
 ])
 
 
-dnl  NR_RECORD_HISTORY_RC([root], last-event1[, last-event2[, ...
+dnl  NR_RECORD_HISTORY_RCO([root], last-event1[, last-event2[, ...
 dnl                       first-event]])
 dnl  **************************************************************************
 dnl
@@ -572,7 +572,7 @@ dnl  chronological order (most recent first)
 dnl
 dnl  For example:
 dnl
-dnl      NR_RECORD_HISTORY_RC([[1]],
+dnl      NR_RECORD_HISTORY_RCO([[1]],
 dnl
 dnl          dnl  *************** 1.7.0 (3:2:3) #1 ***************
 dnl          [[2019-08-02],
@@ -626,7 +626,7 @@ dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
-m4_define([NR_RECORD_HISTORY_RC],
+m4_define([NR_RECORD_HISTORY_RCO],
 	[NR_RECORD_HISTORY([$1], m4_reverse(m4_shift($@)))])
 
 
@@ -729,21 +729,6 @@ dnl
 dnl  The difference between `root-vstate` and `NR_RECORD_HISTORY()`'s `root`
 dnl  argument is that the former must always contain exactly seven integers.
 dnl
-dnl  If you want
-dnl
-dnl      NR_GET_EVENT_VSTATE([1989-04-28],
-dnl
-dnl          [[0], [0], [0], [0], [0], [0], [0]],
-dnl
-dnl          m4_reverse([[1991-08-13],
-dnl              [INTERFACE],
-dnl              [IMPLEMENTATION],
-dnl              [MISCELLANEA]],
-dnl          [[1989-04-28],
-dnl              [IMPLEMENTATION]],
-dnl          [[1987-11-02],
-dnl              [MISCELLANEA]]))
-dnl
 dnl  This macro may be invoked before `AC_INIT()`.
 dnl
 dnl  Expansion type: literal
@@ -763,7 +748,7 @@ m4_define([NR_GET_EVENT_VSTATE],
 					m4_shift3($@))])])])
 
 
-dnl  NR_GET_EVENT_VSTATE_RC(event-name, root-vstate, last-event1[,
+dnl  NR_GET_EVENT_VSTATE_RCO(event-name, root-vstate, last-event1[,
 dnl                         last-event2[, ... first-event]])
 dnl  **************************************************************************
 dnl
@@ -793,7 +778,7 @@ dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
-m4_define([NR_GET_EVENT_VSTATE_RC],
+m4_define([NR_GET_EVENT_VSTATE_RCO],
 	[NR_GET_EVENT_VSTATE([$1], [$2], m4_reverse(m4_shift2($@)))])
 
 
@@ -916,7 +901,7 @@ AC_DEFUN([NR_FOR_EACH_EVENT],
 				m4_shift3($@))])])])
 
 
-dnl  NR_FOR_EACH_EVENT_RC(macro-name, root-vstate, last-event1[, last-event2[,
+dnl  NR_FOR_EACH_EVENT_RCO(macro-name, root-vstate, last-event1[, last-event2[,
 dnl                       ... first-event]])
 dnl  **************************************************************************
 dnl
@@ -934,7 +919,7 @@ dnl  Version: 1.0.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
-m4_define([NR_FOR_EACH_EVENT_RC],
+m4_define([NR_FOR_EACH_EVENT_RCO],
 	[NR_FOR_EACH_EVENT([$1], [$2], m4_reverse(m4_shift2($@)))])
 
 
