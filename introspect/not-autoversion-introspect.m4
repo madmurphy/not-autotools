@@ -104,7 +104,7 @@ m4_define([NR_GET_VERSION_REPORT],
 
 
 dnl  NR_GET_VERSION_EVENT_NAME(project-major, project-minor, project-micro,
-dnl                       root-vstate, event1[, event2[, ... eventN]])
+dnl                            root-vstate, event1[, event2[, ... eventN]])
 dnl  **************************************************************************
 dnl
 dnl  Similar to `NR_HISTORY_GET_VERSION_EVENT_NAME()`, but not bound to any

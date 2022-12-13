@@ -645,7 +645,7 @@ dnl      -30
 dnl      -30
 dnl
 dnl  Negative numbers are allowed everywhere. If `counter-name` is an already
-dnl  existing counter, or a generic macro, it will be overwritten. Use
+dnl  existing counter or a generic macro it will be overwritten. Use
 dnl  `m4_undefine()` when you want to unset a counter.
 dnl
 dnl  This macro may be invoked before `AC_INIT()`.
@@ -1006,6 +1006,215 @@ dnl  **************************************************************************
 m4_define([n4_void], [m4_divert(-1)$*[]m4_divert()])
 
 
+dnl  n4_list_append_members(list, member1[, member2[, member3[, ... memberN]]])
+dnl  **************************************************************************
+dnl
+dnl  Append one or more members to a macro containing comma-separated elements
+dnl
+dnl  Example:
+dnl
+dnl      m4_define([my_list], [[one], [two], [three]])
+dnl
+dnl      n4_list_append_members([my_list], [four], [five])
+dnl
+dnl      dnl  `[one], [two], [three], [four], [five]`
+dnl      m4_defn([my_list])
+dnl
+dnl      n4_list_append_members([my_list], [six], [seven])
+dnl
+dnl      dnl  `[one], [two], [three], [four], [five], [six], [seven]`
+dnl      m4_defn([my_list])
+dnl
+dnl      dnl  `7`
+dnl      m4_count(my_list)
+dnl
+dnl  If `list` is not defined it will be defined first.
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_list_append_members],
+	[m4_define([$1],
+		m4_ifdef([$1],
+			[m4_defn([$1])[, ]m4_dquote(m4_shift($@))],
+			[m4_dquote(m4_shift($@))]))])
+
+
+dnl  n4_list_prepend_members(list, member1[, member2[, member3[, ...
+dnl                          memberN]]])
+dnl  **************************************************************************
+dnl
+dnl  Prepend one or more members to a macro containing comma-separated elements
+dnl
+dnl  Example:
+dnl
+dnl      m4_define([my_list], [[one], [two], [three]])
+dnl
+dnl      n4_list_prepend_members([my_list], [four], [five])
+dnl
+dnl      dnl  `[four], [five], [one], [two], [three]`
+dnl      m4_defn([my_list])
+dnl
+dnl      dnl  `[six], [seven], [four], [five], [one], [two], [three]`
+dnl      n4_list_prepend_members([my_list], [six], [seven])
+dnl
+dnl      m4_defn([my_list])
+dnl
+dnl      dnl  `7`
+dnl      m4_count(my_list)
+dnl
+dnl  If `list` is not defined it will be defined first.
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_list_prepend_members],
+	[m4_define([$1],
+		m4_ifdef([$1],
+			[m4_dquote(m4_shift($@))[, ]m4_defn([$1])],
+			[m4_dquote(m4_shift($@))]))])
+
+
+dnl  n4_list_append_list(list, list-to-append)
+dnl  **************************************************************************
+dnl
+dnl  Append a comma-separated list to a macro containing comma-separated
+dnl  elements
+dnl
+dnl  Example:
+dnl
+dnl      m4_define([my_list], [[one], [two], [three]])
+dnl
+dnl      n4_list_append_list([my_list], [[four], [five]])
+dnl
+dnl      dnl  `[one], [two], [three], [four], [five]`
+dnl      m4_defn([my_list])
+dnl
+dnl      n4_list_append_list([my_list], [[six], [seven]])
+dnl
+dnl      dnl  `[one], [two], [three], [four], [five], [six], [seven]`
+dnl      m4_defn([my_list])
+dnl
+dnl      dnl  `7`
+dnl      m4_count(my_list)
+dnl
+dnl  If `list` is not defined it will be defined first.
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_list_append_list],
+	[m4_define([$1],
+		m4_ifdef([$1],
+			[m4_defn([$1])[, $2]],
+			[$2]))])
+
+
+dnl  n4_list_prepend_list(list, list-to-append)
+dnl  **************************************************************************
+dnl
+dnl  Prepend a comma-separated list to a macro containing comma-separated
+dnl  elements
+dnl
+dnl  Example:
+dnl
+dnl      m4_define([my_list], [[one], [two], [three]])
+dnl
+dnl      n4_list_prepend_list([my_list], [[four], [five]])
+dnl
+dnl      dnl  `[four], [five], [one], [two], [three]`
+dnl      m4_defn([my_list])
+dnl
+dnl      n4_list_prepend_list([my_list], [[six], [seven]])
+dnl
+dnl      dnl  `[six], [seven], [four], [five], [one], [two], [three]`
+dnl      m4_defn([my_list])
+dnl
+dnl      dnl  `7`
+dnl      m4_count(my_list)
+dnl
+dnl  If `list` is not defined it will be defined first.
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_list_prepend_list],
+	[m4_define([$1],
+		m4_ifdef([$1],
+			[[$2, ]m4_defn([$1])],
+			[$2]))])
+
+
+dnl  n4_pluralize(original-macro-name, pluralized-macro-name[, separator])
+dnl  **************************************************************************
+dnl
+dnl  Create a new macro that repeatedly invokes an existing macro
+dnl
+dnl  The new macro created will rely on a deeper level of quote nesting.
+dnl
+dnl  For example,
+dnl
+dnl      m4_define([my_macro],
+dnl          [arg 1: $1, arg 2: $2, arg 3: $3])
+dnl
+dnl      my_macro([first_a], [second_a], [third_a])
+dnl      my_macro([first_b], [second_b], [third_b])
+dnl
+dnl  can be rewritten as
+dnl
+dnl      n4_pluralize([my_macro], [my_plural_macro], m4_newline())
+dnl
+dnl      my_plural_macro([[first_a], [second_a], [third_a]],
+dnl          [[first_b], [second_b], [third_b]])
+dnl
+dnl  Or, to give a more concrete example,
+dnl
+dnl      n4_pluralize([AC_SUBST], [AC_SUBSTS], m4_newline())
+dnl
+dnl      AC_SUBSTS([[VAR1], [VAL1]],
+dnl          [[VAR2], [VAL2]],
+dnl          [[VAR3], [VAL3]])
+dnl
+dnl  corresponds to
+dnl
+dnl      AC_SUBST([VAR1], [VAL1])
+dnl      AC_SUBST([VAR2], [VAL2])
+dnl      AC_SUBST([VAR3], [VAL3])
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([n4_pluralize],
+	[m4_define([$2],
+		[$1($][1)[]m4_if($][#, 0, [], $][#, 1, [],
+			[$3[]$2(m4_shift(]]m4_dquote([$][@])[[))])])])
+
+
 dnl  n4_define_substrings_as(string, regexp, macro0[, macro1[, ... macroN ]])
 dnl  **************************************************************************
 dnl
@@ -1123,7 +1332,9 @@ dnl
 dnl  For example,
 dnl
 dnl      AC_DEFUN([custom_macro], [...foo $1|$2|$3|$4 bar])
-dnl      AC_MSG_NOTICE([n4_for_each_match([blaablabblac], [\(b\(l\)\)\(a\)], [custom_macro])])
+dnl
+dnl      AC_MSG_NOTICE([n4_for_each_match([blaablabblac],
+dnl          [\(b\(l\)\)\(a\)], [custom_macro])])
 dnl
 dnl  will print:
 dnl
@@ -1154,7 +1365,9 @@ dnl
 dnl  For example,
 dnl
 dnl      AC_DEFUN([custom_macro], [XX$3])
-dnl      AC_MSG_NOTICE([n4_get_replacements([hello you world!!], [\(l\|w\)+\(o\)], [custom_macro])])
+dnl
+dnl      AC_MSG_NOTICE([n4_get_replacements([hello you world!!],
+dnl          [\(l\|w\)+\(o\)], [custom_macro])])
 dnl
 dnl  will print:
 dnl
@@ -1243,7 +1456,8 @@ m4_define([n4_burn_out],
 dnl  n4_retrieve(path-or-uri-1[, path-or-uri-2[, ... path-or-uri-N]])
 dnl  **************************************************************************
 dnl
-dnl  Variadic version of `m4_include()`, with optional support for URIs
+dnl  Variadic version of `m4_include()`, with optional support for URIs (via
+dnl  cURL)
 dnl
 dnl  For example,
 dnl

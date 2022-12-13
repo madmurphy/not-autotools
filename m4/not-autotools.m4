@@ -706,6 +706,94 @@ AC_DEFUN([NM_AUTO_QUERY_PROGS],
 			[test "x@S|@{]_lit_[}" != x])[]NM_AUTO_QUERY_PROGS(m4_shift($@))])])
 
 
+dnl  NA_MODULE_CHECK_PKGS(module-name, [requires-private-check],
+dnl                       [requires-check], [requires-private-nocheck],
+dnl                       [requires-nocheck])
+dnl  **************************************************************************
+dnl
+dnl  Wrapper macro of `PKG_CHECK_MODULES()` that allows to specify and store
+dnl  different kind of dependencies separately and declare local libraries that
+dnl  must not be checked
+dnl
+dnl  Before invoking `PKG_CHECK_MODULES()`, this macro stores two literals,
+dnl  `[GL_]module-name[_REQUIRES_PRIVATE]` and `[GL_]module-name[_REQUIRES]`,
+dnl  plus two configure substitutions, `module-name[_REQUIRES_PRIVATE]` and
+dnl  `module-name[_REQUIRES]`. These can be used for generating the
+dnl  `Requires.private` and `Requires` variables of a `.pc` file, which can
+dnl  contain local libraries to be compiled with the package and therefore do
+dnl  not need to exist before install.
+dnl
+dnl  For example,
+dnl
+dnl      NA_MODULE_CHECK_PKGS([MY_LIBRARY],
+dnl          dnl  Check that these are present (for `Requires.private`)
+dnl          [glib-2.0 >= 2.66, fribidi, gio-2.0 >= 2.66],
+dnl          dnl  Check that these are present (for `Requires`)
+dnl          [gtk4 >= 4.5.0],
+dnl          dnl  Don't check that these are present (for `Requires.private`)
+dnl          [mysublib2],
+dnl          dnl  Don't check that these are present (for `Requires`)
+dnl          [mysublib3])
+dnl
+dnl  will generate the two m4 macros `GL_MY_LIBRARY_REQUIRES_PRIVATE` and
+dnl  `GL_MY_LIBRARY_REQUIRES` and the two configure substitutions
+dnl  `MY_LIBRARY_REQUIRES_PRIVATE` and `MY_LIBRARY_REQUIRES`, and finally will
+dnl  invoke `PKG_CHECK_MODULES(module-name,
+dnl  requires-private-check[, ]requires-check)`.
+dnl
+dnl  The `.pc` file can then be set with the following lines:
+dnl
+dnl      ...
+dnl      Requires.private: @MY_LIBRARY_REQUIRES_PRIVATE@
+dnl      Requires: @MY_LIBRARY_REQUIRES@
+dnl      ...
+dnl
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: `PKG_CHECK_MODULES()` from `pkg.m4` (from `pkgconf` package)
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([NA_MODULE_CHECK_PKGS],
+	[m4_define([GL_$1_REQUIRES_PRIVATE],
+		[$2]m4_ifnblank([$4], [[, ]])[$4])[]m4_define([GL_$1_REQUIRES],
+		[$3]m4_ifnblank([$5], [[, ]])[$5])[]PKG_CHECK_MODULES([$1],
+		[$2]m4_ifnblank([$3], [[, ]])[$3])
+		AC_SUBST([$1_REQUIRES_PRIVATE],
+			[']m4_bpatsubst([[$2]]m4_ifnblank([$4],
+				[[[, ]]])[[$4]], ['], ['\\''])['])
+		AC_SUBST([$1_REQUIRES],
+			[']m4_bpatsubst([[$3]]m4_ifnblank([$5],
+				[[[, ]]])[[$5]], ['], ['\\''])['])
+		AM_SUBST_NOTMAKE([$1_REQUIRES])
+		AM_SUBST_NOTMAKE([$1_REQUIRES_PRIVATE])])
+
+
+dnl  NA_MODULES_CHECK_PKGS(module-args-1[, module-args-2[, ... module-args-N]])
+dnl  **************************************************************************
+dnl
+dnl  Pluralized version of `NA_MODULE_CHECK_PKGS()`
+dnl
+dnl  Example:
+dnl
+dnl      NA_MODULE_CHECK_PKGS([[MY_LIBRARY_1], [glib-2.0, gio-2.0], [gtk4]],
+dnl          [[MY_LIBRARY_2], [gnunetworker, gnunetutil, gnunetfs], [gtk4]])
+dnl
+dnl  This macro may be invoked only after having invoked `AC_INIT()`.
+dnl
+dnl  Expansion type: shell code
+dnl  Requires: `NA_MODULE_CHECK_PKGS()`
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl
+dnl  **************************************************************************
+m4_define([NA_MODULES_CHECK_PKGS],
+	[NA_MODULE_CHECK_PKGS($1)m4_if([$#], [0], [], [$#], [1], [],
+	[m4_newline()[]NA_MODULES_CHECK_PKGS(m4_shift($@))])])
+
+
 dnl  NA_HELP_STRINGS(list1, help1[, list2, help2[, ... listN, helpN]])
 dnl  **************************************************************************
 dnl

@@ -45,6 +45,13 @@ copied and pasted, or included directly in a build directory. This has the
 advantage of not slowing down the project's evolution, and backward
 incompatible changes do not break existing packages.
 
+Finally, a further subtle difference is that the **Not Autotools** macros
+compared to the **Autoconf Archive** macros on average rely on the m4
+preprocessor more than they rely on the shell. This means that whenever is
+possible the expansions of **Not Autotools** macros will leave only literals in
+the `configure` script generated, without much shell code. This should
+guarantee a wide compatibility between different platform.
+
 A way to think of the **Not Autotools** project is as “a possible staging
 laboratory for the **Autoconf Archive**”. Here the macros often change
 radically, or even disappear, without caring too much for backward

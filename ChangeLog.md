@@ -2,6 +2,18 @@ Change Log
 ==========
 
 
+2.6.0
+-----
+
+Changes:
+
+* New macros `n4_list_append_list()`, `n4_list_append_members()`,
+  `n4_pluralize()`, `n4_list_prepend_list()` and `n4_list_prepend_members()`
+  have been created in `not-m4sugar.m4`; macros `NA_MODULE_CHECK_PKGS()` and
+  `NA_MODULES_CHECK_PKGS()` have been created in `not-autotools.m4`
+* Documentation
+
+
 2.5.0
 -----
 
