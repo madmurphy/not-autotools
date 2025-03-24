@@ -748,27 +748,53 @@ dnl      Requires.private: @MY_LIBRARY_REQUIRES_PRIVATE@
 dnl      Requires: @MY_LIBRARY_REQUIRES@
 dnl      ...
 dnl
+dnl  The `module-name` argument must be a valid shell variable name.
+dnl
 dnl  This macro may be invoked only after having invoked `AC_INIT()`.
 dnl
 dnl  Expansion type: shell code
 dnl  Requires: `PKG_CHECK_MODULES()` from `pkg.m4` (from `pkgconf` package)
-dnl  Version: 1.0.0
+dnl  Version: 1.1.0
 dnl  Author: madmurphy
 dnl
 dnl  **************************************************************************
 m4_define([NA_MODULE_CHECK_PKGS],
 	[m4_define([GL_$1_REQUIRES_PRIVATE],
-		[$2]m4_ifnblank([$4], [[, ]])[$4])[]m4_define([GL_$1_REQUIRES],
-		[$3]m4_ifnblank([$5], [[, ]])[$5])[]PKG_CHECK_MODULES([$1],
-		[$2]m4_ifnblank([$3], [[, ]])[$3])
+		m4_ifblank([$2],
+			[[$4]],
+			[m4_ifblank([$4],
+				[[$2]],
+				[[$2, $4]])]))[]m4_define([GL_$1_REQUIRES],
+		m4_ifblank([$3],
+			[[$5]],
+			[m4_ifblank([$5],
+				[[$3]],
+				[[$3, $5]])]))[]m4_ifnblank([$2$3],
+			[PKG_CHECK_MODULES([$1],
+				m4_ifblank([$2],
+						[[$3]],
+						[m4_ifblank([$3],
+							[[$2]],
+							[[$2, $3]])]))])
 		AC_SUBST([$1_REQUIRES_PRIVATE],
-			[']m4_bpatsubst([[$2]]m4_ifnblank([$4],
-				[[[, ]]])[[$4]], ['], ['\\''])['])
+			[']m4_bpatsubst(m4_ifblank([$2],
+					[[[$4]]],
+					[m4_ifblank([$4],
+						[[[$2]]],
+						[[[$2, $4]]])]),
+			['],
+			['\\''])['])
 		AC_SUBST([$1_REQUIRES],
-			[']m4_bpatsubst([[$3]]m4_ifnblank([$5],
-				[[[, ]]])[[$5]], ['], ['\\''])['])
+			[']m4_bpatsubst(m4_ifblank([$3],
+					[[[$5]]],
+					[m4_ifblank([$5],
+						[[[$3]]],
+						[[[$3, $5]]])]),
+			['],
+			['\\''])['])
 		AM_SUBST_NOTMAKE([$1_REQUIRES])
-		AM_SUBST_NOTMAKE([$1_REQUIRES_PRIVATE])])
+		AM_SUBST_NOTMAKE([$1_REQUIRES_PRIVATE])
+])
 
 
 dnl  NA_MODULES_CHECK_PKGS(module-args-1[, module-args-2[, ... module-args-N]])

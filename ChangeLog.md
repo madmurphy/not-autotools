@@ -2,6 +2,16 @@ Change Log
 ==========
 
 
+2.7.0
+-----
+
+Changes:
+
+* New macro `n4_map_arg_groups()` has been created in `not-m4sugar.m4`
+* Code review (macro `NA_MODULES_CHECK_PKGS()` in `not-autotools.m4`)
+* Documentation
+
+
 2.6.0
 -----
 

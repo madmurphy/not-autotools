@@ -1165,6 +1165,41 @@ m4_define([n4_list_prepend_list],
 			[$2]))])
 
 
+dnl  n4_map_arg_groups(macro, [separator], group1[, group2[, ... groupN]])
+dnl  **************************************************************************
+dnl
+dnl  Similar to `m4_map_args()`, but instead of repeatedly invoking `macro`
+dnl  with only one argument, quoted groups of arguments will be passed each
+dnl  time
+dnl
+dnl  For example,
+dnl
+dnl      n4_map_arg_groups([AC_SUBST],
+dnl          m4_newline(),
+dnl          [[VAR1], [VAL1]],
+dnl          [[VAR2], [VAL2]],
+dnl          [[VAR3], [VAL3]])
+dnl
+dnl  corresponds to writing
+dnl
+dnl      AC_SUBST([VAR1], [VAL1])
+dnl      AC_SUBST([VAR2], [VAL2])
+dnl      AC_SUBST([VAR3], [VAL3])
+dnl
+dnl  This macro may be invoked before `AC_INIT()`.
+dnl
+dnl  Expansion type: literal (void)
+dnl  Requires: nothing
+dnl  Version: 1.0.0
+dnl  Author: madmurphy
+dnl  See also: `n4_pluralize()`
+dnl
+dnl  **************************************************************************
+m4_define([n4_map_arg_groups],
+	[$1($3)[]m4_if([$#], [0], [], [$#], [1], [], [$#], [2], [], [$#], [3], [],
+		[$2[]n4_map_arg_groups([$1], [$2], m4_shift3($@))])])
+
+
 dnl  n4_pluralize(original-macro-name, pluralized-macro-name[, separator])
 dnl  **************************************************************************
 dnl
@@ -1207,6 +1242,7 @@ dnl  Expansion type: literal
 dnl  Requires: nothing
 dnl  Version: 1.0.0
 dnl  Author: madmurphy
+dnl  See also: `n4_map_arg_groups()`
 dnl
 dnl  **************************************************************************
 m4_define([n4_pluralize],
